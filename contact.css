@@ -1,0 +1,96 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+body{
+  background-color:  rgb(13 18 36);
+}
+.contact_body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+
+}
+
+.data_secured {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+}
+.data_secured img{
+    width: 100px;
+    border-radius: 50%;
+}
+
+.contact_form {
+    width: 100%;
+    color: white;
+    max-width: 400px;
+    background-color: rgba(0, 23, 142, 1);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form_group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    font-family:monospace ;
+}
+label span{
+    color: red;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+textarea {
+    height: 100px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    background-color: rgba(0, 8, 50, 1);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.go_back {
+    margin-top: 10px;
+    text-align: center;
+}
+
+.go_back a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.go_back a:hover {
+    text-decoration: underline;
+}
