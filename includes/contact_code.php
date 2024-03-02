@@ -14,18 +14,19 @@ function sendemail_verify($name, $email, $number, $want_to, $message) {
     $mail->isSMTP();                          // Send using SMTP
     $mail->Host       = 'smtp.gmail.com';     // Set the SMTP server to send through
     $mail->SMTPAuth   = true;                 // Enable SMTP authentication
-    $mail->Username   = 'joshuaadeyemi445@gmail.com'; // SMTP username
-    $mail->Password   = 'zfqqiuyjflogdmqq';   // App-specific password
+    $mail->Username   = 'schoolcode2014@gmail.com'; // SMTP username
+    $mail->Password   = 'qqrjlstjjoxxzcpi';   // App-specific password
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;    // Enable implicit TLS encryption
     $mail->Port       = 465;                  // TCP port to connect to
 
     // Recipients
-    $mail->setFrom('joshuaadeyemi445@gmail.com', 'Sender Name');
+    $mail->setFrom('schoolcode2014@gmail.com', 'Sender Name');
     $mail->addAddress($email);    
 
     // Content
     $mail->isHTML(true);                      // Set email format to HTML
-    $mail->Subject = 'SchoolCode Africa';
+    $mail->Subject = 'SchoolCode Africa';  //the email head
+    //the email body/template
     $email_template =  <<<EOT
     <div class="success_body">
         <div class="success_head">
@@ -48,6 +49,7 @@ EOT;
     }
 }
 
+//collect data from the form
 if (isset($_POST['submit_btn'])) {
     $name = htmlspecialchars($_POST['name']); 
     $phone = htmlspecialchars($_POST['phone']); 
@@ -61,7 +63,7 @@ if (isset($_POST['submit_btn'])) {
     // Prepare and bind parameters
     $stmt = $con->prepare($query);
     $stmt->bind_param("sssss", $name, $email, $phone, $want_to, $message);
-    
+    //conditional statement for the prepare statement
     if ($stmt->execute()) { 
         sendemail_verify($name, $email, $phone, $want_to, $message);
         $_SESSION['status'] = "Message Sent Successfully. Thank you";

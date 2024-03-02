@@ -155,7 +155,7 @@
 		</div>
 		
 		<div class="row">
-			SchoolCode Africa Copyright © 2024 SoftPen Tech - All rights reserved || Designed By: AfricTech 
+			SchoolCode Africa Copyright © 2024 SoftPen Tech - All rights reserved || Developed By: AfricTech 
 		</div>
 		</div>
 		</footer>
