@@ -31,7 +31,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.side-nav') 
+      @include('components.school-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -45,7 +45,7 @@
         <div class="page-breadcrumb">
           <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
-              <h4 class="page-title">Admin Dashboard</h4>
+              <h4 class="page-title">School Admin Dashboard</h4>
               <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
@@ -88,12 +88,73 @@
                   <h1 class="font-light text-white">
                     <i class="mdi mdi-school"></i>
                   </h1>
-                  <h6 class="text-white">Schools</h6>
+                  <h6 class="text-white">Students</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+          <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ url('admin/schools') }}">
+              <div class="card card-hover">
+                <div class="box bg-info text-center">
+                  <h1 class="font-light text-white">
+                   <i class="mdi mdi-account fs-3 mb-1 font-16"></i>
+                  </h1>
+                  <h6 class="text-white">Teahers</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+          <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ url('admin/schools') }}">
+              <div class="card card-hover">
+                <div class="box bg-secondary text-center">
+                  <h1 class="font-light text-white">
+                   <i class="mdi mdi-trophy fs-3 mb-1 font-16"></i>
+                  </h1>
+                  <h6 class="text-white">Result</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+          <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ url('school/subject') }}">
+              <div class="card card-hover">
+                <div class="box bg-primary text-center">
+                  <h1 class="font-light text-white">
+                  <i class="mdi mdi-book-open fs-3 mb-1 font-16"></i>
+                  </h1>
+                  <h6 class="text-white">Subjects</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+          <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ url('school/class') }}">
+              <div class="card card-hover">
+                <div class="box bg-info text-center">
+                  <h1 class="font-light text-white">
+                    <i class="mdi mdi-home fs-3 mb-1 font-16"></i>
+                  </h1>
+                  <h6 class="text-white">Class</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+          <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ url('school/department') }}">
+              <div class="card card-hover">
+                <div class="box bg-warning text-center">
+                  <h1 class="font-light text-white">
+                  <i class="mdi-lightbulb-outline fs-3 mb-1 font-16"></i>
+                  </h1>
+                  <h6 class="text-white">Departments</h6>
                 </div>
               </div>
             </a>
             </div>
           </div>
+
           <!-- ============================================================== -->
           <!-- Sales chart -->
           <!-- ============================================================== -->
@@ -119,13 +180,6 @@
                     </div>
                     <div class="col-lg-3">
                       <div class="row">
-                        <div class="col-6">
-                          <div class="bg-dark p-10 text-white text-center">
-                            <i class="mdi mdi-school fs-3 mb-1 font-16"></i>
-                            <h5 class="mb-0 mt-1">{{ $schoolCount }}</h5>
-                            <small class="font-light">Total School's</small>
-                          </div>
-                        </div>
                         <div class="col-6">
                           <div class="bg-dark p-10 text-white text-center">
                            <i class="mdi mdi-school fs-3 font-16"></i>

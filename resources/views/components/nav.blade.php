@@ -4,7 +4,7 @@
             <!-- ============================================================== -->
             <!-- Logo -->
             <!-- ============================================================== -->
-            <a class="navbar-brand" href="index.html">
+            <a class="navbar-brand" href="">
               <!-- Logo icon -->
               <b class="logo-icon ps-2">
                 <!--You can put here icon as well // <i class="wi wi-sunset"></i> //-->
@@ -85,7 +85,7 @@
                   aria-expanded="false"
                 >
                   <img
-                  src="{{ auth()->user()->avatar ? asset('storage/' . auth()->user()->avatar) : asset('assets/images/users/1.jpg') }}"
+                  src="{{ auth()->user()->avatar ? auth()->user()->avatar : asset('assets/images/users/1.jpg') }}"
                     alt="user"
                     class="rounded-circle"
                     width="31"

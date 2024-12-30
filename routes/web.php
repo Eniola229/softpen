@@ -1,10 +1,18 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use Illuminate\Support\Facades\Route;
+
 //ADMIN
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\SchoolController;
-use Illuminate\Support\Facades\Route;
+
+//SCHOOL
+use App\Http\Controllers\School\SchoolAuthController;
+use App\Http\Controllers\School\ClassController;
+use App\Http\Controllers\School\DepartmentController;
+use App\Http\Controllers\School\SubjectController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -38,4 +46,26 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
 
 
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin/logout');
+});
+
+//SCHOOL
+Route::get('school/login', [SchoolAuthController::class, 'index'])->name('school/login');
+Route::post('school/post/login', [SchoolAuthController::class, 'postLogin'])->name('school-login.post'); 
+//AUTH SCHOOL
+Route::middleware('auth:school')->prefix('school')->group(function () {
+    Route::get('/dashboard', [SchoolAuthController::class, 'dashboard'])->name('school-dashboard');
+    Route::get('/class', [ClassController::class, 'index'])->name('school/class');
+    Route::post('/class', [ClassController::class, 'create'])->name('/class');
+    Route::get('add/class', [ClassController::class, 'addClass'])->name('school/add/class');
+    Route::get('/class-remove/{id}', [ClassController::class, 'deleteClass'])->name('/delete/class');
+    Route::get('/department', [DepartmentController::class, 'index'])->name('school/department');
+    Route::get('add/department', [DepartmentController::class, 'addDepartments'])->name('school/add/department');
+    Route::post('/department', [DepartmentController::class, 'create'])->name('school/department');
+    Route::get('/view/department/{id}', [DepartmentController::class, 'view'])->name('school/view/department');
+    Route::get('/subject', [SubjectController::class, 'index'])->name('school/subject');
+    Route::get('add/subject', [SubjectController::class, 'addSubject'])->name('school/add/subject');
+    Route::post('/subject', [SubjectController::class, 'create'])->name('school/subject');
+    Route::get('/view/subject/{id}', [SubjectController::class, 'view'])->name('school/view/subject');
+
+    Route::get('logout', [SchoolAuthController::class, 'logout'])->name('school/logout');
 });

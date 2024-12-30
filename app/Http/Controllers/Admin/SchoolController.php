@@ -33,9 +33,10 @@ public function addSchool()
     {
         // Validate the request
         $validatedData = Validator::make($request->all(), [
+            'id' => 'nullable',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
+            'email' => 'required|email|max:255|unique:schools,email,' . $request->input('id'),
             'mobile' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
             'password' => 'nullable|min:6',
@@ -49,14 +50,23 @@ public function addSchool()
 
         // Search by email and update or create
         $admin = School::updateOrCreate(
-            ['email' => $request->input('email')],
+            ['id' => $request->input('id')],
             [
                 'name' => $request->input('name'),
+                'email' => $request->input('email'),
                 'mobile' => $request->input('mobile'),
                 'address' => $request->input('address'),
-                'password' => $request->filled('password') ? Hash::make($request->input('password')) : null,
             ]
         );
+
+            // Check if the password is provided and hash it
+            if ($request->filled('id') && $request->filled('password')) {
+                $data['password'] = Hash::make($request->input('password'));
+                $school = School::find($request->input('id'));
+                // Perform the update
+
+                $school->update($data);
+            }
 
         // Handle avatar upload using Cloudinary
         if ($request->hasFile('avatar')) {

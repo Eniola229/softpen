@@ -122,11 +122,67 @@
                       <button class="btn btn-success" style="color: white;">Activate Account</button>
                     </a>
                   @endif
+                     <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
+                        Edit School
+                    </button>                   
                   </p>
               </div>
             </div>
           </div>
         </div>
+
+        <!-- Modal -->
+      <div class="modal fade" id="editSchoolModal" tabindex="-1" aria-labelledby="editSchoolModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="editSchoolModalLabel">Edit School</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <!-- Form for Editing School -->
+                      <form action="{{ route('admin/schools') }}" method="POST" enctype="multipart/form-data"> 
+                          @csrf
+                          <input type="hidden" name="id" value="{{ $school->id }}">
+                          <div class="mb-3">
+                              <label for="name" class="form-label">School Name</label>
+                              <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $school->name) }}" required>
+                          </div>
+
+                          <div class="mb-3">
+                              <label for="email" class="form-label">Email</label>
+                              <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $school->email) }}" required>
+                          </div>
+
+                          <div class="mb-3">
+                              <label for="mobile" class="form-label">Mobile</label>
+                              <input type="text" class="form-control" id="mobile" name="mobile" value="{{ old('mobile', $school->mobile) }}" required>
+                          </div>
+
+                          <div class="mb-3">
+                              <label for="address" class="form-label">Address</label>
+                              <input type="text" class="form-control" id="address" name="address" value="{{ old('address', $school->address) }}" required>
+                          </div>
+
+                           <div class="mb-3">
+                              <label for="avatar" class="form-label">School Pictire</label>
+                              <input type="file" class="form-control" id="avatar" name="avatar">
+                              <small class="form-text text-muted">Leave blank to keep the current image.</small>
+                          </div>
+
+                          <div class="mb-3">
+                              <label for="password" class="form-label">Password</label>
+                              <input type="password" class="form-control" id="password" name="password">
+                              <small class="form-text text-muted">Leave blank to keep the current password.</small>
+                          </div>
+
+                          <button type="submit" class="btn btn-success">Update School</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div>
+
 
         <!-- Tabs for Students and Staff -->
         <ul class="nav nav-tabs" id="profileTabs" role="tablist">

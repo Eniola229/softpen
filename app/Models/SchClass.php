@@ -50,7 +50,7 @@ class SchClass extends Authenticatable
     protected $fillable = [
         'school_id',
         'name',
-        'department'
+        'description'
     ];
 
 }
