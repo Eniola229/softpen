@@ -7,10 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Session;
 use App\Models\Admin;
+use App\Models\School;
 use Hash;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Models\User;
+use App\Models\Staff;
+use App\Models\Student;
 use App\Models\Waitlist;
 
 class AdminAuthController extends Controller
@@ -51,8 +54,8 @@ class AdminAuthController extends Controller
         $credentials = $request->only('email', 'password');
         
         // Use the 'admins' guard for authentication
-        if (Auth::guard('admins')->attempt($credentials)) {
-            return redirect()->intended('admin/dashboard')
+        if (Auth::guard('admin')->attempt($credentials)) {
+            return redirect('admin/dashboard')
                         ->withSuccess('You have successfully logged in');
         }
 
@@ -97,10 +100,13 @@ class AdminAuthController extends Controller
      */
     public function dashboard()
     {
-        $users = User::orderBy('created_at', 'desc')->get();
+        // $schools = School::orderBy('created_at', 'desc')->get();
+        $schoolCount = School::all()->count();
+        $staffCount = Staff::all()->count();
+        $studentCount = Student::all()->count();
 
-        if (Auth::guard('admins')->check()) {
-            return view('admin.dashboard', compact("users"));
+        if (Auth::guard('admin')->check()) {
+            return view('admin.dashboard', compact("schoolCount", "staffCount", "studentCount"));
         }
 
         return redirect("admin/login")->withSuccess('Oops! You do not have access');
@@ -129,7 +135,7 @@ class AdminAuthController extends Controller
     public function logout(): RedirectResponse
     {
         Session::flush();
-        Auth::guard('admins')->logout();
+        Auth::guard('admin')->logout();
 
         return redirect('admin/login');
     }
