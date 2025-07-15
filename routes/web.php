@@ -15,6 +15,10 @@ use App\Http\Controllers\School\TeachersController;
 use App\Http\Controllers\School\DepartmentController;
 use App\Http\Controllers\School\SubjectController;
 
+//STAFF
+use App\Http\Controllers\Staff\StaffAuthController;
+use App\Http\Controllers\Staff\StaffStudentController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -78,4 +82,15 @@ Route::middleware('auth:school')->prefix('school')->group(function () {
     Route::get('/view/teacher/{id}', [TeachersController::class, 'view'])->name('school/view/teacher/');
 
     Route::get('logout', [SchoolAuthController::class, 'logout'])->name('school/logout');
+});
+
+Route::get('staff/login', [StaffAuthController::class, 'index'])->name('staff/login');
+Route::post('staff/post/login', [StaffAuthController::class, 'postLogin'])->name('staff-login.post'); 
+
+//AUTH STAFF
+Route::middleware('auth:staff')->prefix('staff')->group(function () {
+    Route::get('dashboard', [StaffAuthController::class, 'dashboard'])->name('staff-dashboard');
+    Route::get('classes', [StaffStudentController::class, 'index'])->name('staff-classes');
+
+    Route::get('logout', [StaffAuthController::class, 'logout'])->name('staff/logout');
 });
