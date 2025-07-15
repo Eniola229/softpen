@@ -57,7 +57,7 @@ class Staff extends Authenticatable
         'address',
         'class',
         'department',
-        'suject',
+        'subject',
         'status',
         'password',
     ];

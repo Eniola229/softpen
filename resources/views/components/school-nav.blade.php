@@ -16,7 +16,7 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="{{ url('admin/schools') }}"
+                  href="{{ url('school/student') }}"
                   aria-expanded="false"
                   ><i class="mdi mdi-school"></i><span class="hide-menu">Students</span></a
                 >
@@ -24,7 +24,7 @@
                 <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="widgets.html"
+                  href="{{ url('school/teacher') }}"
                   aria-expanded="false"
                   > <i class="mdi mdi-account fs-3 mb-1 font-16"></i><span class="hide-menu">Teahers</span></a
                 >

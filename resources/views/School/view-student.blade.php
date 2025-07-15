@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Departments
+                      View Student Profile
                     </li>
                   </ol>
                 </nav>
@@ -76,10 +76,16 @@
         <!-- Container fluid  -->
         <!-- ============================================================== -->
 
-          
+      <div class="container my-5">
         @if(session('message'))
             <div class="alert alert-success">
                 {{ session('message') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
             </div>
         @endif
 
@@ -93,50 +99,86 @@
             </div>
         @endif
 
-         <div class="card">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="card-title">Departments</h5>
-                      <a href="{{ url('school/add/department') }}">
-                      <button class="btn btn-primary">Add New Department</button>
+          
+        <!-- School Info Section -->
+        <div class="card mb-4 shadow">
+          <div class="row g-0">
+            <div class="col-md-4">
+              <img src="{{ $student->avatar }}" class="img-fluid rounded-start" alt="Student Image">
+            </div>
+            <div class="col-md-8">
+              <div class="card-body">
+                <h2 class="card-title">{{ $student->name }}</h2>
+                <p class="card-text"><strong>Email:</strong> {{ $student->email }}</p>
+                <p class="card-text"><strong>Address:</strong> {{ $student->address }}</p>
+                <p class="card-text"><strong>Class:</strong> {{ $student->class }}</p>
+                <p class="card-text"><strong>Department:</strong> {{ $student->department ?? 'N/A' }}</p>
+                <p class="card-text">
+                  @if ($student->status === 'ACTIVE')
+                      <a onclick="confirmStatusChange('{{ url('admin/change', $student->id) }}')">
+                      <button class="btn btn-danger">Disactivate Account</button>
+                      </a>
+                  @elseif ($student->status === 'DISACTIVATE')
+                     <a onclick="confirmStatusChange('{{ url('admin/change', $student->id) }}')">
+                      <button class="btn btn-success" style="color: white;">Activate Account</button>
                     </a>
-                  </div>
-
-                  <div class="table-responsive">
-                    <table
-                      id="zero_config"
-                      class="table table-striped table-bordered"
-                    >
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Created At</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      @foreach($departments as $department)
-                      <tbody>
-                        <tr>
-                          <td>{{ $department->name }}</td>
-                          <td>{{ $department->description }}</td>
-                          <td>{{ $department->created_at ? $department->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                          <td class="gap-2"><a href="{{ url('school/view/department/' . $department->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
-                          </td>
-                        </tr>
-                      <tfoot>
-                      @endforeach
-                        <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Created At</th>
-                          <th>Action</th>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
+                  @endif
+                     <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
+                        Edit Student
+                    </button>                   
+                  </p>
               </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal -->
+       <div class="modal fade" id="editSchoolModal" tabindex="-1" aria-labelledby="editSchoolModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="editSchoolModalLabel">Edit Student</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                      <!-- Form for Editing School -->
+                      <form action="{{ route('school/add/student') }}" method="POST" enctype="multipart/form-data"> 
+                          @csrf
+                          <input type="hidden" name="id" value="{{ $student->id }}">
+                          <div class="mb-3">
+                              <label for="name" class="form-label">Student Name</label>
+                              <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $student->name) }}" required>
+                          </div>
+
+                          <div class="mb-3">
+                              <label for="email" class="form-label">Email</label>
+                              <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $student->email) }}" required>
+                          </div>
+
+                          <div class="mb-3">
+                              <label for="address" class="form-label">Address</label>
+                              <input type="text" class="form-control" id="address" name="address" value="{{ old('address', $student->address) }}" required>
+                          </div>
+
+                           <div class="mb-3">
+                              <label for="avatar" class="form-label">Student Pictire</label>
+                              <input type="file" class="form-control" id="avatar" name="avatar">
+                              <small class="form-text text-muted">Leave blank to keep the current image.</small>
+                          </div>
+
+                          <div class="mb-3">
+                              <label for="password" class="form-label">Password</label>
+                              <input type="password" class="form-control" id="password" name="password">
+                              <small class="form-text text-muted">Leave blank to keep the current password.</small>
+                          </div>
+
+                          <button type="submit" class="btn btn-success">Update Student</button>
+                      </form>
+                  </div>
+              </div>
+          </div>
+      </div> -->
+      </div>
           <!-- ============================================================== -->
           <!-- End PAge Content -->
           <!-- ============================================================== -->
@@ -170,39 +212,42 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-    <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap tether Core JavaScript -->
-    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- slimscrollbar scrollbar JavaScript -->
-    <script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
-    <script src="../assets/extra-libs/sparkline/sparkline.js"></script>
-    <!--Wave Effects -->
-    <script src="../dist/js/waves.js"></script>
-    <!--Menu sidebar -->
-    <script src="../dist/js/sidebarmenu.js"></script>
-    <!--Custom JavaScript -->
-    <script src="../dist/js/custom.min.js"></script>
-    <!-- this page js -->
-    <script src="../assets/extra-libs/multicheck/datatable-checkbox-init.js"></script>
-    <script src="../assets/extra-libs/multicheck/jquery.multicheck.js"></script>
-    <script src="../assets/extra-libs/DataTables/datatables.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="{{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
+    <!-- Bootstrap tether Core JavaScript -->
+    <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+    <!-- slimscrollbar scrollbar JavaScript -->
+    <script src="{{ asset('assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js') }}"></script>
+    <script src="{{ asset('assets/extra-libs/sparkline/sparkline.js') }}"></script>
+    <!-- Wave Effects -->
+    <script src="{{ asset('dist/js/waves.js') }}"></script>
+    <!-- Menu sidebar -->
+    <script src="{{ asset('dist/js/sidebarmenu.js') }}"></script>
+    <!-- Custom JavaScript -->
+    <script src="{{ asset('dist/js/custom.min.js') }}"></script>
+    <!-- this page js -->
+    <script src="{{ asset('assets/extra-libs/multicheck/datatable-checkbox-init.js') }}"></script>
+    <script src="{{ asset('assets/extra-libs/multicheck/jquery.multicheck.js') }}"></script>
+    <script src="{{ asset('assets/extra-libs/DataTables/datatables.min.js') }}"></script>
+
  <script>
       /****************************************
        *       Basic Table                   *
        ****************************************/
       $("#zero_config").DataTable();
     </script>
+
     <script type="text/javascript">
       function confirmStatusChange(url) {
           Swal.fire({
               title: 'Are you sure?',
-              text: "You are about to delete this schol.",
+              text: "You are about to change the status of this school.",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, delete it!'
+              confirmButtonText: 'Yes, change it!'
           }).then((result) => {
               if (result.isConfirmed) {
                   window.location.href = url; // Redirect to the link URL

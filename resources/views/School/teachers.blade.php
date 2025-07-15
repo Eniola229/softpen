@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Departments
+                      Teachers
                     </li>
                   </ol>
                 </nav>
@@ -96,9 +96,9 @@
          <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="card-title">Departments</h5>
-                      <a href="{{ url('school/add/department') }}">
-                      <button class="btn btn-primary">Add New Department</button>
+                      <h5 class="card-title">Teachers</h5>
+                      <a href="{{ url('school/add/teacher') }}">
+                      <button class="btn btn-primary">Add New Teachers</button>
                     </a>
                   </div>
 
@@ -109,26 +109,32 @@
                     >
                       <thead>
                         <tr>
+                          <th>Passport</th>
                           <th>Name</th>
-                          <th>Description</th>
+                          <th>Class</th>
+                          <th>Department</th>
                           <th>Created At</th>
                           <th>Action</th>
                         </tr>
                       </thead>
-                      @foreach($departments as $department)
+                      @foreach($teachers as $teacher)
                       <tbody>
                         <tr>
-                          <td>{{ $department->name }}</td>
-                          <td>{{ $department->description }}</td>
-                          <td>{{ $department->created_at ? $department->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                          <td class="gap-2"><a href="{{ url('school/view/department/' . $department->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
+                          <td><img src="{{ $teacher->avatar }}" alt="Passport" srcset="" style="height: 60px; width: 50px;"></td>
+                          <td>{{ $teacher->name }}</td>
+                          <td>{{ $teacher->class }}</td>
+                          <td>{{ $teacher->department }}</td>
+                          <td>{{ $teacher->created_at ? $teacher->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
+                          <td class="gap-2"><a href="{{ url('school/view/teacher/' . $teacher->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
                           </td>
                         </tr>
                       <tfoot>
                       @endforeach
                         <tr>
+                          <th>Passport</th>
                           <th>Name</th>
-                          <th>Description</th>
+                          <th>Class</th>
+                          <th>Department</th>
                           <th>Created At</th>
                           <th>Action</th>
                         </tr>

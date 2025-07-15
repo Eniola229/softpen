@@ -29,71 +29,72 @@ public function addSchool()
 
   } 
 
-    public function create(Request $request)
-    {
-        // Validate the request
-        $validatedData = Validator::make($request->all(), [
-            'id' => 'nullable',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:schools,email,' . $request->input('id'),
-            'mobile' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:255',
-            'password' => 'nullable|min:6',
+public function create(Request $request)
+{
+    // Determine if this is a create or update operation
+    $isUpdate = $request->filled('id');
+
+    // Validation
+    $validatedData = Validator::make($request->all(), [
+        'id' => 'nullable',
+        'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|max:255|unique:schools,email,' . $request->input('id'),
+        'mobile' => 'nullable|string|max:15',
+        'address' => 'nullable|string|max:255',
+        'password' => $isUpdate ? 'nullable|min:6' : 'required|min:6',
+    ]);
+
+    if ($validatedData->fails()) {
+        return redirect()->back()
+            ->withErrors($validatedData)
+            ->withInput();
+    }
+
+    // Prepare data for create or update
+    $data = [
+        'name' => $request->input('name'),
+        'email' => $request->input('email'),
+        'mobile' => $request->input('mobile'),
+        'address' => $request->input('address'),
+    ];
+
+    // If password is provided or it's a new record, include it
+    if (!$isUpdate || $request->filled('password')) {
+        $data['password'] = Hash::make($request->input('password'));
+    }
+
+    // Create or update the school
+    $admin = School::updateOrCreate(
+        ['id' => $request->input('id')],
+        $data
+    );
+
+    // Handle avatar upload using Cloudinary
+    if ($request->hasFile('avatar')) {
+        // If the admin has an existing avatar, delete it from Cloudinary
+        if ($admin->image_id) {
+            Cloudinary::destroy($admin->image_id);
+        }
+
+        // Upload the new avatar to Cloudinary
+        $avatarUpload = Cloudinary::upload($request->file('avatar')->getRealPath(), [
+            'folder' => 'school_avatars',
         ]);
 
-        if ($validatedData->fails()) {
-            return redirect()->back()
-                ->withErrors($validatedData)
-                ->withInput();
-        }
+        // Get image URL and public ID from Cloudinary
+        $uploadedFileUrl = $avatarUpload->getSecurePath();
+        $imageId = $avatarUpload->getPublicId();
 
-        // Search by email and update or create
-        $admin = School::updateOrCreate(
-            ['id' => $request->input('id')],
-            [
-                'name' => $request->input('name'),
-                'email' => $request->input('email'),
-                'mobile' => $request->input('mobile'),
-                'address' => $request->input('address'),
-            ]
-        );
-
-            // Check if the password is provided and hash it
-            if ($request->filled('id') && $request->filled('password')) {
-                $data['password'] = Hash::make($request->input('password'));
-                $school = School::find($request->input('id'));
-                // Perform the update
-
-                $school->update($data);
-            }
-
-        // Handle avatar upload using Cloudinary
-        if ($request->hasFile('avatar')) {
-            // If the admin has an existing avatar, delete it from Cloudinary
-            if ($admin->image_id) {
-                Cloudinary::destroy($admin->image_id);
-            }
-
-            // Upload the new avatar to Cloudinary
-            $avatarUpload = Cloudinary::upload($request->file('avatar')->getRealPath(), [
-                'folder' => 'school_avatars',
-            ]);
-            
-            // Get the image URL and ID from Cloudinary
-            $uploadedFileUrl = $avatarUpload->getSecurePath();
-            $imageId = $avatarUpload->getPublicId();
-
-            // Update the admin record with the new avatar and image_id
-            $admin->update([
-                'avatar' => $uploadedFileUrl,
-                'image_id' => $imageId, // Store the Cloudinary image ID
-            ]);
-        }
-
-        // Redirect back with a success message
-        return redirect()->back()->with('message', 'School record has been created or updated successfully.');
+        // Update admin with new avatar info
+        $admin->update([
+            'avatar' => $uploadedFileUrl,
+            'image_id' => $imageId,
+        ]);
     }
+
+    return redirect()->back()->with('message', 'School record has been created or updated successfully.');
+}
 
     public function view($id)
     {

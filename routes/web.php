@@ -10,6 +10,8 @@ use App\Http\Controllers\Admin\SchoolController;
 //SCHOOL
 use App\Http\Controllers\School\SchoolAuthController;
 use App\Http\Controllers\School\ClassController;
+use App\Http\Controllers\School\StudentController;
+use App\Http\Controllers\School\TeachersController;
 use App\Http\Controllers\School\DepartmentController;
 use App\Http\Controllers\School\SubjectController;
 
@@ -66,6 +68,14 @@ Route::middleware('auth:school')->prefix('school')->group(function () {
     Route::get('add/subject', [SubjectController::class, 'addSubject'])->name('school/add/subject');
     Route::post('/subject', [SubjectController::class, 'create'])->name('school/subject');
     Route::get('/view/subject/{id}', [SubjectController::class, 'view'])->name('school/view/subject');
+    Route::get('/student', [StudentController::class, 'index'])->name('student/subject');
+    Route::get('add/student', [StudentController::class, 'addStudent'])->name('school/add/student');
+    Route::post('add/student', [StudentController::class, 'create'])->name('school/add/student');
+    Route::get('/view/student/{id}', [StudentController::class, 'view'])->name('school/view/student/');
+    Route::get('/teacher', [TeachersController::class, 'index'])->name('student/subject');
+    Route::get('add/teacher', [TeachersController::class, 'addStaff'])->name('school/add/teacher');
+    Route::post('add/teacher', [TeachersController::class, 'create'])->name('school/add/teacher');
+    Route::get('/view/teacher/{id}', [TeachersController::class, 'view'])->name('school/view/teacher/');
 
     Route::get('logout', [SchoolAuthController::class, 'logout'])->name('school/logout');
 });

@@ -82,7 +82,7 @@
               </div>
             </div>
               <div class="col-md-6 col-lg-2 col-xlg-3">
-              <a href="{{ url('admin/schools') }}">
+              <a href="{{ url('school/student') }}">
               <div class="card card-hover">
                 <div class="box bg-success text-center">
                   <h1 class="font-light text-white">
@@ -94,7 +94,7 @@
             </a>
             </div>
           <div class="col-md-6 col-lg-2 col-xlg-3">
-              <a href="{{ url('admin/schools') }}">
+              <a href="{{ url('school/teacher') }}">
               <div class="card card-hover">
                 <div class="box bg-info text-center">
                   <h1 class="font-light text-white">
