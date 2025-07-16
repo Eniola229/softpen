@@ -104,7 +104,7 @@
             }
 
             $totalScore = 0;
-            $subjectCount = is_countable($results) ? count($results) : 0;
+            $subjectCount = 0;
         @endphp
 
     <div class="card mt-4">
@@ -128,44 +128,61 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($results as $index => $result)
+            @forelse ($results as $result)
                 @php
-                    $ca1 = $result->ca1 ?? 0;
-                    $ca2 = $result->ca2 ?? 0;
-                    $exam = $result->exam ?? 0;
-                    $total = $ca1 + $ca2 + $exam;
-                    $totalScore += $total;
-                    $grade = getGrade($total);
+                    $scores = json_decode($result->scores ?? '{}', true); // Make sure you’re using the correct field
                 @endphp
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $result->subject->name ?? 'N/A' }}</td>
-                    <td>{{ $ca1 }}</td>
-                    <td>{{ $ca2 }}</td>
-                    <td>{{ $exam }}</td>
-                    <td>{{ $total }}</td>
-                    <td>{{ $grade }}</td>
-                </tr>
+
+                @foreach ($scores as $subject => $score)
+                    @php
+                        $ca1 = (int) ($score['ca1'] ?? 0);
+                        $ca2 = (int) ($score['ca2'] ?? 0);
+                        $exam = (int) ($score['exam'] ?? 0);
+                        $total = $ca1 + $ca2 + $exam;
+                        $grade = getGrade($total);
+                        $totalScore += $total;
+                        $subjectCount++;
+                    @endphp
+                    <tr>
+                        <td>{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
+                        <td>{{ $subject }}</td>
+                        <td>{{ $ca1 }}</td>
+                        <td>{{ $ca2 }}</td>
+                        <td>{{ $exam }}</td>
+                        <td><strong>{{ $total }}</strong></td>
+                        <td class="text-center">
+                            <span class="badge 
+                            {{ $grade == 'A' ? 'bg-success' : 
+                                ($grade == 'B' ? 'bg-primary' : 
+                                ($grade == 'C' ? 'bg-info' : 
+                                ($grade == 'D' ? 'bg-warning text-dark' : 'bg-danger'))) }}">
+                            {{ $grade }}
+                            </span>
+                        </td>
+                    </tr>
+                @endforeach
             @empty
                 <tr>
-                    <td colspan="7" class="text-center">No results found.</td>
+                    <td colspan="7" class="text-center">No results available.</td>
                 </tr>
             @endforelse
             </tbody>
+                @if ($subjectCount > 0)
+                    @php
+                        $average = round($totalScore / $subjectCount, 2);
+                    @endphp
+                    <tfoot>
+                        <tr>
+                            <th colspan="5" class="text-end">Total Score</th>
+                            <th colspan="2">{{ $totalScore }}</th>
+                        </tr>
+                        <tr>
+                            <th colspan="5" class="text-end">Average Score</th>
+                            <th colspan="2">{{ $average }}</th>
+                        </tr>
+                    </tfoot>
+                @endif
 
-            @if($subjectCount > 0)
-            @php $average = round($totalScore / $subjectCount, 2); @endphp
-            <tfoot>
-                <tr>
-                <th colspan="5" class="text-end">Total Score</th>
-                <th colspan="2">{{ $totalScore }}</th>
-                </tr>
-                <tr>
-                <th colspan="5" class="text-end">Average Score</th>
-                <th colspan="2">{{ $average }}</th>
-                </tr>
-            </tfoot>
-            @endif
         </table>
         </div>
     </div>
