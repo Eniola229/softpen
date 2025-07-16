@@ -13,12 +13,12 @@
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
-    <div class="preloader">
+    <!-- <div class="preloader">
       <div class="lds-ripple">
         <div class="lds-pos"></div>
         <div class="lds-pos"></div>
       </div>
-    </div>
+    </div> -->
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
@@ -41,7 +41,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.school-nav') 
+      @include('components.staff-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Schools
+                      Students
                     </li>
                   </ol>
                 </nav>
@@ -94,52 +94,84 @@
         @endif
 
          <div class="card">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="card-title">Subjects</h5>
-                      <a href="{{ url('school/add/subject') }}">
-                      <button class="btn btn-primary">Add New Subject</button>
-                    </a>
-                  </div>
+        @php
+            function getGrade($score) {
+                if ($score >= 70) return 'A';
+                if ($score >= 60) return 'B';
+                if ($score >= 50) return 'C';
+                if ($score >= 45) return 'D';
+                return 'F';
+            }
 
-                  <div class="table-responsive">
-                    <table
-                      id="zero_config"
-                      class="table table-striped table-bordered"
-                    >
-                      <thead>
-                        <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Department</th>
-                          <th>Created At</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
-                      @foreach($subjects as $subject)
-                      <tbody>
-                        <tr>
-                          <td>{{ $subject->name }}</td>
-                          <td>{{ $subject->description }}</td>
-                          <td>{{ $subject->department }}</td>
-                          <td>{{ $subject->created_at ? $subject->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                            <td class="gap-2"><a href="{{ url('school/view/subject/' . $subject->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
-                          </td>
-                        </tr>
-                      <tfoot>
-                      @endforeach
-                        <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Department</th>
-                          <th>Created At</th>
-                          <th>Action</th>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              </div>
+            $totalScore = 0;
+            $subjectCount = is_countable($results) ? count($results) : 0;
+        @endphp
+
+    <div class="card mt-4">
+    <div class="card-header text-center">
+        <h4 class="mb-0">Report Card</h4>
+        <small>{{ $student->name }} | Class: {{ $student->class }} | {{ $session }} - {{ $term }}</small>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Subject</th>
+                <th>CA1 (30)</th>
+                <th>CA2 (30)</th>
+                <th>Exam (70)</th>
+                <th>Total (100)</th>
+                <th>Grade</th>
+            </tr>
+            </thead>
+            <tbody>
+            @forelse($results as $index => $result)
+                @php
+                    $ca1 = $result->ca1 ?? 0;
+                    $ca2 = $result->ca2 ?? 0;
+                    $exam = $result->exam ?? 0;
+                    $total = $ca1 + $ca2 + $exam;
+                    $totalScore += $total;
+                    $grade = getGrade($total);
+                @endphp
+                <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $result->subject->name ?? 'N/A' }}</td>
+                    <td>{{ $ca1 }}</td>
+                    <td>{{ $ca2 }}</td>
+                    <td>{{ $exam }}</td>
+                    <td>{{ $total }}</td>
+                    <td>{{ $grade }}</td>
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="7" class="text-center">No results found.</td>
+                </tr>
+            @endforelse
+            </tbody>
+
+            @if($subjectCount > 0)
+            @php $average = round($totalScore / $subjectCount, 2); @endphp
+            <tfoot>
+                <tr>
+                <th colspan="5" class="text-end">Total Score</th>
+                <th colspan="2">{{ $totalScore }}</th>
+                </tr>
+                <tr>
+                <th colspan="5" class="text-end">Average Score</th>
+                <th colspan="2">{{ $average }}</th>
+                </tr>
+            </tfoot>
+            @endif
+        </table>
+        </div>
+    </div>
+    </div>
+
+
           <!-- ============================================================== -->
           <!-- End PAge Content -->
           <!-- ============================================================== -->

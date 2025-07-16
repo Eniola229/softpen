@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->uuid('school_id');
             $table->string('name');
+            $table->string('for');
             $table->string('department')->nullable();
             $table->string('description')->nullable();
             $table->rememberToken();

@@ -123,7 +123,21 @@
                                 <option value="{{ $department->name }}">{{ $department->name }}</option>
                               @endforeach
                             </select>
-                            @error('name')
+                            @error('department')
+                              <div class="invalid-feedback">
+                                {{ $message }}
+                              </div>
+                            @enderror
+                          </div>
+                            <div class="mb-3">
+                            <label for="userName" class="form-label fw-bold">For</label>
+                            <select name="for" id="for" class="form-select" required>
+                              <option selected disabled>Choose a which level fit this subject</option>
+                                <option>SS</option>
+                                <option>JS</option>
+                                <option>PRIMARY</option>
+                             /select>
+                            @error('for')
                               <div class="invalid-feedback">
                                 {{ $message }}
                               </div>

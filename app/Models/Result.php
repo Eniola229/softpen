@@ -7,7 +7,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 use Illuminate\Foundation\Auth\User as Authenticatable; 
 
-class Subject extends Authenticatable
+class Result extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -40,19 +40,37 @@ class Subject extends Authenticatable
         });
     }
 
-    protected $table = "subjects"; 
-
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
+        'student_id',
+        'subject_id',
         'school_id',
-        'name',
-        'for',
-        'department',
-        'description'
+        'session',
+        'term',
+        'class',
+        'ca1',
+        'ca2',
+        'exam',
+        'total',
     ];
 
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function subject()
+    {
+        return $this->belongsTo(Subject::class);
+    }
+
+    public function school()
+    {
+        return $this->belongsTo(School::class);
+    }
 }

@@ -13,12 +13,12 @@
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
-    <div class="preloader">
+    <!-- <div class="preloader">
       <div class="lds-ripple">
         <div class="lds-pos"></div>
         <div class="lds-pos"></div>
       </div>
-    </div>
+    </div> -->
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
@@ -41,7 +41,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.school-nav') 
+      @include('components.staff-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Schools
+                      Students
                     </li>
                   </ol>
                 </nav>
@@ -96,10 +96,7 @@
          <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="card-title">Subjects</h5>
-                      <a href="{{ url('school/add/subject') }}">
-                      <button class="btn btn-primary">Add New Subject</button>
-                    </a>
+                      <h5 class="card-title">Students of {{ $class->name }}</h5>
                   </div>
 
                   <div class="table-responsive">
@@ -109,29 +106,29 @@
                     >
                       <thead>
                         <tr>
+                          <th>Passport</th>
                           <th>Name</th>
-                          <th>Description</th>
-                          <th>Department</th>
+                          <th>Class</th>
                           <th>Created At</th>
                           <th>Action</th>
                         </tr>
                       </thead>
-                      @foreach($subjects as $subject)
+                      @foreach($students as $student)
                       <tbody>
                         <tr>
-                          <td>{{ $subject->name }}</td>
-                          <td>{{ $subject->description }}</td>
-                          <td>{{ $subject->department }}</td>
-                          <td>{{ $subject->created_at ? $subject->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                            <td class="gap-2"><a href="{{ url('school/view/subject/' . $subject->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
+                          <td><img src="{{ $student->avatar }}" alt="Passport" srcset="" style="height: 60px; width: 50px;"></td>
+                          <td>{{ $student->name }}</td>
+                          <td>{{ $student->class }}</td>
+                          <td>{{ $student->created_at ? $student->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
+                          <td class="gap-2"><a href="{{ url('staff/view/student/' . $student->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
                           </td>
                         </tr>
                       <tfoot>
                       @endforeach
                         <tr>
+                          <th>Passport</th>
                           <th>Name</th>
-                          <th>Description</th>
-                          <th>Department</th>
+                          <th>Class</th>
                           <th>Created At</th>
                           <th>Action</th>
                         </tr>

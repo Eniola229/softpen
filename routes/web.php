@@ -18,6 +18,7 @@ use App\Http\Controllers\School\SubjectController;
 //STAFF
 use App\Http\Controllers\Staff\StaffAuthController;
 use App\Http\Controllers\Staff\StaffStudentController;
+use App\Http\Controllers\Staff\StaffResultController;
 
 
 Route::get('/', function () {
@@ -91,6 +92,13 @@ Route::post('staff/post/login', [StaffAuthController::class, 'postLogin'])->name
 Route::middleware('auth:staff')->prefix('staff')->group(function () {
     Route::get('dashboard', [StaffAuthController::class, 'dashboard'])->name('staff-dashboard');
     Route::get('classes', [StaffStudentController::class, 'index'])->name('staff-classes');
+    Route::get('/view/class/{id}', [StaffStudentController::class, 'students'])->name('staff-students');
+    Route::get('/view/student/{id}', [StaffStudentController::class, 'viewStudent'])->name('staff/view/student/');
+    Route::post('staff/upload/result', [StaffResultController::class, 'store'])->name('staff.upload.result');
+    Route::get('/staff/result-report/{result}', [StaffResultController::class, 'showReportCard'])
+        ->name('staff.result.report');
+
+
 
     Route::get('logout', [StaffAuthController::class, 'logout'])->name('staff/logout');
 });

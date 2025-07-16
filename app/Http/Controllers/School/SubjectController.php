@@ -40,6 +40,7 @@ class SubjectController extends Controller
         $validatedData = Validator::make($request->all(), [
             'id' => 'nullable',
             'name' => 'required|string|max:255',
+            'for' => 'required|string|max:255',
             'description' => 'nullable|string|max:255',
             'department' => 'nullable|string|max:255',
 
@@ -56,6 +57,7 @@ class SubjectController extends Controller
             ['id' => $request->input('id')],
             [
                 'name' => $request->input('name'),
+                'for' => $request->input('for'),
                 'description' => $request->input('description'),
                 'department' => $request->input('department'),
                 'school_id' => Auth::user()->id,
