@@ -51,6 +51,7 @@
           <div id="loginform">
             <div class="text-center pt-3 pb-3">
               <span class="db"><h1 style="color: white;">SoftPen Technologies</h1></span>
+              <h3 style="color: white;">Staff Login</h3>
             </div>
             <!-- Form -->
             <form
