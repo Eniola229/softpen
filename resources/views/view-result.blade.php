@@ -41,7 +41,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.school-nav') 
+      @include('components.student-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Schools
+                      Results
                     </li>
                   </ol>
                 </nav>
@@ -96,40 +96,39 @@
          <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="card-title">Classes</h5>
-                      <a href="{{ url('school/add/class') }}">
-                      <button class="btn btn-primary">Add New Class</button>
-                    </a>
-                  </div>
+                      <h5 class="card-title">Results</h5>
+                    </div>
 
                   <div class="table-responsive">
-                    <table
-                      id="zero_config"
-                      class="table table-striped table-bordered"
-                    >
+                    <table id="zero_config" class="table table-striped table-bordered">
                       <thead>
                         <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Created At</th>
+                          <th>Session</th>
+                          <th>Term</th>
                           <th>Action</th>
                         </tr>
                       </thead>
-                      @foreach($classes as $class)
-                      <tbody>
-                        <tr>
-                          <td>{{ $class->name }}</td>
-                          <td>{{ $class->description }}</td>
-                          <td>{{ $class->created_at ? $class->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                          <td class="gap-2"><a onclick="confirmStatusChange('{{ url('school/class-remove', $class->id) }}')"><button class="btn btn-danger m-2">Delete</button></a>
-                          </td>
-                        </tr>
-                      <tfoot>
+                      @foreach($results as $session => $terms)
+                        @foreach($terms as $term => $records)
+                          <tr>
+                            <td>{{ $session }}</td>
+                            <td>{{ $term }}</td>
+                            <td>
+                              @if($records->isNotEmpty())
+                                <a href="{{ route('student.result.view', $records->first()->id) }}" class="btn btn-info btn-sm">
+                                  View Report
+                                </a>
+                              @else
+                                <span class="text-muted">No data</span>
+                              @endif
+                            </td>
+                          </tr>
+                        @endforeach
                       @endforeach
+                      <tfoot>
                         <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Created At</th>
+                          <th>Session</th>
+                          <th>Term</th>
                           <th>Action</th>
                         </tr>
                       </tfoot>
@@ -197,7 +196,7 @@
       function confirmStatusChange(url) {
           Swal.fire({
               title: 'Are you sure?',
-              text: "You are about to delete this class.",
+              text: "You are about to delete this schol.",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',

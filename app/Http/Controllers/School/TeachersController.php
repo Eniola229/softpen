@@ -28,7 +28,11 @@ class TeachersController extends Controller
 
        public function addStaff()
     {
-            return view('school.add-teacher');
+            $school = Auth::guard('school')->user();
+            $subjects = Subject::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
+            $depts = Department::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
+            $classes = SchClass::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
+            return view('school.add-teacher', compact('subjects', 'depts', 'classes'));
 
     } 
 

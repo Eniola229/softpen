@@ -16,14 +16,15 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="{{ url('staff/students') }}"
+                  href="{{ url('result') }}"
                   aria-expanded="false"
                   ><i class="mdi mdi-school"></i><span class="hide-menu">Result</span></a
                 >
               </li>
 
               <li class="sidebar-item p-3">
-                <form method="get" action="{{ route('logout') }}">
+                <form method="post" action="{{ route('logout') }}">
+                  @csrf
                 <button
                   class="
                     w-100

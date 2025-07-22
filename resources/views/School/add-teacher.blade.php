@@ -158,31 +158,33 @@
 
                     <label for="class">Class</label>
                     <select id="class" name="class" class="form-control">
-                        <option value="">-- Select Class --</option>
-                        @for ($i = 1; $i <= 6; $i++)
-                        <option value="Primary {{ $i }}" {{ old('class') == "Primary $i" ? 'selected' : '' }}>Primary {{ $i }}</option>
-                        @endfor
-                        @for ($i = 1; $i <= 3; $i++)
-                        <option value="SS{{ $i }}" {{ old('class') == "SS$i" ? 'selected' : '' }}>SS{{ $i }}</option>
-                        @endfor
+                        <option value="">-- Select Subject --</option>
+                        @foreach ($classes as $class)
+                            <option value="{{ $class->name }}" {{ old('class') == $class->name ? 'selected' : '' }}>
+                                {{ $class->name }}
+                            </option>
+                        @endforeach
                     </select>
 
                     <label for="department">Department</label>
                     <select id="department" name="department" class="form-control">
                         <option value="">-- Select Department --</option>
-                        <option value="ART" {{ old('department') == 'ART' ? 'selected' : '' }}>ART</option>
-                        <option value="SCIENCE" {{ old('department') == 'SCIENCE' ? 'selected' : '' }}>SCIENCE</option>
-                        <option value="COMMERCIAL" {{ old('department') == 'COMMERCIAL' ? 'selected' : '' }}>COMMERCIAL</option>
+                        @foreach ($depts as $dept)
+                            <option value="{{ $dept->name }}" {{ old('dept') == $dept->id ? 'selected' : '' }}>
+                                {{ $dept->name }}
+                            </option>
+                        @endforeach
                     </select>
 
                     <label for="subject">Subject</label>
-                    <input
-                        id="subject"
-                        name="subject"
-                        type="text"
-                        class="form-control"
-                        value="{{ old('subject') }}"
-                    />
+                    <select id="subject" name="subject" class="form-control">
+                        <option value="">-- Select Subject --</option>
+                        @foreach ($subjects as $subject)
+                            <option value="{{ $subject->name }}" {{ old('subject') == $subject->name ? 'selected' : '' }}>
+                                {{ $subject->name }}
+                            </option>
+                        @endforeach
+                    </select>
 
                     <p>(*) Mandatory</p>
                     </section>

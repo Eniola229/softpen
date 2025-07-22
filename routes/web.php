@@ -20,6 +20,9 @@ use App\Http\Controllers\Staff\StaffAuthController;
 use App\Http\Controllers\Staff\StaffStudentController;
 use App\Http\Controllers\Staff\StaffResultController;
 
+//STUDENT
+use App\Http\Controllers\ResultController;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +36,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/result', [ResultController::class, 'index'])->name('student.result');
+    Route::get('/view-result/{result}', [ResultController::class, 'showMyReportCard'])->name('student.result.view');
 });
 
 require __DIR__.'/auth.php';

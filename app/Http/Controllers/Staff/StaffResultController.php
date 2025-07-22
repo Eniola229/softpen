@@ -27,8 +27,7 @@ class StaffResultController extends Controller
             'ca2' => 'nullable|integer|min:0|max:30',
             'exam' => 'nullable|integer|min:0|max:70',
         ]);
-
-        // Find or create a single result row for this student, session, and term
+        // Find or create result row
         $result = Result::firstOrCreate(
             [
                 'student_id' => $validated['student_id'],
@@ -38,23 +37,25 @@ class StaffResultController extends Controller
             ],
             [
                 'class' => $validated['class'],
-                'scores' => [],
+                'scores' => json_encode([]),
             ]
         );
 
-        // Update the scores JSON
-        $scores = $result->scores ?? [];
+        // Decode scores from DB
+        $scores = json_decode($result->scores, true) ?? [];
 
+        // Add/Update subject scores
         $subject = $validated['subject_name'];
-
         $scores[$subject] = [
             'ca1' => $validated['ca1'] ?? 0,
             'ca2' => $validated['ca2'] ?? 0,
             'exam' => $validated['exam'] ?? 0,
         ];
 
-        $result->scores = $scores;
+        // Re-encode and save
+        $result->scores = json_encode($scores);
         $result->save();
+
 
         return back()->with('success', 'Result updated successfully.');
     }

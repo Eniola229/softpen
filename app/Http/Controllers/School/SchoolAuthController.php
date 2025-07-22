@@ -12,6 +12,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use App\Models\Staff;
 use App\Models\Student;
+use App\Models\Result;
 use App\Models\Waitlist;
 
 class SchoolAuthController extends Controller
@@ -74,9 +75,10 @@ class SchoolAuthController extends Controller
         $school = Auth::guard('school')->user();
         $staffCount = Staff::where('school_id', $school->id)->get()->count();
         $studentCount = Student::where('school_id', $school->id)->get()->count();
+        $resultCount = Result::where('school_id', $school->id)->get()->count();
 
         if (Auth::guard('school')->check()) {
-            return view('school.dashboard', compact("staffCount", "studentCount"));
+            return view('school.dashboard', compact("staffCount", "studentCount", "resultCount"));
         }
 
         return redirect("school/login")->withSuccess('Oops! You do not have access');

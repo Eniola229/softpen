@@ -197,7 +197,7 @@
                         <div class="col-6 mt-3">
                           <div class="bg-dark p-10 text-white text-center">
                             <i class="mdi mdi-trophy fs-3 mb-1 font-16"></i>
-                            <h5 class="mb-0 mt-1">9540</h5>
+                            <h5 class="mb-0 mt-1">{{ $resultCount }}</h5>
                             <small class="font-light">Total Result</small>
                           </div>
                         </div>

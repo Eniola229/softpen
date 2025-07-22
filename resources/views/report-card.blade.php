@@ -13,12 +13,12 @@
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
-    <div class="preloader">
+    <!-- <div class="preloader">
       <div class="lds-ripple">
         <div class="lds-pos"></div>
         <div class="lds-pos"></div>
       </div>
-    </div>
+    </div> -->
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
@@ -41,7 +41,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.school-nav') 
+      @include('components.staff-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Schools
+                      Students
                     </li>
                   </ol>
                 </nav>
@@ -94,49 +94,101 @@
         @endif
 
          <div class="card">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="card-title">Classes</h5>
-                      <a href="{{ url('school/add/class') }}">
-                      <button class="btn btn-primary">Add New Class</button>
-                    </a>
-                  </div>
+        @php
+            function getGrade($score) {
+                if ($score >= 70) return 'A';
+                if ($score >= 60) return 'B';
+                if ($score >= 50) return 'C';
+                if ($score >= 45) return 'D';
+                return 'F';
+            }
 
-                  <div class="table-responsive">
-                    <table
-                      id="zero_config"
-                      class="table table-striped table-bordered"
-                    >
-                      <thead>
+            $totalScore = 0;
+            $subjectCount = 0;
+        @endphp
+
+    <div class="card mt-4">
+    <div class="card-header text-center">
+        <h4 class="mb-0">Report Card</h4>
+        <small>{{ $student->name }} | Class: {{ $student->class }} | {{ $session }} - {{ $term }}</small>
+    </div>
+
+    <div class="card-body">
+        <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+            <thead class="table-light">
+            <tr>
+                <th>#</th>
+                <th>Subject</th>
+                <th>CA1 (30)</th>
+                <th>CA2 (30)</th>
+                <th>Exam (70)</th>
+                <th>Total (100)</th>
+                <th>Grade</th>
+            </tr>
+            </thead>
+            <tbody>
+            @forelse ($results as $result)
+                @php
+                    $scores = json_decode($result->scores ?? '{}', true); // Make sure you’re using the correct field
+                @endphp
+
+                @foreach ($scores as $subject => $score)
+                    @php
+                        $ca1 = (int) ($score['ca1'] ?? 0);
+                        $ca2 = (int) ($score['ca2'] ?? 0);
+                        $exam = (int) ($score['exam'] ?? 0);
+                        $total = $ca1 + $ca2 + $exam;
+                        $grade = getGrade($total);
+                        $totalScore += $total;
+                        $subjectCount++;
+                    @endphp
+                    <tr>
+                        <td>{{ $loop->parent->iteration }}.{{ $loop->iteration }}</td>
+                        <td>{{ $subject }}</td>
+                        <td>{{ $ca1 }}</td>
+                        <td>{{ $ca2 }}</td>
+                        <td>{{ $exam }}</td>
+                        <td><strong>{{ $total }}</strong></td>
+                        <td class="text-center">
+                            <span class="badge 
+                            {{ $grade == 'A' ? 'bg-success' : 
+                                ($grade == 'B' ? 'bg-primary' : 
+                                ($grade == 'C' ? 'bg-info' : 
+                                ($grade == 'D' ? 'bg-warning text-dark' : 'bg-danger'))) }}">
+                            {{ $grade }}
+                            </span>
+                        </td>
+                    </tr>
+                @endforeach
+            @empty
+                <tr>
+                    <td colspan="7" class="text-center">No results available.</td>
+                </tr>
+            @endforelse
+            </tbody>
+                @if ($subjectCount > 0)
+                    @php
+                        $average = round($totalScore / $subjectCount, 2);
+                    @endphp
+                    <tfoot>
                         <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Created At</th>
-                          <th>Action</th>
+                            <th colspan="5" class="text-end">Total Score</th>
+                            <th colspan="2">{{ $totalScore }}</th>
                         </tr>
-                      </thead>
-                      @foreach($classes as $class)
-                      <tbody>
                         <tr>
-                          <td>{{ $class->name }}</td>
-                          <td>{{ $class->description }}</td>
-                          <td>{{ $class->created_at ? $class->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                          <td class="gap-2"><a onclick="confirmStatusChange('{{ url('school/class-remove', $class->id) }}')"><button class="btn btn-danger m-2">Delete</button></a>
-                          </td>
+                            <th colspan="5" class="text-end">Average Score</th>
+                            <th colspan="2">{{ $average }}</th>
                         </tr>
-                      <tfoot>
-                      @endforeach
-                        <tr>
-                          <th>Name</th>
-                          <th>Description</th>
-                          <th>Created At</th>
-                          <th>Action</th>
-                        </tr>
-                      </tfoot>
-                    </table>
-                  </div>
-                </div>
-              </div>
+                    </tfoot>
+                @endif
+
+        </table>
+        </div>
+    </div>
+    </div>
+
+
           <!-- ============================================================== -->
           <!-- End PAge Content -->
           <!-- ============================================================== -->
@@ -197,7 +249,7 @@
       function confirmStatusChange(url) {
           Swal.fire({
               title: 'Are you sure?',
-              text: "You are about to delete this class.",
+              text: "You are about to delete this schol.",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
