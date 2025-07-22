@@ -56,8 +56,10 @@
             <form
               class="form-horizontal mt-3"
               id="loginform"
-              action="index.html"
+              action="{{ route('login') }}"
+              method="POST"
             >
+            @csrf
                                  @if($errors->any())
                                     <div class="alert alert-danger text-red-800 bg-red-200 p-4 rounded mb-4">
                                         <ul class="list-disc list-inside">

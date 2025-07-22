@@ -45,13 +45,13 @@
         <div class="page-breadcrumb">
           <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
-              <h4 class="page-title">Admin Dashboard</h4>
+              <h4 class="page-title">Staff Dashboard</h4>
               <div class="ms-auto text-end">
                 <nav aria-label="breadcrumb">
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Home</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      SpftPen
+                      SoftPen
                     </li>
                   </ol>
                 </nav>
@@ -111,7 +111,7 @@
         <!-- footer -->
         <!-- ============================================================== -->
         <footer class="footer text-center">
-          All Rights Reserved by SoftPen Technologies | Deleoped by Softpen Tech
+          All Rights Reserved by SoftPen Technologies | Developed by Softpen Tech
         </footer>
         <!-- ============================================================== -->
         <!-- End footer -->
