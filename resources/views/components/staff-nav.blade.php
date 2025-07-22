@@ -7,20 +7,20 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="{{ url('admin/dashboard') }}"
+                  href="{{ url('staff/dashboard') }}"
                   aria-expanded="false"
                   ><i class="mdi mdi-view-dashboard"></i
                   ><span class="hide-menu">Dashboard</span></a
                 >
               </li>
-              <li class="sidebar-item">
+              <!-- <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
                   href="{{ url('staff/students') }}"
                   aria-expanded="false"
                   ><i class="mdi mdi-school"></i><span class="hide-menu">Students</span></a
                 >
-              </li>
+              </li> -->
               <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
