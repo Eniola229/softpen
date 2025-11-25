@@ -54,7 +54,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Add Schools
+                      Add Teacher
                     </li>
                   </ol>
                 </nav>
@@ -157,18 +157,24 @@
                     />
 
                     <label for="class">Class</label>
-                    <select id="class" name="class" class="form-control">
-                        <option value="">-- Select Subject --</option>
+                    <select id="class" name="class[]" class="form-control" multiple size="6" style="height:auto;">
+                        @php
+                            $selectedClasses = collect(old('class', $student->class ?? []));
+                        @endphp
+
                         @foreach ($classes as $class)
-                            <option value="{{ $class->name }}" {{ old('class') == $class->name ? 'selected' : '' }}>
+                            <option value="{{ $class->name }}"
+                                {{ $selectedClasses->contains($class->name) ? 'selected' : '' }}>
                                 {{ $class->name }}
                             </option>
                         @endforeach
                     </select>
+                    <small class="text">Hold CTRL (Windows) or CMD (Mac) to select multiple.</small><br>
+
 
                     <label for="department">Department</label>
                     <select id="department" name="department" class="form-control">
-                        <option value="">-- Select Department --</option>
+                        <option value="">-- Select Department(Optional) --</option>
                         @foreach ($depts as $dept)
                             <option value="{{ $dept->name }}" {{ old('dept') == $dept->id ? 'selected' : '' }}>
                                 {{ $dept->name }}
@@ -177,14 +183,21 @@
                     </select>
 
                     <label for="subject">Subject</label>
-                    <select id="subject" name="subject" class="form-control">
-                        <option value="">-- Select Subject --</option>
+                    <select id="subject" name="subject[]" class="form-control" multiple size="6" style="height:auto;">
+                        @php
+                            $selectedSubjects = collect(old('subject', $student->subject ?? []));
+                        @endphp
+
                         @foreach ($subjects as $subject)
-                            <option value="{{ $subject->name }}" {{ old('subject') == $subject->name ? 'selected' : '' }}>
+                            <option value="{{ $subject->name }}"
+                                {{ $selectedSubjects->contains($subject->name) ? 'selected' : '' }}>
                                 {{ $subject->name }}
                             </option>
                         @endforeach
                     </select>
+                    <small class="text">Hold CTRL (Windows) or CMD (Mac) to select multiple.</small>
+
+
 
                     <p>(*) Mandatory</p>
                     </section>

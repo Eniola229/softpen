@@ -132,11 +132,12 @@
                             <div class="mb-3">
                             <label for="userName" class="form-label fw-bold">For</label>
                             <select name="for" id="for" class="form-select" required>
-                              <option selected disabled>Choose a which level fit this subject</option>
+                              <option selected disabled>Choose a level that fit this subject (Reflect for JS, SS, Primary, Basic</option>
                                 <option>SS</option>
                                 <option>JS</option>
                                 <option>PRIMARY</option>
-                             /select>
+                                <option>BASIC</option>
+                             </select>
                             @error('for')
                               <div class="invalid-feedback">
                                 {{ $message }}

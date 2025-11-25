@@ -104,7 +104,7 @@
         <div class="card mb-4 shadow">
           <div class="row g-0">
             <div class="col-md-4">
-              <img src="{{ $teacher->avatar }}" class="img-fluid rounded-start" alt="teacher Image">
+              <img src="{{ $teacher->avatar }}" class="img-fluid rounded-start h-100" alt="teacher Image">
             </div>
             <div class="col-md-8">
               <div class="card-body">
@@ -112,9 +112,15 @@
                 <p class="card-text"><strong>Email:</strong> {{ $teacher->email }}</p>
                 <p class="card-text"><strong>Address:</strong> {{ $teacher->address }}</p>
                 <p class="card-text"><strong>Mobile:</strong> {{ $teacher->mobile }}</p>
-                <p class="card-text"><strong>Class:</strong> {{ $teacher->class }}</p>
+                <p class="card-text"><strong>Class:</strong> 
+                    {{ is_array($teacher->class) ? implode(', ', $teacher->class) : $teacher->class }}
+                </p>
                 <p class="card-text"><strong>Department:</strong> {{ $teacher->department }}</p>
-                <p class="card-text"><strong>Subject:</strong> {{ $teacher->subject }}</p>
+
+                <p class="card-text"><strong>Subject:</strong> 
+                    {{ is_array($teacher->subject) ? implode(', ', $teacher->subject) : $teacher->subject }}
+                </p>
+
                 <p class="card-text">
                   @if ($teacher->status === 'ACTIVE')
                       <a onclick="confirmStatusChange('{{ url('admin/change', $teacher->id) }}')">
@@ -135,7 +141,7 @@
         </div>
 
         <!-- Modal -->
-       <div class="modal fade" id="editSchoolModal" tabindex="-1" aria-labelledby="editSchoolModalLabel" aria-hidden="true">
+      <div class="modal fade" id="editSchoolModal" tabindex="-1" aria-labelledby="editSchoolModalLabel" aria-hidden="true">
           <div class="modal-dialog">
               <div class="modal-content">
                   <div class="modal-header">
@@ -143,47 +149,84 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
-                      <!-- Form for Editing School -->
                       <form action="{{ route('school/add/teacher') }}" method="POST" enctype="multipart/form-data"> 
                           @csrf
                           <input type="hidden" name="id" value="{{ $teacher->id }}">
+
                           <div class="mb-3">
                               <label for="name" class="form-label">Teacher Name</label>
-                              <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $teacher->name) }}" required>
+                              <input type="text" class="form-control" id="name" name="name" 
+                                     value="{{ old('name', $teacher->name) }}" required>
                           </div>
 
                           <div class="mb-3">
                               <label for="email" class="form-label">Email</label>
-                              <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $teacher->email) }}" required>
+                              <input type="email" class="form-control" id="email" name="email" 
+                                     value="{{ old('email', $teacher->email) }}" required>
                           </div>
 
                           <div class="mb-3">
                               <label for="address" class="form-label">Address</label>
-                              <input type="text" class="form-control" id="address" name="address" value="{{ old('address', $teacher->address) }}" required>
+                              <input type="text" class="form-control" id="address" name="address" 
+                                     value="{{ old('address', $teacher->address) }}" required>
                           </div>
 
                           <div class="mb-3">
-                              <label for="class" class="form-label">Class</label>
-                              <input type="text" class="form-control" id="class" name="class" value="{{ old('class', $teacher->class) }}" required>
-                          </div>
-                          
-                          <div class="mb-3">
-                              <label for="department" class="form-label">Department</label>
-                              <input type="text" class="form-control" id="department" name="department" value="{{ old('department', $teacher->department) }}" required>
-                          </div>
-
-                           <div class="mb-3">
                               <label for="mobile" class="form-label">Mobile</label>
-                              <input type="text" class="form-control" id="mobile" name="mobile" value="{{ old('mobile', $teacher->mobile) }}" required>
+                              <input type="text" class="form-control" id="mobile" name="mobile" 
+                                     value="{{ old('mobile', $teacher->mobile) }}" required>
                           </div>
 
-                           <div class="mb-3">
-                              <label for="subject" class="form-label">Subject</label>
-                              <input type="text" class="form-control" id="subject" name="subject" value="{{ old('subject', $teacher->subject) }}" required>
+                          <!-- Multi-Select Class -->
+                          <div class="mb-3">
+                              <label for="class">Class</label>
+                              <select id="class" name="class[]" class="form-control" multiple size="6" style="height:auto;">
+                                  @php
+                                      $selectedClasses = collect(old('class', $teacher->class ?? []));
+                                  @endphp
+                                  @foreach ($classes as $c)
+                                      <option value="{{ $c->name }}" 
+                                          {{ $selectedClasses->contains($c->name) ? 'selected' : '' }}>
+                                          {{ $c->name }}
+                                      </option>
+                                  @endforeach
+                              </select>
+                              <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple.</small>
                           </div>
 
-                           <div class="mb-3">
-                              <label for="avatar" class="form-label">teacher Pictire</label>
+                          <!-- Multi-Select Subject -->
+                          <div class="mb-3">
+                              <label for="subject">Subject</label>
+                              <select id="subject" name="subject[]" class="form-control" multiple size="6" style="height:auto;">
+                                  @php
+                                      $selectedSubjects = collect(old('subject', $teacher->subject ?? []));
+                                  @endphp
+                                  @foreach ($subjects as $s)
+                                      <option value="{{ $s->name }}" 
+                                          {{ $selectedSubjects->contains($s->name) ? 'selected' : '' }}>
+                                          {{ $s->name }}
+                                      </option>
+                                  @endforeach
+                              </select>
+                              <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple.</small>
+                          </div>
+
+                          <!-- Department -->
+                          <div class="mb-3">
+                              <label for="department" class="form-label">Department (Optional)</label>
+                              <select id="department" name="department" class="form-control">
+                                  <option value="">-- Select Department --</option>
+                                  @foreach ($depts as $dept)
+                                      <option value="{{ $dept->name }}" 
+                                          {{ old('department', $teacher->department) == $dept->name ? 'selected' : '' }}>
+                                          {{ $dept->name }}
+                                      </option>
+                                  @endforeach
+                              </select>
+                          </div>
+
+                          <div class="mb-3">
+                              <label for="avatar" class="form-label">Teacher Passport</label>
                               <input type="file" class="form-control" id="avatar" name="avatar">
                               <small class="form-text text-muted">Leave blank to keep the current image.</small>
                           </div>
@@ -199,7 +242,8 @@
                   </div>
               </div>
           </div>
-      </div> -->
+      </div>
+
       </div>
           <!-- ============================================================== -->
           <!-- End PAge Content -->

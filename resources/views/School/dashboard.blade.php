@@ -100,19 +100,7 @@
                   <h1 class="font-light text-white">
                    <i class="mdi mdi-account fs-3 mb-1 font-16"></i>
                   </h1>
-                  <h6 class="text-white">Teahers</h6>
-                </div>
-              </div>
-            </a>
-            </div>
-          <div class="col-md-6 col-lg-2 col-xlg-3">
-              <a href="{{ url('admin/schools') }}">
-              <div class="card card-hover">
-                <div class="box bg-secondary text-center">
-                  <h1 class="font-light text-white">
-                   <i class="mdi mdi-trophy fs-3 mb-1 font-16"></i>
-                  </h1>
-                  <h6 class="text-white">Result</h6>
+                  <h6 class="text-white">Teachers</h6>
                 </div>
               </div>
             </a>

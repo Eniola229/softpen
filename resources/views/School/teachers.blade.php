@@ -115,21 +115,24 @@
                           <th>Department</th>
                           <th>Created At</th>
                           <th>Action</th>
-                        </tr>
+                        </tr> 
                       </thead>
-                      @foreach($teachers as $teacher)
-                      <tbody>
-                        <tr>
-                          <td><img src="{{ $teacher->avatar }}" alt="Passport" srcset="" style="height: 60px; width: 50px;"></td>
-                          <td>{{ $teacher->name }}</td>
-                          <td>{{ $teacher->class }}</td>
-                          <td>{{ $teacher->department }}</td>
-                          <td>{{ $teacher->created_at ? $teacher->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                          <td class="gap-2"><a href="{{ url('school/view/teacher/' . $teacher->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
-                          </td>
-                        </tr>
-                      <tfoot>
-                      @endforeach
+                        @foreach($teachers as $teacher)
+                        <tbody>
+                          <tr>
+                            <td><img src="{{ $teacher->avatar }}" alt="Passport" style="height: 60px; width: 50px;"></td>
+                            <td>{{ $teacher->name }}</td>
+                            <td>{{ is_array($teacher->class) ? implode(', ', $teacher->class) : $teacher->class }}</td>
+                            <td>{{ $teacher->department ?? 'N/A' }}</td>
+                            <td>{{ $teacher->created_at ? $teacher->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
+                            <td class="gap-2">
+                              <a href="{{ url('school/view/teacher/' . $teacher->id) }}">
+                                <button class="btn btn-success m-2" style="color: white;">View</button>
+                              </a>
+                            </td>
+                          </tr>
+                        </tbody>
+                        @endforeach
                         <tr>
                           <th>Passport</th>
                           <th>Name</th>

@@ -49,9 +49,9 @@ class TeachersController extends Controller
             'email' => 'required|email|max:255|unique:staffs,email,' . $request->input('id'),
             'mobile' => 'nullable|string|max:15',
             'address' => 'nullable|string|max:255',
-            'class' => 'nullable|string|max:100',
-            'department' => 'nullable|string|max:100',
-            'subject' => 'nullable|string|max:100',
+            'class' => 'nullable|array',       // now array for multi-select
+            'department' => 'nullable|string',
+            'subject' => 'nullable|array',     // now array for multi-select
             'status' => 'nullable|in:active,inactive',
             'password' => $isUpdate ? 'nullable|min:6' : 'required|min:6',
         ]);
@@ -64,21 +64,28 @@ class TeachersController extends Controller
 
         // Prepare data
         $data = [
-            'school_id' => Auth::user()->id,
-            'name' => $request->input('name'),
-            'email' => $request->input('email'),
-            'mobile' => $request->input('mobile'),
-            'address' => $request->input('address'),
-            'class' => $request->input('class'),
-            'department' => $request->input('department'),
-            'subject' => $request->input('subject'),
-            'status' => $request->input('status', 'active'),
+            'school_id'   => Auth::user()->id,
+            'name'        => $request->input('name'),
+            'email'       => $request->input('email'),
+            'mobile'      => $request->input('mobile'),
+            'address'     => $request->input('address'),
+            'class'       => $request->input('class', []),      // save as array
+            'department'  => $request->input('department', []), // save as array
+            'subject'     => $request->input('subject', []),    // save as array
+            'status'      => $request->input('status', 'active'),
         ];
 
         // Hash password if new or updated
         if (!$isUpdate || $request->filled('password')) {
             $data['password'] = Hash::make($request->input('password'));
         }
+
+        // Ensure your Staff model casts arrays properly
+        // protected $casts = [
+        //     'class' => 'array',
+        //     'department' => 'array',
+        //     'subject' => 'array',
+        // ];
 
         // Create or update staff record
         $staff = Staff::updateOrCreate(
@@ -97,19 +104,24 @@ class TeachersController extends Controller
             ]);
 
             $staff->update([
-                'avatar' => $upload->getSecurePath(),
+                'avatar'   => $upload->getSecurePath(),
                 'image_id' => $upload->getPublicId(),
             ]);
         }
 
-        return redirect()->back()->with('message', 'Staff record has been created or updated successfully.');
+        return redirect()->back()->with('message', 'Teacher record has been created or updated successfully.');
     }
-
 
     public function view($id)
     {
         $teacher = Staff::findOrFail($id);
+        $school = Auth::guard('school')->user();
 
-       return view('school.view-teacher', compact('teacher'));
+        $subjects = Subject::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
+        $depts    = Department::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
+        $classes  = SchClass::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
+
+        return view('school.view-teacher', compact('teacher', 'subjects', 'depts', 'classes'));
     }
+
 }

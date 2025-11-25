@@ -54,7 +54,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Add Schools
+                      Add Department
                     </li>
                   </ol>
                 </nav>

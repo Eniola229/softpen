@@ -19,15 +19,20 @@ class StaffResultController extends Controller
         $validated = $request->validate([
             'student_id' => 'required|uuid|exists:students,id',
             'school_id' => 'required|uuid|exists:schools,id',
-            'subject_name' => 'required|string', // We are using subject name not ID
+            'class' => 'required|string',
             'session' => 'required|string',
             'term' => 'required|string',
-            'class' => 'required|string',
-            'ca1' => 'nullable|integer|min:0|max:30',
-            'ca2' => 'nullable|integer|min:0|max:30',
-            'exam' => 'nullable|integer|min:0|max:70',
+            'subjects' => 'required|array', // array of subject names
+            'subjects.*' => 'required|string',
+            'ca1' => 'nullable|array',
+            'ca1.*' => 'nullable|integer|min:0|max:30',
+            'ca2' => 'nullable|array',
+            'ca2.*' => 'nullable|integer|min:0|max:30',
+            'exam' => 'nullable|array',
+            'exam.*' => 'nullable|integer|min:0|max:70',
         ]);
-        // Find or create result row
+
+        // Find or create the result row for this student/session/term
         $result = Result::firstOrCreate(
             [
                 'student_id' => $validated['student_id'],
@@ -41,23 +46,23 @@ class StaffResultController extends Controller
             ]
         );
 
-        // Decode scores from DB
+        // Decode existing scores
         $scores = json_decode($result->scores, true) ?? [];
 
-        // Add/Update subject scores
-        $subject = $validated['subject_name'];
-        $scores[$subject] = [
-            'ca1' => $validated['ca1'] ?? 0,
-            'ca2' => $validated['ca2'] ?? 0,
-            'exam' => $validated['exam'] ?? 0,
-        ];
+        // Loop through subjects and store their scores
+        foreach ($validated['subjects'] as $subject) {
+            $scores[$subject] = [
+                'ca1' => $validated['ca1'][$subject] ?? 0,
+                'ca2' => $validated['ca2'][$subject] ?? 0,
+                'exam' => $validated['exam'][$subject] ?? 0,
+            ];
+        }
 
-        // Re-encode and save
+        // Save back to DB
         $result->scores = json_encode($scores);
         $result->save();
 
-
-        return back()->with('success', 'Result updated successfully.');
+        return back()->with('message', 'Results updated successfully.');
     }
 
 

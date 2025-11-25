@@ -26,7 +26,7 @@
                   class="sidebar-link waves-effect waves-dark sidebar-link"
                   href="{{ url('school/teacher') }}"
                   aria-expanded="false"
-                  > <i class="mdi mdi-account fs-3 mb-1 font-16"></i><span class="hide-menu">Teahers</span></a
+                  > <i class="mdi mdi-account fs-3 mb-1 font-16"></i><span class="hide-menu">Teachers</span></a
                 >
               </li>
                 <li class="sidebar-item">

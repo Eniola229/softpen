@@ -17,7 +17,10 @@ class StaffStudentController extends Controller
 {
     public function index()
     {
-        $school = School::where('id', Auth::guard('staff')->user()->school_id)->first(); // fetch the school
+        // Get the staff's school
+        $staff = Auth::guard('staff')->user();
+
+        $school = School::find($staff->school_id);
 
         if (!$school) {
             abort(404, 'School not found.');
@@ -27,10 +30,15 @@ class StaffStudentController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        $classes = SchClass::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
+        // Get only classes that match the staff's assigned classes
+        $classes = SchClass::where('school_id', $school->id)
+            ->whereIn('name', $staff->class ?? []) 
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('staff.class', compact('students', 'classes'));
     }
+
 
     public function students($id)
     {
@@ -70,15 +78,22 @@ class StaffStudentController extends Controller
             ->firstOrFail();
 
         $class = $student->class; // e.g., SS2
-        $department = $student->department; // if applicable
+        $department = $student->department; // may be null
 
-        // Filter subjects for this class and ONLY subjects that match the staff's assigned subject name
+        // Ensure staff subjects is an array
+        $staffSubjects = is_array($staff->subject) ? $staff->subject : json_decode($staff->subject, true) ?? [];
+
+        // Filter subjects for this class, teacher, and optionally department
         $subjects = Subject::where('school_id', $school->id)
             ->where(function ($query) use ($class) {
-                $query->where('for', $class) // exact match (e.g., SS2)
-                    ->orWhere('for', substr($class, 0, 2)); // partial match (e.g., SS)
+                $query->where('for', $class)       // exact match
+                      ->orWhere('for', substr($class, 0, 2)); // partial match
             })
-            ->where('name', $staff->subject) // only the subject this staff teaches
+            ->whereIn('name', $staffSubjects)
+            ->where(function ($query) use ($department) {
+                $query->whereNull('department') // general subject
+                      ->orWhere('department', $department); // or student's department
+            })
             ->get();
 
         // Fetch all results for this student grouped by session and term
@@ -88,9 +103,9 @@ class StaffStudentController extends Controller
             ->get()
             ->groupBy(['session', 'term']);
 
-
-        return view('staff.view-student', compact('student', 'subjects', 'results'));
+        return view('staff.view-student', compact('student', 'subjects', 'results', 'staffSubjects'));
     }
+
 
 
 }

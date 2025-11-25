@@ -54,7 +54,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Add Schools
+                      Add Student
                     </li>
                   </ol>
                 </nav>
@@ -138,38 +138,50 @@
                       id="address"
                       name="address"
                       type="text"
-                      class="form-control"
+                      class="required address form-control"
                       value="{{ old('address') }}"
+                    />
+                  <label for="address">Age</label>
+                  <input
+                      id="age"
+                      name="age"
+                      type="number"
+                      class="required age form-control"
+                      value="{{ old('age') }}"
                     />
                     <p>(*) Mandatory</p>
                   </section>
                   <h3>Upload Picture</h3>
                   <section>
                     <label for="avatar">Student Passport *</label>
-                     <input id="avatar" name="avatar" type="file" class="form-control" accept="image/*">
+                     <input id="avatar" name="avatar" type="file" class="required file form-control" accept="image/*">
                     <p>(*) Mandatory</p>
                   </section>
                   <h3>Finish</h3>
                   <section>
                     <label for="class" >Class</label>
-                        <select id="class" name="class" class="required form-control">
+                    <select id="class" name="class" class="required form-control">
                         <option value="">-- Select Class --</option>
-                        @for ($i = 1; $i <= 6; $i++)
-                            <option value="Primary {{ $i }}" {{ old('class') == "Primary $i" ? 'selected' : '' }}>Primary {{ $i }}</option>
-                        @endfor
-                        @for ($i = 1; $i <= 3; $i++)
-                            <option value="SS{{ $i }}" {{ old('class') == "SS$i" ? 'selected' : '' }}>SS{{ $i }}</option>
-                        @endfor
-                        </select>
+
+                        @foreach ($classes as $class)
+                            <option value="{{ $class->name }}" {{ old('class') == $class->name ? 'selected' : '' }}>
+                                {{ $class->name }}
+                            </option>
+                        @endforeach
+                    </select>
 
                         <label for="department">Department</label>
                         <select id="department" name="department" class="form-control">
-                        <option value="">-- Select Department --</option>
-                        <option value="ART" {{ old('department') == 'ART' ? 'selected' : '' }}>ART</option>
-                        <option value="SCIENCE" {{ old('department') == 'SCIENCE' ? 'selected' : '' }}>SCIENCE</option>
-                        <option value="COMMERCIAL" {{ old('department') == 'COMMERCIAL' ? 'selected' : '' }}>COMMERCIAL</option>
+                            <option value="">-- Select Department --</option>
+
+                            @foreach ($departments as $dept)
+                                <option value="{{ $dept->name }}" {{ old('department') == $dept->name ? 'selected' : '' }}>
+                                    {{ $dept->name }}
+                                </option>
+                            @endforeach
                         </select>
 
+                        <br>
                     <button class="btn btn-primary" type="submit">Create</button>
                   </section>
                 </div>

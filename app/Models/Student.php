@@ -52,6 +52,7 @@ class Student extends Authenticatable
         'name',
         'email',
         'address',
+        'age',
         'class',
         'department',
         'status',

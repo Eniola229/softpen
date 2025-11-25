@@ -80,5 +80,19 @@ class Staff extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed', // You can keep this as 'hashed' in Laravel 10+
+        'class' => 'array',
+        'subject' => 'array',
+
     ];
+
+    public function getClassTextAttribute()
+    {
+        return is_array($this->class) ? implode(', ', $this->class) : $this->class;
+    }
+
+    public function getSubjectTextAttribute()
+    {
+        return is_array($this->subject) ? implode(', ', $this->subject) : $this->subject;
+    }
+
 }
