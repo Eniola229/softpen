@@ -57,6 +57,7 @@ class Result extends Authenticatable
         'ca2',
         'exam',
         'total',
+        'teachers_comment',
     ];
 
     public function student()
@@ -73,4 +74,5 @@ class Result extends Authenticatable
     {
         return $this->belongsTo(School::class);
     }
+    
 }

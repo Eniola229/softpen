@@ -123,86 +123,103 @@
           </div> 
         </div>
 
-       @php
-          // Ensure staff subjects is an array
-          $staff = Auth::guard('staff')->user();
-          $teacherSubjects = is_array($staff->subject) ? $staff->subject : json_decode($staff->subject, true) ?? [];
+@php
+    // Ensure staff subjects is an array
+    $staff = Auth::guard('staff')->user();
+    $teacherSubjects = is_array($staff->subject) ? $staff->subject : json_decode($staff->subject, true) ?? [];
+@endphp
 
-          // Filter subjects already passed from controller ($subjects)
-      @endphp
+<!-- Add Result Modal -->
+<div class="modal fade" id="addResultModal" tabindex="-1" aria-labelledby="addResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
 
-      <!-- Add Result Modal -->
-      <div class="modal fade" id="addResultModal" tabindex="-1" aria-labelledby="addResultModalLabel" aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title">Add Result for {{ $student->name }}</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                      <form action="{{ route('staff.upload.result') }}" method="POST">
-                          @csrf
-                          <input type="hidden" name="student_id" value="{{ $student->id }}">
-                          <input type="hidden" name="school_id" value="{{ $student->school_id }}">
-                          <input type="hidden" name="class" value="{{ $student->class }}">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Result for {{ $student->name }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
 
-                          <!-- Subjects Multi-Select -->
-                          <div class="mb-3">
-                              <label class="form-label">Subjects</label>
-                              <select name="subjects[]" class="form-control" multiple size="6" style="height:auto;" required>
-                                  @forelse($subjects as $subject)
-                                      <option value="{{ $subject->name }}">{{ $subject->name }}</option>
-                                  @empty
-                                      <option disabled>No subjects assigned to you for this student</option>
-                                  @endforelse
-                              </select>
-                              <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple subjects.</small>
-                          </div>
+            <div class="modal-body">
 
-                          <!-- Session and Term -->
-                          <div class="row">
-                              <div class="col-md-6 mb-3">
-                                  <label class="form-label">Session</label>
-                                  <input type="text" name="session" class="form-control" placeholder="e.g., 2024/2025" required>
-                              </div>
-                              <div class="col-md-6 mb-3">
-                                  <label class="form-label">Term</label>
-                                  <select name="term" class="form-control" required>
-                                      <option value="First Term">First Term</option>
-                                      <option value="Second Term">Second Term</option>
-                                      <option value="Third Term">Third Term</option>
-                                  </select>
-                              </div>
-                          </div>
+                <form action="{{ route('staff.upload.result') }}" method="POST">
+                    @csrf
 
-                          <!-- Scores Table -->
-                          <table class="table table-bordered">
-                              <thead>
-                                  <tr>
-                                      <th>Subject</th>
-                                      <th>CA1 (30)</th>
-                                      <th>CA2 (30)</th>
-                                      <th>Exam (70)</th>
-                                  </tr>
-                              </thead>
-                              <tbody>
-                                  @foreach($subjects as $subject)
-                                  <tr>
-                                      <td>{{ $subject->name }}</td>
-                                      <td><input type="number" name="ca1[{{ $subject->name }}]" class="form-control" min="0" max="30"></td>
-                                      <td><input type="number" name="ca2[{{ $subject->name }}]" class="form-control" min="0" max="30"></td>
-                                      <td><input type="number" name="exam[{{ $subject->name }}]" class="form-control" min="0" max="70"></td>
-                                  </tr>
-                                  @endforeach
-                              </tbody>
-                          </table>
+                    <input type="hidden" name="student_id" value="{{ $student->id }}">
+                    <input type="hidden" name="school_id" value="{{ $student->school_id }}">
+                    <input type="hidden" name="class" value="{{ $student->class }}">
 
-                          <button type="submit" class="btn btn-success">Submit Results</button>
-                      </form>
-                  </div>
-              </div>
-          </div>
-      </div>
+                    <!-- Subjects Multi-Select -->
+                    <div class="mb-3">
+                        <label class="form-label">Subjects</label>
+                        <select name="subjects[]" class="form-control" multiple size="6" style="height:auto;" required>
+                            @forelse($subjects as $subject)
+                                <option value="{{ $subject->id }}">{{ $subject->name }}</option>
+                            @empty
+                                <option disabled>No subjects available</option>
+                            @endforelse
+                        </select>
+                        <small class="text-muted">Hold CTRL to select multiple subjects.</small>
+                    </div>
+
+                    <!-- Session / Term -->
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Session</label>
+                            <input type="text" name="session" class="form-control" placeholder="2024/2025" required>
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Term</label>
+                            <select name="term" class="form-control" required>
+                                <option value="First Term">First Term</option>
+                                <option value="Second Term">Second Term</option>
+                                <option value="Third Term">Third Term</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Scores Table -->
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Test (40)</th>
+                                <th>Exam (60)</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @foreach($subjects as $subject)
+                                <tr>
+                                    <td>{{ $subject->name }}</td>
+
+                                    <td>
+                                        <input type="number"
+                                               name="test[{{ $subject->id }}]"
+                                               class="form-control"
+                                               min="0" max="40">
+                                    </td>
+
+                                    <td>
+                                        <input type="number"
+                                               name="exam[{{ $subject->id }}]"
+                                               class="form-control"
+                                               min="0" max="60">
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+
+                    <button type="submit" class="btn btn-success">Submit Results</button>
+
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
 
       </div>
         <ul class="nav nav-tabs" id="profileTabs" role="tablist">

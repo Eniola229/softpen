@@ -116,13 +116,19 @@
                       <div class="mb-3">
                         <h5 class="text-muted">Description:</h5>
                         <p class="fs-6" id="info-description">
-                         {{ $subject->description }}
+                         {{ $subject->description ?? 'N/A' }}
                         </p>
                       </div>
                       <div class="mb-3">
                         <h5 class="text-muted">Departments:</h5>
                         <p class="fs-6" id="info-description">
                         {{ $subject->department ?? 'N/A' }}
+                        </p>
+                      </div>
+                      <div class="mb-3">
+                        <h5 class="text-muted">For:</h5>
+                        <p class="fs-6" id="info-description">
+                         {{ $subject->for ?? 'N/A' }}
                         </p>
                       </div>
                       <div class="mb-3">
@@ -170,10 +176,25 @@
                               </div>
                             @enderror
                           </div>
+                         <div class="mb-3">
+                            <label for="for" class="form-label fw-bold">For</label>
+                            <select name="for" id="for" class="form-select" required>
+                              <option selected disabled>Choose a level that fit this subject (Reflect for JS, SS, Primary, Basic</option>
+                                <option>SS</option>
+                                <option>JS</option>
+                                <option>PRIMARY</option>
+                                <option>BASIC</option>
+                             </select>
+                            @error('for')
+                              <div class="invalid-feedback">
+                                {{ $message }}
+                              </div>
+                            @enderror
+                          </div>
 
                           <div class="mb-3">
                               <label for="Description" class="form-label">Description</label>
-                              <input type="text" class="form-control" id="description" name="description" value="{{ old('description', $subject->description) }}" required>
+                              <input type="text" class="form-control" id="description" name="description" value="{{ old('description', $subject->description) }}">
                           </div>
 
                           <button type="submit" class="btn btn-success">Update</button>

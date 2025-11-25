@@ -15,6 +15,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('avatar')->nullable();
             $table->string('image_id')->nullable();
+            $table->string('motto')->nullable();
             $table->string('name');
             $table->string('address');
             $table->enum('status', ['ACTIVE', 'DISACTIVATE'])->default('ACTIVE');

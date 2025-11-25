@@ -189,9 +189,9 @@
                         @endphp
 
                         @foreach ($subjects as $subject)
-                            <option value="{{ $subject->name }}"
+                            <option value="{{ $subject->id }}"
                                 {{ $selectedSubjects->contains($subject->name) ? 'selected' : '' }}>
-                                {{ $subject->name }}
+                                {{ $subject->name }} - {{ $subject->for }}
                             </option>
                         @endforeach
                     </select>

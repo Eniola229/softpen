@@ -141,6 +141,14 @@
                       class="form-control"
                       value="{{ old('address') }}"
                     />
+                    <label for="address">Motto</label>
+                    <input
+                      id="motto"
+                      name="motto"
+                      type="text"
+                      class="form-control"
+                      value="{{ old('motto') }}"
+                    />
                     <label for="mobile">Mobile</label>
                     <input
                       id="mobile"

@@ -77,34 +77,44 @@ class StaffStudentController extends Controller
             ->where('school_id', $school->id)
             ->firstOrFail();
 
-        $class = $student->class; // e.g., SS2
-        $department = $student->department; // may be null
+        $class = $student->class;
+        $department = $student->department;
 
-        // Ensure staff subjects is an array
-        $staffSubjects = is_array($staff->subject) ? $staff->subject : json_decode($staff->subject, true) ?? [];
+        // Decode staff subjects (IDs)
+        $staffSubjects = is_array($staff->subject)
+            ? $staff->subject
+            : json_decode($staff->subject, true);
 
-        // Filter subjects for this class, teacher, and optionally department
+        if (!$staffSubjects) {
+            $staffSubjects = [];
+        }
+
+        // Fetch subjects that:
+        // 1. match student class (SS2 or SS)
+        // 2. are taught by the teacher (by ID)
+        // 3. match department or are general
         $subjects = Subject::where('school_id', $school->id)
             ->where(function ($query) use ($class) {
-                $query->where('for', $class)       // exact match
-                      ->orWhere('for', substr($class, 0, 2)); // partial match
+                $query->where('for', $class)
+                      ->orWhere('for', substr($class, 0, 2)); // SS or JSS
             })
-            ->whereIn('name', $staffSubjects)
+            ->whereIn('id', $staffSubjects) // Teacher is assigned to these subjects
             ->where(function ($query) use ($department) {
-                $query->whereNull('department') // general subject
-                      ->orWhere('department', $department); // or student's department
+                $query->whereNull('department') // general subjects
+                      ->orWhere('department', '') // empty department
+                      ->orWhere('department', $department); // student dept subjects
             })
             ->get();
 
-        // Fetch all results for this student grouped by session and term
-        $results = Result::with('subject')
-            ->where('student_id', $student->id)
+        // Fetch results
+        $results = Result::where('student_id', $student->id)
             ->where('school_id', $school->id)
             ->get()
             ->groupBy(['session', 'term']);
 
         return view('staff.view-student', compact('student', 'subjects', 'results', 'staffSubjects'));
     }
+
 
 
 

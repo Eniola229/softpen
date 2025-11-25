@@ -110,7 +110,7 @@
                       <thead>
                         <tr>
                           <th>Name</th>
-                          <th>Description</th>
+                          <th>For (Level)</th>
                           <th>Department</th>
                           <th>Created At</th>
                           <th>Action</th>
@@ -120,7 +120,7 @@
                       <tbody>
                         <tr>
                           <td>{{ $subject->name }}</td>
-                          <td>{{ $subject->description }}</td>
+                          <td>{{ $subject->for }}</td>
                           <td>{{ $subject->department }}</td>
                           <td>{{ $subject->created_at ? $subject->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
                             <td class="gap-2"><a href="{{ url('school/view/subject/' . $subject->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
@@ -130,7 +130,7 @@
                       @endforeach
                         <tr>
                           <th>Name</th>
-                          <th>Description</th>
+                          <th>For (Level)</th>
                           <th>Department</th>
                           <th>Created At</th>
                           <th>Action</th>

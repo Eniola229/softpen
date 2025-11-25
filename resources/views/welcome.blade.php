@@ -10,7 +10,7 @@
 <a href="{{ route('admin/login') }}">Admin Login</a>
 <a href="{{ route('school/login') }}">School Login</a>
 <a href="{{ route('staff/login') }}">Staff Login</a>
-<a href="{{ route('login') }}">Student Login</a>
+<a href="{{ route('student/login') }}">Student Login</a>
 
 </body>
 </html> 

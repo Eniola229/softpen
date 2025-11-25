@@ -48,6 +48,7 @@ class School extends Authenticatable
     protected $fillable = [
         'avatar',
         'image_id',
+        'motto',
         'name',
         'email',
         'mobile',

@@ -52,6 +52,10 @@ return [
             'driver' => 'session',
             'provider' => 'staffs',
         ],
+        'student' => [
+            'driver' => 'session',
+            'provider' => 'students',
+        ],
     ],
 
     /*
@@ -88,6 +92,10 @@ return [
         'staffs' => [
             'driver' => 'eloquent',
             'model' => App\Models\Staff::class,
+        ],
+        'students' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Student::class,
         ],
     ],
 
@@ -131,6 +139,12 @@ return [
         ],
         'staff' => [
             'provider' => 'staffs',
+            'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
+            'expire' => 60,
+            'throttle' => 60,
+        ],
+        'student' => [
+            'provider' => 'students',
             'table' => env('AUTH_PASSWORD_RESET_TOKEN_TABLE', 'password_reset_tokens'),
             'expire' => 60,
             'throttle' => 60,

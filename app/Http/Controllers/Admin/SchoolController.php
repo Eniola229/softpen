@@ -39,6 +39,7 @@ public function create(Request $request)
         'id' => 'nullable',
         'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
         'name' => 'required|string|max:255',
+        'motto' => 'required|string|max:500',
         'email' => 'required|email|max:255|unique:schools,email,' . $request->input('id'),
         'mobile' => 'nullable|string|max:15',
         'address' => 'nullable|string|max:255',
@@ -54,6 +55,7 @@ public function create(Request $request)
     // Prepare data for create or update
     $data = [
         'name' => $request->input('name'),
+        'motto' => $request->input('motto'),
         'email' => $request->input('email'),
         'mobile' => $request->input('mobile'),
         'address' => $request->input('address'),

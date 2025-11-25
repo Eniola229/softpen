@@ -118,8 +118,9 @@
                 <p class="card-text"><strong>Department:</strong> {{ $teacher->department }}</p>
 
                 <p class="card-text"><strong>Subject:</strong> 
-                    {{ is_array($teacher->subject) ? implode(', ', $teacher->subject) : $teacher->subject }}
+                    {{ implode(', ', $subjectNames) }}
                 </p>
+
 
                 <p class="card-text">
                   @if ($teacher->status === 'ACTIVE')
@@ -202,9 +203,9 @@
                                       $selectedSubjects = collect(old('subject', $teacher->subject ?? []));
                                   @endphp
                                   @foreach ($subjects as $s)
-                                      <option value="{{ $s->name }}" 
+                                      <option value="{{ $s->id }}" 
                                           {{ $selectedSubjects->contains($s->name) ? 'selected' : '' }}>
-                                          {{ $s->name }}
+                                          {{ $s->name }} - {{ $s->for }} 
                                       </option>
                                   @endforeach
                               </select>

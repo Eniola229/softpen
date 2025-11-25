@@ -21,6 +21,7 @@ use App\Http\Controllers\Staff\StaffStudentController;
 use App\Http\Controllers\Staff\StaffResultController;
 
 //STUDENT
+use App\Http\Controllers\Student\StudentAuthController;
 use App\Http\Controllers\ResultController;
 
 
@@ -107,4 +108,16 @@ Route::middleware('auth:staff')->prefix('staff')->group(function () {
 
 
     Route::get('logout', [StaffAuthController::class, 'logout'])->name('staff/logout');
+});
+
+Route::get('student/login', [StudentAuthController::class, 'index'])->name('student/login');
+Route::post('student/post/login', [StudentAuthController::class, 'postLogin'])->name('student-login.post'); 
+
+//AUTH STUDENT
+Route::middleware('auth:student')->prefix('student')->group(function () {
+    Route::get('dashboard', [StudentAuthController::class, 'dashboard'])->name('student-dashboard');
+
+
+
+    Route::get('logout', [StudentAuthController::class, 'logout'])->name('student/logout');
 });

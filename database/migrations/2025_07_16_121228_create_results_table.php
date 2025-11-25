@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('session');
 
             $table->json('scores')->nullable(); // JSON field to store all subject scores
+            $table->string('teachers_comment')->nullable(); // JSON field to store all subject scores
 
             $table->timestamps();
 

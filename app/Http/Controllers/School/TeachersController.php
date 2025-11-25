@@ -117,11 +117,20 @@ class TeachersController extends Controller
         $teacher = Staff::findOrFail($id);
         $school = Auth::guard('school')->user();
 
+        // Decode teacher subject IDs
+        $subjectIds = is_array($teacher->subject)
+            ? $teacher->subject
+            : json_decode($teacher->subject, true);
+
+        // Fetch subjects that match these IDs
+        $subjectNames = Subject::whereIn('id', $subjectIds)->pluck('name')->toArray();
+
         $subjects = Subject::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
         $depts    = Department::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
         $classes  = SchClass::where('school_id', $school->id)->orderBy('created_at', 'desc')->get();
 
-        return view('school.view-teacher', compact('teacher', 'subjects', 'depts', 'classes'));
+        return view('school.view-teacher', compact('teacher', 'subjects', 'depts', 'classes', 'subjectNames'));
     }
+
 
 }
