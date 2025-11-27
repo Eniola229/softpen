@@ -220,7 +220,7 @@
         <!-- footer -->
         <!-- ============================================================== -->
         <footer class="footer text-center">
-            All Rights Reserved by SoftPen Technologies | Deleoped by Softpen Tech
+            All Rights Reserved by SoftPen Technologies | Developed by Softpen Tech
         </footer>
         <!-- ============================================================== -->
         <!-- End footer -->
