@@ -82,13 +82,13 @@
               </div>
             </div>
               <div class="col-md-6 col-lg-2 col-xlg-3">
-              <a href="{{ url('staff/classes') }}">
+              <a href="{{ url('student/results') }}">
               <div class="card card-hover">
                 <div class="box bg-info text-center">
                   <h1 class="font-light text-white">
                      <i class="mdi mdi-account fs-3 mb-1 font-16"></i>
                   </h1>
-                  <h6 class="text-white">Result's</h6>
+                  <h6 class="text-white">Result's / Profile</h6>
                 </div>
               </div>
             </a>

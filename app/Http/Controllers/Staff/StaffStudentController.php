@@ -36,7 +36,7 @@ class StaffStudentController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('staff.class', compact('students', 'classes'));
+        return view('Staff.class', compact('students', 'classes'));
     }
 
 
@@ -112,7 +112,7 @@ class StaffStudentController extends Controller
             ->get()
             ->groupBy(['session', 'term']);
 
-        return view('staff.view-student', compact('student', 'subjects', 'results', 'staffSubjects'));
+        return view('Staff.view-student', compact('student', 'subjects', 'results', 'staffSubjects'));
     }
 
 

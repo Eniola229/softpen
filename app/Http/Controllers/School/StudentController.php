@@ -124,4 +124,23 @@ class StudentController extends Controller
 
        return view('school.view-student', compact('student', 'classes', 'departments', 'results'));
     }
+
+    public function changeStatus($id)
+    {   
+        $school = Student::findOrFail($id);
+        // Toggle status based on current value
+        if ($school->status == "ACTIVE") {
+            $school->update(['status' => 'DISACTIVATE']);
+            $message = 'Student has been deactivated.';
+        } elseif ($school->status == "DISACTIVATE") {
+            $school->update(['status' => 'ACTIVE']);
+            $message = 'Student has been activated.';
+        } else {
+            $message = "Something seems wrong";
+            return redirect()->back()->with('error', $message);
+        }
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', $message);
+    }
 }

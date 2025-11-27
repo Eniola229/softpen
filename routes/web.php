@@ -58,7 +58,6 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('view/schools/{id}', [SchoolController::class, 'view'])->name('admin/view/schools');
     Route::get('/change/{id}', [SchoolController::class, 'changeStatus'])->name('admin/changeStatus');
 
-
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin/logout');
 });
 
@@ -84,10 +83,14 @@ Route::middleware('auth:school')->prefix('school')->group(function () {
     Route::get('add/student', [StudentController::class, 'addStudent'])->name('school/add/student');
     Route::post('add/student', [StudentController::class, 'create'])->name('school/add/student');
     Route::get('/view/student/{id}', [StudentController::class, 'view'])->name('school/view/student/');
+    Route::get('/student/change/{id}', [StudentController::class, 'changeStatus'])->name('school/student/changeStatus');
     Route::get('/teacher', [TeachersController::class, 'index'])->name('student/subject');
     Route::get('add/teacher', [TeachersController::class, 'addStaff'])->name('school/add/teacher');
     Route::post('add/teacher', [TeachersController::class, 'create'])->name('school/add/teacher');
     Route::get('/view/teacher/{id}', [TeachersController::class, 'view'])->name('school/view/teacher/');
+    Route::get('/result-report/{result}', [StaffResultController::class, 'showReportCard'])->name('school.result.report');
+    Route::get('/change/{id}', [TeachersController::class, 'changeStatus'])->name('school/teacher/changeStatus');
+    
 
     Route::get('logout', [SchoolAuthController::class, 'logout'])->name('school/logout');
 });
@@ -116,6 +119,9 @@ Route::post('student/post/login', [StudentAuthController::class, 'postLogin'])->
 //AUTH STUDENT
 Route::middleware('auth:student')->prefix('student')->group(function () {
     Route::get('dashboard', [StudentAuthController::class, 'dashboard'])->name('student-dashboard');
+    Route::get('/result-report/{result}', [StaffResultController::class, 'showReportCard'])->name('student.result.report');
+        Route::get('results', [StudentAuthController::class, 'Result'])
+        ->name('student.results');
 
 
 

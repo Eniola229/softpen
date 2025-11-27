@@ -132,5 +132,24 @@ class TeachersController extends Controller
         return view('school.view-teacher', compact('teacher', 'subjects', 'depts', 'classes', 'subjectNames'));
     }
 
+    public function changeStatus($id)
+    {   
+        $school = Staff::findOrFail($id);
+        // Toggle status based on current value
+        if ($school->status == "ACTIVE") {
+            $school->update(['status' => 'DISACTIVATE']);
+            $message = 'Teacher has been deactivated.';
+        } elseif ($school->status == "DISACTIVATE") {
+            $school->update(['status' => 'ACTIVE']);
+            $message = 'Teacher has been activated.';
+        } else {
+            $message = "Something seems wrong";
+            return redirect()->back()->with('error', $message);
+        }
+
+        // Redirect back with a success message
+        return redirect()->back()->with('message', $message);
+    }
+
 
 }

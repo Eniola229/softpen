@@ -1,4 +1,7 @@
-@include('components.header') 
+    <!-- Custom CSS -->
+<link href="{{ asset('assets/libs/flot/css/float-chart.css') }}" rel="stylesheet" />
+<!-- Custom CSS -->
+<link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet" />
     <link
       rel="stylesheet"
       type="text/css"
@@ -9,90 +12,6 @@
       rel="stylesheet"
     />
     <link href="../dist/css/style.min.css" rel="stylesheet" />
-  <body>
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
-    <!-- <div class="preloader">
-      <div class="lds-ripple">
-        <div class="lds-pos"></div>
-        <div class="lds-pos"></div>
-      </div>
-    </div> -->
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
-    <div
-      id="main-wrapper"
-      data-layout="vertical"
-      data-navbarbg="skin5"
-      data-sidebartype="full"
-      data-sidebar-position="absolute"
-      data-header-position="absolute"
-      data-boxed-layout="full"
-    >
-      <!-- ============================================================== -->
-      <!-- Topbar header - style you can find in pages.scss -->
-      <!-- ============================================================== -->
-      @include('components.nav') 
-      <!-- ============================================================== -->
-      <!-- End Topbar header -->
-      <!-- ============================================================== -->
-      <!-- ============================================================== -->
-      <!-- Left Sidebar - style you can find in sidebar.scss  -->
-      <!-- ============================================================== -->
-      @include('components.staff-nav') 
-      <!-- ============================================================== -->
-      <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-      <!-- ============================================================== -->
-      <!-- ============================================================== -->
-      <!-- Page wrapper  -->
-      <!-- ============================================================== -->
-      <div class="page-wrapper">
-        <!-- ============================================================== -->
-        <!-- Bread crumb and right sidebar toggle -->
-        <!-- ============================================================== -->
-        <div class="page-breadcrumb">
-          <div class="row">
-            <div class="col-12 d-flex no-block align-items-center">
-              <h4 class="page-title"></h4>
-              <div class="ms-auto text-end">
-                <nav aria-label="breadcrumb">
-                  <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">Softpen</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">
-                      Students
-                    </li>
-                  </ol>
-                </nav>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- ============================================================== -->
-        <!-- End Bread crumb and right sidebar toggle -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Container fluid  -->
-        <!-- ============================================================== -->
-
-          
-        @if(session('message'))
-            <div class="alert alert-success">
-                {{ session('message') }}
-            </div>
-        @endif
-
-        @if($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
 <style>
     .report-container {
         max-width: 900px;
@@ -131,7 +50,7 @@
     }
 
     .school-info-table {
-        font-size: 14px;
+        font-size: 15px;
         color: #555;
         text-align: left;
         line-height: 1.6;
@@ -387,6 +306,87 @@
             margin: 0;
         }
     }
+
+    @media print {
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    
+    .print-btn {
+        display: none;
+    }
+    
+    .report-container {
+        margin: 0;
+        padding: 0.3in;
+        page-break-after: avoid;
+        width: 100%;
+    }
+    
+    .header {
+        margin-bottom: 6px;
+        page-break-inside: avoid;
+    }
+    
+    .report-title {
+        margin: 3px 0;
+        page-break-inside: avoid;
+    }
+    
+    .results-table,
+    .skill-table {
+        width: 100%;
+        border-collapse: collapse;
+        page-break-inside: avoid;
+        margin-bottom: 4px;
+    }
+    
+    .results-table th,
+    .results-table td,
+    .skill-table th,
+    .skill-table td {
+        border: 1px solid #999;
+        padding: 3px;
+    }
+    
+    .results-table th,
+    .skill-table th {
+        background-color: #e0e0e0;
+        font-weight: bold;
+    }
+    
+    .affective-psychomotor,
+    .summary,
+    .comments {
+        page-break-inside: avoid;
+        margin-bottom: 4px;
+    }
+    
+    .footer {
+        margin-top: 6px;
+        page-break-inside: avoid;
+    }
+    
+    body, html {
+        font-size: 10px;
+        line-height: 1.2;
+    }
+    
+    .header-left, .header-center, .header-right {
+        font-size: 9px;
+    }
+    
+    .school-logo, .student-avatar {
+        width: 60px;
+        height: 60px;
+    }
+}
 </style>
 
 <div class="print-btn">

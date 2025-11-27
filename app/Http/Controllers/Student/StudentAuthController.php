@@ -13,7 +13,10 @@ use Illuminate\Http\RedirectResponse;
 use App\Models\Staff;
 use App\Models\Student;
 use App\Models\Waitlist;
-
+use App\Models\SchClass;
+use App\Models\Department;
+use App\Models\Subject;
+use App\Models\Result;
 class StudentAuthController extends Controller
 {
     /**
@@ -80,6 +83,19 @@ class StudentAuthController extends Controller
         return redirect("student/login")->withSuccess('Oops! You do not have access');
     }
 
+    public function Result()
+    {
+        $student = Auth::guard('student')->user();
+        $school = School::findOrFail($student->school_id);
+
+        // Fetch results
+        $results = Result::where('student_id', $student->id)
+            ->where('school_id', $school->id)
+            ->get()
+            ->groupBy(['session', 'term']);
+
+        return view('Student.result', compact('student', 'results'));
+    }
 
 
     /**

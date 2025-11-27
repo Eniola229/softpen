@@ -41,7 +41,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.school-nav') 
+      @include('components.student-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      View Student Profile
+                    Student Profile
                     </li>
                   </ol>
                 </nav>
@@ -114,24 +114,14 @@
                 <p class="card-text"><strong>Class:</strong> {{ $student->class }}</p>
                 <p class="card-text"><strong>Department:</strong> {{ $student->department ?? 'N/A' }}</p>
                 <p class="card-text">
-                 @if ($student->status === 'ACTIVE')
-                      <a onclick="confirmStatusChange('{{ url('school/student/change', $student->id) }}')">
-                      <button class="btn btn-danger">Disactivate Account</button>
-                      </a>
-                  @elseif ($student->status === 'DISACTIVATE')
-                     <a onclick="confirmStatusChange('{{ url('school/student/change', $student->id) }}')">
-                      <button class="btn btn-success" style="color: white;">Activate Account</button>
-                    </a>
-                  @endif
-                     <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
-                        Edit Student
-                    </button>                   
+                    
                   </p>
               </div>
             </div>
-          </div>
+          </div> 
         </div>
 
+      </div>
         <ul class="nav nav-tabs" id="profileTabs" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result" type="button" role="tab" aria-controls="result" aria-selected="false">Result's</button>
@@ -145,9 +135,7 @@
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
                     <h5 class="card-title">{{ $student->name }}'s Results ({{ $student->class }})</h5>
-                    <a href="{{ url('staff/add/result/' . $student->id) }}">
-                    </a>
-                  </div>
+                   </div>
 
                   <div class="table-responsive">
                     <table id="zero_config" class="table table-striped table-bordered">
@@ -165,7 +153,7 @@
                             <td>{{ $term }}</td>
                             <td>
                               @if($records->isNotEmpty())
-                                <a href="{{ route('school.result.report', $records->first()->id) }}" class="btn btn-info btn-sm">
+                                <a href="{{ route('student.result.report', $records->first()->id) }}" class="btn btn-info btn-sm">
                                   View Report
                                 </a>
                               @else
@@ -188,85 +176,8 @@
               </div>
             </div>
 
-        <!-- Modal -->
-       <div class="modal fade" id="editSchoolModal" tabindex="-1" aria-labelledby="editSchoolModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title" id="editSchoolModalLabel">Edit Student</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div>
-                  <div class="modal-body">
-                      <!-- Form for Editing School -->
-                      <form action="{{ route('school/add/student') }}" method="POST" enctype="multipart/form-data"> 
-                          @csrf
-                          <input type="hidden" name="id" value="{{ $student->id }}">
-                          <div class="mb-3">
-                              <label for="name" class="form-label">Student Name</label>
-                              <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $student->name) }}" required>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="email" class="form-label">Email</label>
-                              <input type="email" class="form-control" id="email" name="email" value="{{ old('email', $student->email) }}" required>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="address" class="form-label">Address</label>
-                              <input type="text" class="form-control" id="address" name="address" value="{{ old('address', $student->address) }}" required>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="age" class="form-label">Age</label>
-                              <input type="text" class="form-control" id="age" name="age" value="{{ old('age', $student->age) }}" required>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="class" class="form-label">Class</label>
-                              <select id="class" name="class" class="form-control" required>
-                                  <option value="">-- Select Class --</option>
-
-                                  @foreach ($classes as $class)
-                                      <option value="{{ $class->name }}"
-                                          {{ old('class', $student->class) == $class->name ? 'selected' : '' }}>
-                                          {{ $class->name }}
-                                      </option>
-                                  @endforeach
-                              </select>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="department" class="form-label">Department</label>
-                              <select id="department" name="department" class="form-control" required>
-                                  <option value="">-- Select Department --</option>
-
-                                  @foreach ($departments as $dept)
-                                      <option value="{{ $dept->name }}"
-                                          {{ old('department', $student->department) == $dept->name ? 'selected' : '' }}>
-                                          {{ $dept->name }}
-                                      </option>
-                                  @endforeach
-                              </select>
-                          </div>
-
-                           <div class="mb-3">
-                              <label for="avatar" class="form-label">Student Pictire</label>
-                              <input type="file" class="form-control" id="avatar" name="avatar">
-                              <small class="form-text text-muted">Leave blank to keep the current image.</small>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="password" class="form-label">Password</label>
-                              <input type="password" class="form-control" id="password" name="password">
-                              <small class="form-text text-muted">Leave blank to keep the current password.</small>
-                          </div>
-
-                          <button type="submit" class="btn btn-success">Update Student</button>
-                      </form>
-                  </div>
-              </div>
-          </div>
-      </div> 
+       
+      
       </div>
           <!-- ============================================================== -->
           <!-- End PAge Content -->

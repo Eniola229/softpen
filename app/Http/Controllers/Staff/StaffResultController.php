@@ -19,6 +19,7 @@ class StaffResultController extends Controller
         $validated = $request->validate([
             'student_id' => 'required|uuid|exists:students,id',
             'school_id'  => 'required|uuid|exists:schools,id',
+            'teachers_comment' => 'nullable|string|max:500',
             'class'      => 'required|string',
             'session'    => 'required|string',
             'term'       => 'required|string',
@@ -42,6 +43,7 @@ class StaffResultController extends Controller
                 'term'       => $validated['term'],
             ],
             [
+                'teachers_comment'  => $validated['teachers_comment'],
                 'class'  => $validated['class'],
                 'scores' => json_encode([]),
             ]
@@ -67,9 +69,8 @@ class StaffResultController extends Controller
 
 public function showReportCard(Result $result)
 {
-    $staff = Auth::guard('staff')->user();
-    $school = School::findOrFail($staff->school_id);
     $student = Student::findOrFail($result->student_id);
+    $school = School::findOrFail($student->school_id);
 
     /**
      * ------------------------------------------------

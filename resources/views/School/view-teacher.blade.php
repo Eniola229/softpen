@@ -124,11 +124,11 @@
 
                 <p class="card-text">
                   @if ($teacher->status === 'ACTIVE')
-                      <a onclick="confirmStatusChange('{{ url('admin/change', $teacher->id) }}')">
+                      <a onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
                       <button class="btn btn-danger">Disactivate Account</button>
                       </a>
                   @elseif ($teacher->status === 'DISACTIVATE')
-                     <a onclick="confirmStatusChange('{{ url('admin/change', $teacher->id) }}')">
+                     <a onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
                       <button class="btn btn-success" style="color: white;">Activate Account</button>
                     </a>
                   @endif
