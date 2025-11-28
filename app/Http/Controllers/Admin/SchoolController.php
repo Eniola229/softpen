@@ -39,7 +39,7 @@ public function create(Request $request)
         'id' => 'nullable',
         'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
         'name' => 'required|string|max:255',
-        'motto' => 'required|string|max:500',
+        'motto' => 'nullable|string|max:500',
         'email' => 'required|email|max:255|unique:schools,email,' . $request->input('id'),
         'mobile' => 'nullable|string|max:15',
         'address' => 'nullable|string|max:255',

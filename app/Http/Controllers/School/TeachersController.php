@@ -152,4 +152,17 @@ class TeachersController extends Controller
     }
 
 
+    public function deleteTeacher($id)
+    {
+        // Find the admin (school)
+        $teacher = Staff::findOrFail($id);
+
+        // Delete the teacher record from the database
+        $teacher->delete();
+
+        // Redirect with a success message
+        return redirect()->to('school/teacher')->with('message', 'Teacher deleted successfully');
+    }
+
+
 }

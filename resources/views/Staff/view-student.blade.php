@@ -104,7 +104,7 @@
         <div class="card mb-4 shadow">
           <div class="row g-0">
             <div class="col-md-4">
-              <img src="{{ $student->avatar }}" class="img-fluid rounded-start" alt="Student Image">
+              <img src="{{ $student->avatar }}" class="img-fluid rounded-start h-100" alt="Student Image">
             </div>
             <div class="col-md-8">
               <div class="card-body">

@@ -26,7 +26,7 @@ class StudentAuthController extends Controller
      */
     public function index(): View
     {
-        return view('Student.login');
+        return view('student.login');
     }  
 
     /**
@@ -77,7 +77,7 @@ class StudentAuthController extends Controller
         $student = Auth::guard('student')->user();
 
         if (Auth::guard('student')->check()) {
-            return view('Student.dashboard');
+            return view('student.dashboard');
         }
 
         return redirect("student/login")->withSuccess('Oops! You do not have access');
@@ -94,7 +94,7 @@ class StudentAuthController extends Controller
             ->get()
             ->groupBy(['session', 'term']);
 
-        return view('Student.result', compact('student', 'results'));
+        return view('student.result', compact('student', 'results'));
     }
 
 

@@ -12,61 +12,64 @@ use Illuminate\Support\Facades\Auth;
 
 class StaffResultController extends Controller
 {
-    public function store(Request $request)
-    {
-        $staff = Auth::guard('staff')->user();
+public function store(Request $request)
+{
+    $staff = Auth::guard('staff')->user();
+    $validated = $request->validate([
+        'student_id' => 'required|uuid|exists:students,id',
+        'school_id'  => 'required|uuid|exists:schools,id',
+        'teachers_comment' => 'nullable|string|max:500',
+        'class'      => 'required|string',
+        'session'    => 'required|string',
+        'term'       => 'required|string',
+        'subjects'   => 'required|array',
+        'subjects.*' => 'required|uuid',
+        'test'       => 'nullable|array',
+        'test.*'     => 'nullable|integer|min:0|max:40',
+        'exam'       => 'nullable|array',
+        'exam.*'     => 'nullable|integer|min:0|max:60',
+    ]);
 
-        $validated = $request->validate([
-            'student_id' => 'required|uuid|exists:students,id',
-            'school_id'  => 'required|uuid|exists:schools,id',
-            'teachers_comment' => 'nullable|string|max:500',
-            'class'      => 'required|string',
-            'session'    => 'required|string',
-            'term'       => 'required|string',
+    // Find or create the result record
+    $result = Result::firstOrCreate(
+        [
+            'student_id' => $validated['student_id'],
+            'school_id'  => $validated['school_id'],
+            'session'    => $validated['session'],
+            'term'       => $validated['term'],
+        ],
+        [
+            'teachers_comment'  => $validated['teachers_comment'],
+            'class'  => $validated['class'],
+            'scores' => json_encode([]),
+        ]
+    );
 
-            'subjects'   => 'required|array',
-            'subjects.*' => 'required|uuid',
+    // Load existing scores
+    $scores = is_string($result->scores) 
+        ? (json_decode($result->scores, true) ?? []) 
+        : ($result->scores ?? []);
 
-            'test'       => 'nullable|array',
-            'test.*'     => 'nullable|integer|min:0|max:40',
-
-            'exam'       => 'nullable|array',
-            'exam.*'     => 'nullable|integer|min:0|max:60',
-        ]);
-
-        // Find or create the result record
-        $result = Result::firstOrCreate(
-            [
-                'student_id' => $validated['student_id'],
-                'school_id'  => $validated['school_id'],
-                'session'    => $validated['session'],
-                'term'       => $validated['term'],
-            ],
-            [
-                'teachers_comment'  => $validated['teachers_comment'],
-                'class'  => $validated['class'],
-                'scores' => json_encode([]),
-            ]
-        );
-
-        // Load existing scores (important so other teachers' entries remain)
-        $scores = json_decode($result->scores, true) ?? [];
-
-        // Add/update subjects selected now
-        foreach ($validated['subjects'] as $subjectId) {
-            $scores[$subjectId] = [
-                'test' => $validated['test'][$subjectId] ?? 0,
-                'exam' => $validated['exam'][$subjectId] ?? 0,
-            ];
-        }
-
-        // Save updated JSON
-        $result->scores = json_encode($scores);
-        $result->save();
-
-        return back()->with('message', 'Results saved successfully.');
+    // Add/update subjects with their test and exam scores
+    foreach ($validated['subjects'] as $subjectId) {
+        $scores[$subjectId] = [
+            'test' => (int)($validated['test'][$subjectId] ?? 0),
+            'exam' => (int)($validated['exam'][$subjectId] ?? 0),
+        ];
     }
 
+    // Debug: See what's being saved
+    \Log::info('Scores being saved:', $scores);
+
+    // Update the result with merged scores and teachers comment
+    $result->update([
+        'scores' => json_encode($scores),
+        'teachers_comment' => $validated['teachers_comment'] ?? $result->teachers_comment,
+        'class' => $validated['class'] ?? $result->class,
+    ]);
+
+    return back()->with('message', 'Results saved successfully.');
+}
 public function showReportCard(Result $result)
 {
     $student = Student::findOrFail($result->student_id);
@@ -75,7 +78,6 @@ public function showReportCard(Result $result)
     /**
      * ------------------------------------------------
      * LOAD ALL SUBJECTS FOR THE SCHOOL
-     * (We need subject names because we stored IDs)
      * ------------------------------------------------
      */
     $subjectMap = Subject::where('school_id', $school->id)
@@ -90,7 +92,6 @@ public function showReportCard(Result $result)
     $level = ($student->class >= 10)
         ? 'SSS'
         : (($student->class >= 7) ? 'JSS' : 'PRIMARY');
-
 
     /**
      * ------------------------------------------------
@@ -112,21 +113,18 @@ public function showReportCard(Result $result)
         ->where('term', 'Third Term')
         ->first();
 
-
     /**
      * ------------------------------------------------
      * BUILD CURRENT TERM SCORES
-     * FIX: Convert JSON string to array if needed
      * ------------------------------------------------
      */
     $currentScores = $result->scores ?? [];
     
-    // CRITICAL FIX: Check if it's a JSON string
+    // Convert JSON string to array if needed
     if (is_string($currentScores)) {
-        $currentScores = json_decode($currentScores, true);
+        $currentScores = json_decode($currentScores, true) ?? [];
     }
     
-    // Ensure it's always an array
     if (!is_array($currentScores)) {
         $currentScores = [];
     }
@@ -134,9 +132,9 @@ public function showReportCard(Result $result)
     $processedCurrent = [];
 
     foreach ($currentScores as $subjectId => $score) {
-        // Ensure $score is an array, convert if string
+        // Ensure $score is an array
         if (is_string($score)) {
-            $score = json_decode($score, true);
+            $score = json_decode($score, true) ?? [];
         }
         if (!is_array($score)) {
             $score = [];
@@ -155,7 +153,6 @@ public function showReportCard(Result $result)
         ];
     }
 
-
     /**
      * ------------------------------------------------
      * BUILD CUMULATIVE FOR THIRD TERM ONLY
@@ -166,31 +163,31 @@ public function showReportCard(Result $result)
     if ($result->term === "Third Term") {
         foreach ($subjectMap as $subjectId => $name) {
 
-            // Get scores from each term
+            // Get scores from each term and decode if string
             $t1Scores = $firstTerm ? ($firstTerm->scores ?? []) : [];
             $t2Scores = $secondTerm ? ($secondTerm->scores ?? []) : [];
             $t3Scores = $thirdTerm ? ($thirdTerm->scores ?? []) : [];
 
-            // Ensure they are arrays
+            // Decode JSON strings
             if (is_string($t1Scores)) $t1Scores = json_decode($t1Scores, true) ?? [];
             if (is_string($t2Scores)) $t2Scores = json_decode($t2Scores, true) ?? [];
             if (is_string($t3Scores)) $t3Scores = json_decode($t3Scores, true) ?? [];
 
+            // Calculate term totals
             $t1 = isset($t1Scores[$subjectId])
-                ? ($t1Scores[$subjectId]['test'] + $t1Scores[$subjectId]['exam'])
+                ? ($t1Scores[$subjectId]['test'] ?? 0) + ($t1Scores[$subjectId]['exam'] ?? 0)
                 : null;
 
             $t2 = isset($t2Scores[$subjectId])
-                ? ($t2Scores[$subjectId]['test'] + $t2Scores[$subjectId]['exam'])
+                ? ($t2Scores[$subjectId]['test'] ?? 0) + ($t2Scores[$subjectId]['exam'] ?? 0)
                 : null;
 
             $t3 = isset($t3Scores[$subjectId])
-                ? ($t3Scores[$subjectId]['test'] + $t3Scores[$subjectId]['exam'])
+                ? ($t3Scores[$subjectId]['test'] ?? 0) + ($t3Scores[$subjectId]['exam'] ?? 0)
                 : null;
 
-            // Avoid dividing null values
+            // Calculate average
             $validScores = array_filter([$t1, $t2, $t3], fn($x) => $x !== null);
-
             $avg = count($validScores)
                 ? array_sum($validScores) / count($validScores)
                 : 0;
@@ -206,43 +203,35 @@ public function showReportCard(Result $result)
         }
     }
 
-
     /**
      * ------------------------------------------------
-     * OVERALL AVERAGE & PRINCIPAL COMMENT
+     * CALCULATE OVERALL AVERAGES
      * ------------------------------------------------
      */
     $totalScore = array_sum(array_column($processedCurrent, 'total'));
     $subjectCount = count($processedCurrent);
     $average = $subjectCount ? round($totalScore / $subjectCount, 2) : 0;
 
-    $principalComment = $this->principalComment($average);
-
+    $principalComment = $this->principalComment($average, $result->term);
 
     /**
      * ------------------------------------------------
-     * RETURN VIEW WITH ALL NECESSARY DATA
+     * RETURN VIEW WITH ALL DATA
      * ------------------------------------------------
      */
     return view('staff.report-card', [
         'school' => $school,
         'student' => $student,
-
         'session' => $result->session,
         'term' => $result->term,
-
         'results' => $processedCurrent,
         'cumulative' => $cumulative,
-
         'totalScore' => $totalScore,
         'average' => $average,
-
         'subjectMap' => $subjectMap,
         'level' => $level,
-
         'principalComment' => $principalComment,
         'teachersComment' => $result->teachers_comment,
-
         'firstTerm' => $firstTerm,
         'secondTerm' => $secondTerm,
         'thirdTerm' => $thirdTerm,
@@ -274,8 +263,23 @@ private function gradeScore($score, $level)
     return 'F';
 }
 
-private function principalComment($average)
+private function principalComment($average, $term = null)
 {
+    if ($term === 'Third Term') {
+        if ($average >= 70) {
+            return "Excelent performance, promoted.";
+        } elseif ($average >= 50 && $average < 70) {
+            return "Good performance put in more effort, promoted.";
+        } elseif ($average >= 40 && $average < 50) {
+            return "Average performance, promoted.";
+        } elseif ($average >= 1 && $average < 40) {
+            return "Under performance, advice to repeat.";
+        } else {
+            return "";
+        }
+    }
+
+    // For 1st and 2nd Term
     if ($average >= 80) {
         return "Excellent performance. Keep up this outstanding standard.";
     } elseif ($average >= 70) {
@@ -288,5 +292,4 @@ private function principalComment($average)
         return "Poor performance. Urgent improvement required in the next term.";
     }
 }
-
 }

@@ -81,15 +81,17 @@ Route::middleware('auth:school')->prefix('school')->group(function () {
     Route::get('/view/subject/{id}', [SubjectController::class, 'view'])->name('school/view/subject');
     Route::get('/student', [StudentController::class, 'index'])->name('student/subject');
     Route::get('add/student', [StudentController::class, 'addStudent'])->name('school/add/student');
+    Route::get('/student/delete/{id}', [StudentController::class, 'deleteStudent'])->name('school/student/deleteStudent');
     Route::post('add/student', [StudentController::class, 'create'])->name('school/add/student');
     Route::get('/view/student/{id}', [StudentController::class, 'view'])->name('school/view/student/');
     Route::get('/student/change/{id}', [StudentController::class, 'changeStatus'])->name('school/student/changeStatus');
-    Route::get('/teacher', [TeachersController::class, 'index'])->name('student/subject');
+    Route::get('/teacher', [TeachersController::class, 'index'])->name('teacher/all');
     Route::get('add/teacher', [TeachersController::class, 'addStaff'])->name('school/add/teacher');
     Route::post('add/teacher', [TeachersController::class, 'create'])->name('school/add/teacher');
     Route::get('/view/teacher/{id}', [TeachersController::class, 'view'])->name('school/view/teacher/');
     Route::get('/result-report/{result}', [StaffResultController::class, 'showReportCard'])->name('school.result.report');
     Route::get('/change/{id}', [TeachersController::class, 'changeStatus'])->name('school/teacher/changeStatus');
+    Route::get('/teacher/delete/{id}', [TeachersController::class, 'deleteTeacher'])->name('school/teacher/deleteTeacher');
     
 
     Route::get('logout', [SchoolAuthController::class, 'logout'])->name('school/logout');

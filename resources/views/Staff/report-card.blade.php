@@ -395,43 +395,51 @@
 
 <div class="report-container">
     <!-- HEADER -->
-    <div class="header">
-        <!-- LEFT: School Logo & Info -->
-        <div class="header-left">
-            @if($school->avatar)
-                <img src="{{ $school->avatar }}" alt="School Logo" class="school-logo">
-            @endif
-            <div class="school-info-table">
-                <div><span class="school-info-label">NAME:</span> <strong>{{ strtoupper($student->name) }}</strong></div>
-                <div><span class="school-info-label">CLASS:</span> {{ $student->class }}</div>
-                <div><span class="school-info-label">TERM:</span> {{ strtoupper($term) }}</div>
-                <div><span class="school-info-label">SESSION:</span> {{ strtoupper($session) }}</div>
-                </div>
-        </div>
-
-        <!-- CENTER: School Name & Title -->
-        <div class="header-center">
-            <div class="school-name">{{ strtoupper($school->name) }}</div>
-            <div class="school-tagline"><strong>Address:</strong> {{ $school->address }}</div>
-            <div class="school-address">
-                <strong>Motto:</strong> {{ $school->motto }} <br>
-            </div>
-           <!--  <div class="school-mobile">
-                Telephone: {{ $school->mobile }} | Email: {{ $school->email }}<br>
-            </div> -->
-        </div>
-
-        <!-- RIGHT: Student Avatar -->
-        <div class="header-right">
-            @if($student->avatar)
-                <img src="{{ $student->avatar }}" alt="Student Photo" class="student-avatar">
-            @else
-                <div style="width: 90px; height: 90px; border-radius: 50%; background-color: #ddd; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
-                    <span style="color: #999; font-size: 12px;">No Photo</span>
-                </div>
-            @endif
-        </div>
+<div class="header">
+    <!-- LEFT: School Logo & Info -->
+    <div class="header-left">
+        @if($school->avatar)
+            <img src="{{ $school->avatar }}" alt="School Logo" class="school-logo">
+        @endif
     </div>
+
+    <!-- CENTER: School Name & Title -->
+    <div class="header-center">
+        <div class="school-name">{{ strtoupper($school->name) }}</div>
+        <div class="school-tagline"><strong>Address:</strong> {{ $school->address }}</div>
+        <div class="school-address">
+            <strong>Motto:</strong> {{ $school->motto }} <br>
+        </div>
+        <!--  <div class="school-mobile">
+            Telephone: {{ $school->mobile }} | Email: {{ $school->email }}<br>
+        </div> -->
+    </div>
+
+    <!-- RIGHT: Empty -->
+    <div class="header-right"></div>
+</div>
+
+<!-- Student Info & Avatar Container -->
+<div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
+    <!-- Student Info Table (Left) -->
+    <div class="school-info-table">
+        <div><span class="school-info-label">NAME:</span> <strong>{{ strtoupper($student->name) }}</strong></div>
+        <div><span class="school-info-label">CLASS:</span> {{ $student->class }}</div>
+        <div><span class="school-info-label">TERM:</span> {{ strtoupper($term) }}</div>
+        <div><span class="school-info-label">SESSION:</span> {{ strtoupper($session) }}</div>
+    </div>
+
+    <!-- Student Avatar (Right) -->
+    <div style="flex-shrink: 0;">
+        @if($student->avatar)
+            <img src="{{ $student->avatar }}" alt="Student Photo" class="student-avatar">
+        @else
+            <div style="width: 90px; height: 90px; border-radius: 50%; background-color: #ddd; display: flex; align-items: center; justify-content: center;">
+                <span style="color: #999; font-size: 12px;">No Photo</span>
+            </div>
+        @endif
+    </div>
+</div>
 
     <!-- STUDENT INFO -->
     <!-- <div class="student-info">
@@ -483,6 +491,9 @@
             </thead>
             <tbody>
                 @forelse($results as $subjectId => $score)
+                 @php
+                    $avg = $score['total'] ?? 0;
+                @endphp
                     <tr>
                         <td>{{ $loop->iteration }}</td>
                         <td class="subject-name">{{ $score['name'] }}</td>
@@ -491,14 +502,40 @@
                         <td><strong>{{ $score['total'] ?? 0 }}</strong></td>
                         <td><strong>{{ $score['grade'] ?? '-' }}</strong></td>
                         <td>
-                            @if($score['total'] >= 70)
-                                Excellent
-                            @elseif($score['total'] >= 60)
-                                Good
-                            @elseif($score['total'] >= 50)
-                                Fair
+                            @if($level === 'SSS')
+                                @if($avg >= 80)
+                                    EXCELLENT
+                                @elseif($avg >= 75)
+                                    V.GOOD
+                                @elseif($avg >= 70)
+                                    GOOD
+                                @elseif($avg >= 65)
+                                    CREDIT
+                                @elseif($avg >= 60)
+                                    CREDIT
+                                @elseif($avg >= 50)
+                                    CREDIT
+                                @elseif($avg >= 45)
+                                    PASS
+                                @elseif($avg >= 40)
+                                    PASS
+                                @else
+                                    FAIL
+                                @endif
                             @else
-                                Poor
+                                @if($avg >= 70)
+                                    EXCELLENT
+                                @elseif($avg >= 60)
+                                    V. GOOD
+                                @elseif($avg >= 50)
+                                    GOOD
+                                @elseif($avg >= 45)
+                                    PASS
+                                @elseif($avg >= 40)
+                                    FAIR
+                                @else
+                                    FAIL
+                                @endif
                             @endif
                         </td>
                     </tr>
@@ -510,94 +547,113 @@
             </tbody>
         </table>
 
-    {{-- THIRD TERM: Extended Table with All Terms --}}
-    @else
-        <table class="results-table">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>SUBJECTS</th>
-                    <th colspan="2">1st Term</th>
-                    <th colspan="2">2nd Term</th>
-                    <th colspan="2">3rd Term</th>
-                    <th>Grade</th>
-                    <th>Remark</th>
-                </tr>
-                <tr>
-                    <th></th>
-                    <th></th>
-                    <th>Test (10)</th>
-                    <th>Exam (90)</th>
-                    <th>Test (10)</th>
-                    <th>Exam (90)</th>
-                    <th>Test (10)</th>
-                    <th>Exam (90)</th>
-                    <th></th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($results as $subjectId => $score)
-                    @php
-                        $t1 = $cumulative[$subjectId]['t1'] ?? 0;
-                        $t2 = $cumulative[$subjectId]['t2'] ?? 0;
-                        $t3 = $cumulative[$subjectId]['t3'] ?? 0;
-                        $avg = $cumulative[$subjectId]['average'] ?? 0;
-                        $grade = $cumulative[$subjectId]['grade'] ?? '-';
-                    @endphp
+        {{-- THIRD TERM: Extended Table with All Terms --}}
+        @else
+            <table class="results-table">
+                <thead>
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td class="subject-name">{{ $score['name'] }}</td>
-                        
-                        {{-- 1st Term --}}
-                        @if($t1)
-                            <td>{{ $firstTerm->scores[$subjectId]['test'] ?? 0 }}</td>
-                            <td>{{ $firstTerm->scores[$subjectId]['exam'] ?? 0 }}</td>
-                        @else
-                            <td>-</td>
-                            <td>-</td>
-                        @endif
-
-                        {{-- 2nd Term --}}
-                        @if($t2)
-                            <td>{{ $secondTerm->scores[$subjectId]['test'] ?? 0 }}</td>
-                            <td>{{ $secondTerm->scores[$subjectId]['exam'] ?? 0 }}</td>
-                        @else
-                            <td>-</td>
-                            <td>-</td>
-                        @endif
-
-                        {{-- 3rd Term (Current) --}}
-                        <td>{{ $score['test'] ?? 0 }}</td>
-                        <td>{{ $score['exam'] ?? 0 }}</td>
-
-                        {{-- Grade & Remark --}}
-                        <td><strong>{{ $grade }}</strong></td>
-                        <td>
-                            @if($avg >= 70)
-                                Excellent
-                            @elseif($avg >= 60)
-                                Good
-                            @elseif($avg >= 50)
-                                Fair
-                            @else
-                                Poor
-                            @endif
-                        </td>
+                        <th>#</th>
+                        <th>SUBJECTS</th>
+                        <th>1st Term</th>
+                        <th>2nd Term</th>
+                        <th colspan="2">3rd Term</th>
+                        <th>3rd Total</th>
+                        <th>Cumulative</th>
+                        <th>Grade</th>
+                        <th>Remark</th>
                     </tr>
-                @empty
                     <tr>
-                        <td colspan="10" class="text-center">No results available.</td>
+                        <th></th>
+                        <th></th>
+                        <th>(100)</th>
+                        <th>(100)</th>
+                        <th>Test (40)</th>
+                        <th>Exam (60)</th>
+                        <th>(100)</th>
+                        <th>(100)</th>
+                        <th></th>
+                        <th></th>
                     </tr>
-                @endforelse
-            </tbody>
-        </table>
-    @endif
-
+                </thead>
+                <tbody>
+                    @forelse($results as $subjectId => $score)
+                        @php
+                            $t1 = $cumulative[$subjectId]['t1'] ?? 0;
+                            $t2 = $cumulative[$subjectId]['t2'] ?? 0;
+                            $t3 = $cumulative[$subjectId]['t3'] ?? 0;
+                            $avg = $cumulative[$subjectId]['average'] ?? 0;
+                            $grade = $cumulative[$subjectId]['grade'] ?? '-';
+                            $t3Total = ($score['test'] ?? 0) + ($score['exam'] ?? 0);
+                            $cumulativeAvg = ($t1 + $t2 + $t3Total) / 3;
+                        @endphp
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td class="subject-name">{{ $score['name'] }}</td>
+                            
+                            {{-- 1st Term Total --}}
+                            <td><strong>{{ $t1 ?? '-' }}</strong></td>
+                            {{-- 2nd Term Total --}}
+                            <td><strong>{{ $t2 ?? '-' }}</strong></td>
+                            {{-- 3rd Term (Test & Exam) --}}
+                            <td>{{ $score['test'] ?? 0 }}</td>
+                            <td>{{ $score['exam'] ?? 0 }}</td>
+                            {{-- 3rd Term Total --}}
+                            <td><strong>{{ $t3Total }}</strong></td>
+                            {{-- Cumulative Average --}}
+                            <td><strong>{{ round($cumulativeAvg, 2) }}</strong></td>
+                            {{-- Grade --}}
+                            <td><strong>{{ $grade }}</strong></td>
+                            {{-- Remark --}}
+                            <td>
+                                @if($level === 'SSS')
+                                    @if($cumulativeAvg >= 80)
+                                        EXCELLENT
+                                    @elseif($cumulativeAvg >= 75)
+                                        V.GOOD
+                                    @elseif($cumulativeAvg >= 70)
+                                        GOOD
+                                    @elseif($cumulativeAvg >= 65)
+                                        CREDIT
+                                    @elseif($cumulativeAvg >= 60)
+                                        CREDIT
+                                    @elseif($cumulativeAvg >= 50)
+                                        CREDIT
+                                    @elseif($cumulativeAvg >= 45)
+                                        PASS
+                                    @elseif($cumulativeAvg >= 40)
+                                        PASS
+                                    @else
+                                        FAIL
+                                    @endif
+                                @else
+                                    @if($cumulativeAvg >= 70)
+                                        EXCELLENT
+                                    @elseif($cumulativeAvg >= 60)
+                                        V. GOOD
+                                    @elseif($cumulativeAvg >= 50)
+                                        GOOD
+                                    @elseif($cumulativeAvg >= 45)
+                                        PASS
+                                    @elseif($cumulativeAvg >= 40)
+                                        FAIR
+                                    @else
+                                        FAIL
+                                    @endif
+                                @endif
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="10" class="text-center">No results available.</td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        @endif
         <!-- AFFECTIVE DISPOSITION & PSYCHOMOTOR SKILLS RATING TABLE -->
-    <div style="margin-top: 30px; margin-bottom: 30px;">
+<!--     <div style="margin-top: 30px; margin-bottom: 30px;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
-            <!-- LEFT: Affective Disposition Rating -->
+            <!-- LEFT: Affective Disposition Rating --
             <div>
                 <h6 style="font-size: 12px; font-weight: bold; color: #333; margin-bottom: 12px; text-transform: uppercase;">Affective Disposition Rating</h6>
                 <table style="width: 100%; border-collapse: collapse; font-size: 11px;">
@@ -644,7 +700,7 @@
                 </table>
             </div>
 
-            <!-- RIGHT: Psychomotor Skills & Rating Key -->
+            <!-- RIGHT: Psychomotor Skills & Rating Key --
             <div>
                 <h6 style="font-size: 12px; font-weight: bold; color: #333; margin-bottom: 12px; text-transform: uppercase;">Psychomotor Skills</h6>
                 <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin-bottom: 20px;">
@@ -705,7 +761,7 @@
                 </table>
             </div>
         </div>
-    </div>
+    </div> -->
 
     <!-- SUMMARY -->
     <div class="summary">
@@ -714,7 +770,7 @@
             <div class="summary-value">{{ $totalScore }}</div>
         </div>
         <div class="summary-box">
-            <div class="summary-label">Termly Average</div>
+            <div class="summary-label">Average</div>
             <div class="summary-value">{{ $average }}</div>
         </div>
     </div>

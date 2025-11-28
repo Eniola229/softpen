@@ -115,7 +115,7 @@
                 <p class="card-text"><strong>Class:</strong> 
                     {{ is_array($teacher->class) ? implode(', ', $teacher->class) : $teacher->class }}
                 </p>
-                <p class="card-text"><strong>Department:</strong> {{ $teacher->department }}</p>
+                <p class="card-text"><strong>Department:</strong> {{ $teacher->department ?? 'N/A' }}</p>
 
                 <p class="card-text"><strong>Subject:</strong> 
                     {{ implode(', ', $subjectNames) }}
@@ -125,13 +125,17 @@
                 <p class="card-text">
                   @if ($teacher->status === 'ACTIVE')
                       <a onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
-                      <button class="btn btn-danger">Disactivate Account</button>
+                      <button class="btn btn-warning">Disactivate Account</button>
                       </a>
                   @elseif ($teacher->status === 'DISACTIVATE')
                      <a onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
                       <button class="btn btn-success" style="color: white;">Activate Account</button>
                     </a>
                   @endif
+                      <a onclick="confirmStatusChange('{{ url('school/teacher/delete', $teacher->id) }}')">
+                      <button class="btn btn-danger">Delete Teacher</button>
+                      </a>
+
                      <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
                         Edit Teacher
                     </button>                   
@@ -309,7 +313,7 @@
       function confirmStatusChange(url) {
           Swal.fire({
               title: 'Are you sure?',
-              text: "You are about to change the status of this school.",
+              text: "You are about this action?",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',

@@ -58,6 +58,7 @@ class Result extends Authenticatable
         'exam',
         'total',
         'teachers_comment',
+        'scores'
     ];
 
     public function student()

@@ -160,6 +160,11 @@
                           </div>
 
                           <div class="mb-3">
+                              <label for="motto" class="form-label">Motto</label>
+                              <input type="text" class="form-control" id="motto" name="motto" value="{{ old('motto', $school->motto) }}" required>
+                          </div>
+
+                          <div class="mb-3">
                               <label for="address" class="form-label">Address</label>
                               <input type="text" class="form-control" id="address" name="address" value="{{ old('address', $school->address) }}" required>
                           </div>
@@ -238,13 +243,13 @@
                           />
                           </td>
                           <td>{{ $student->name }}</td>
-                          <td>{{ $student->class }} {{ $staff->department }}</td>
+                          <td>{{ $student->class }} {{ $student->department }}</td>
                           <td>{{ $student->age }}</td>
                          <td class="{{ $student->status === 'ACTIVE' ? 'text-success' : 'text-danger' }}">
                               {{ $student->status }}
                           </td>
                           <td>{{ $student->created_at ? $student->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                          <td class="gap-2"><a  href="{{ url('admin/view/students/' . $staff->id) }}"><button class="btn btn-info m-2">View</button></a>
+                          <td class="gap-2"><a  href="{{ url('admin/view/students/' . $student->id) }}"><button class="btn btn-info m-2">View</button></a>
                           </td>
                         </tr>
                       <tfoot>
@@ -285,7 +290,7 @@
                           <th>Picture</th>
                           <th>Name</th>
                           <th>Email</th>
-                          <th>Class | Department | Subject</th>
+                          <th>Class | Department</th>
                           <th>Status</th>
                           <th>Created At</th>
                           <th>Action</th>
@@ -303,7 +308,7 @@
                           </td>
                           <td>{{ $staff->name }}</td>
                           <td>{{ $staff->email }}</td>
-                          <td>{{ $staff->class }} | {{ $staff->department }} | {{ $staff->subject }}</td>
+                          <td>{{ is_array($staff->class) ? implode(', ', $staff->class) : $staff->class }} | {{ $staff->department ?? 'N/A' }} | </td>
                          <td class="{{ $staff->status === 'ACTIVE' ? 'text-success' : 'text-danger' }}">
                               {{ $staff->status }}
                           </td>

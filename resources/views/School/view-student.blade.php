@@ -104,7 +104,7 @@
         <div class="card mb-4 shadow">
           <div class="row g-0">
             <div class="col-md-4">
-              <img src="{{ $student->avatar }}" class="img-fluid rounded-start" alt="Student Image">
+              <img src="{{ $student->avatar }}" class="img-fluid rounded-start h-100" alt="Student Image">
             </div>
             <div class="col-md-8">
               <div class="card-body">
@@ -116,13 +116,16 @@
                 <p class="card-text">
                  @if ($student->status === 'ACTIVE')
                       <a onclick="confirmStatusChange('{{ url('school/student/change', $student->id) }}')">
-                      <button class="btn btn-danger">Disactivate Account</button>
+                      <button class="btn btn-warning">Disactivate Account</button>
                       </a>
                   @elseif ($student->status === 'DISACTIVATE')
                      <a onclick="confirmStatusChange('{{ url('school/student/change', $student->id) }}')">
                       <button class="btn btn-success" style="color: white;">Activate Account</button>
                     </a>
                   @endif
+                    <a onclick="confirmStatusChange('{{ url('school/student/delete', $student->id) }}')">
+                      <button class="btn btn-danger">Delete Student</button>
+                      </a>
                      <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
                         Edit Student
                     </button>                   
@@ -331,7 +334,7 @@
       function confirmStatusChange(url) {
           Swal.fire({
               title: 'Are you sure?',
-              text: "You are about to change the status of this school.",
+              text: "You are about this action?",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',

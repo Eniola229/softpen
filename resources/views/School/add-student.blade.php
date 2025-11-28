@@ -170,7 +170,7 @@
                         @endforeach
                     </select>
 
-                        <label for="department">Department</label>
+                        <label for="department">Department (Optional)</label>
                         <select id="department" name="department" class="form-control">
                             <option value="">-- Select Department --</option>
 

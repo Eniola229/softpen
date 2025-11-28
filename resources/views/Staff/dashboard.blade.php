@@ -86,7 +86,7 @@
               <div class="card card-hover">
                 <div class="box bg-info text-center">
                   <h1 class="font-light text-white">
-                     <i class="mdi mdi-account fs-3 mb-1 font-16"></i>
+                     <i class="mdi mdi-school fs-3 mb-1 font-16"></i>
                   </h1>
                   <h6 class="text-white">Classes</h6>
                 </div>

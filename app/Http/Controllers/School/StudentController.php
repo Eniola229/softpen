@@ -143,4 +143,17 @@ class StudentController extends Controller
         // Redirect back with a success message
         return redirect()->back()->with('message', $message);
     }
+
+        public function deleteStudent($id)
+    {
+        // Find the admin (school)
+        $student = Student::findOrFail($id);
+
+        // Delete the student record from the database
+        $student->delete();
+
+        // Redirect with a success message
+        return redirect()->to('school/student')->with('message', 'Student deleted successfully');
+    }
+
 }
