@@ -95,9 +95,10 @@
                   class="dropdown-menu dropdown-menu-end user-dd animated"
                   aria-labelledby="navbarDropdown"
                 >
-                  <a class="dropdown-item" href="javascript:void(0)"
-                    ><i class="mdi mdi-account me-1 ms-1"></i> My Profile</a
-                  >
+                  <a class="dropdown-item"
+                     href="{{ Auth::guard('admin')->check() ? route('admin/profile') : '#' }}">
+                      <i class="mdi mdi-account me-1 ms-1"></i> My Profile
+                  </a>
                 </ul>
               </li>
               <!-- ============================================================== -->

@@ -13,12 +13,12 @@
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
-    <!-- <div class="preloader">
+     <div class="preloader">
       <div class="lds-ripple">
         <div class="lds-pos"></div>
         <div class="lds-pos"></div>
       </div>
-    </div> -->
+    </div>
     <!-- ============================================================== -->
     <!-- Main wrapper - style you can find in pages.scss -->
     <!-- ============================================================== -->
@@ -154,7 +154,7 @@
         <!-- footer -->
         <!-- ============================================================== -->
         <footer class="footer text-center">
-            All Rights Reserved by SoftPen Technologies | Developed by Softpen Tech
+            All Rights Reserved by SoftPenTech | Developed by SoftpenTech
         </footer>
         <!-- ============================================================== -->
         <!-- End footer -->
@@ -170,25 +170,34 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-    <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
+    <script src="{{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
+
     <!-- Bootstrap tether Core JavaScript -->
-    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+
     <!-- slimscrollbar scrollbar JavaScript -->
-    <script src="../assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js"></script>
-    <script src="../assets/extra-libs/sparkline/sparkline.js"></script>
+    <script src="{{ asset('assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js') }}"></script>
+
+    <script src="{{ asset('assets/extra-libs/sparkline/sparkline.js') }}"></script>
+
     <!--Wave Effects -->
-    <script src="../dist/js/waves.js"></script>
+    <script src="{{ asset('dist/js/waves.js') }}"></script>
+
     <!--Menu sidebar -->
-    <script src="../dist/js/sidebarmenu.js"></script>
+    <script src="{{ asset('dist/js/sidebarmenu.js') }}"></script>
+
     <!--Custom JavaScript -->
-    <script src="../dist/js/custom.min.js"></script>
+    <script src="{{ asset('dist/js/custom.min.js') }}"></script>
+
     <!-- this page js -->
-    <script src="../assets/extra-libs/multicheck/datatable-checkbox-init.js"></script>
-    <script src="../assets/extra-libs/multicheck/jquery.multicheck.js"></script>
-    <script src="../assets/extra-libs/DataTables/datatables.min.js"></script>
+    <script src="{{ asset('assets/extra-libs/multicheck/datatable-checkbox-init.js') }}"></script>
+    <script src="{{ asset('assets/extra-libs/multicheck/jquery.multicheck.js') }}"></script>
+    <script src="{{ asset('assets/extra-libs/DataTables/datatables.min.js') }}"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
  <script>
-      /****************************************
+      /**************************************** 
        *       Basic Table                   *
        ****************************************/
       $("#zero_config").DataTable();

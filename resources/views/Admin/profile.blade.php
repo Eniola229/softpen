@@ -41,7 +41,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.school-nav') 
+      @include('components.side-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      View Teacher Profile
+                      Profile
                     </li>
                   </ol>
                 </nav>
@@ -103,152 +103,62 @@
         <!-- School Info Section -->
         <div class="card mb-4 shadow">
           <div class="row g-0">
-            <div class="col-md-4">
-              <img src="{{ $teacher->avatar }}" class="img-fluid rounded-start h-100" alt="teacher Image">
-            </div>
             <div class="col-md-8">
               <div class="card-body">
-                <h2 class="card-title">{{ $teacher->name }}</h2>
-                <p class="card-text"><strong>Email:</strong> {{ $teacher->email }}</p>
-                <p class="card-text"><strong>Address:</strong> {{ $teacher->address }}</p>
-                <p class="card-text"><strong>Mobile:</strong> {{ $teacher->mobile }}</p>
-                <p class="card-text"><strong>Class:</strong> 
-                    {{ is_array($teacher->class) ? implode(', ', $teacher->class) : $teacher->class }}
-                </p>
-                <p class="card-text"><strong>Department:</strong> {{ $teacher->department ?? 'N/A' }}</p>
-
-                <p class="card-text"><strong>Subject:</strong> 
-                    {{ implode(', ', $subjectNames) }}
-                </p>
-
-
-                <p class="card-text">
-                  @if ($teacher->status === 'ACTIVE')
-                      <a onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
-                      <button class="btn btn-warning">Disactivate Account</button>
-                      </a>
-                  @elseif ($teacher->status === 'DISACTIVATE')
-                     <a onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
-                      <button class="btn btn-success" style="color: white;">Activate Account</button>
-                    </a>
-                  @endif
-                      <a onclick="confirmStatusChange('{{ url('school/teacher/delete', $teacher->id) }}')">
-                      <button class="btn btn-danger">Delete Teacher</button>
-                      </a>
-
-                     <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
-                        Edit Teacher
-                    </button>                   
-                  </p>
+                <h2 class="card-title">{{ Auth::user()->name }}</h2>
+                <p class="card-text"><strong>Email:</strong> {{ Auth::user()->email }}</p>
+                <p class="card-text"><strong>Phone:</strong> {{ Auth::user()->mobile }}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Modal -->
-      <div class="modal fade" id="editSchoolModal" tabindex="-1" aria-labelledby="editSchoolModalLabel" aria-hidden="true">
-          <div class="modal-dialog">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h5 class="modal-title" id="editSchoolModalLabel">Edit Teacher</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <!-- Tabs for Students and Staff -->
+        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edits" type="button" role="tab" aria-controls="edits" aria-selected="true">Edit Profile</button>
+          </li>
+     
+        </ul>
+        <div class="tab-content" id="profileTabsContent">
+          <!-- Students Section -->
+          <div class="tab-pane fade show active" id="edits" role="tabpanel" aria-labelledby="edit-tab">
+                <div class="card">
+                <div class="card-body">
+                  <div class="d-flex justify-content-between align-items-center mb-2">
+                      <h5 class="card-title">Profile name {{ Auth::user()->name }}</h5>
                   </div>
-                  <div class="modal-body">
-                      <form action="{{ route('school/add/teacher') }}" method="POST" enctype="multipart/form-data"> 
+                  <div class="card">
+                      <form action="{{ route('admin/profile') }}" method="POST" enctype="multipart/form-data"> 
                           @csrf
-                          <input type="hidden" name="id" value="{{ $teacher->id }}">
-
                           <div class="mb-3">
-                              <label for="name" class="form-label">Teacher Name</label>
-                              <input type="text" class="form-control" id="name" name="name" 
-                                     value="{{ old('name', $teacher->name) }}" required>
+                              <label for="name" class="form-label">Name</label>
+                              <input type="text" class="form-control" id="name" name="name" value="{{ old('name', Auth::user()->name) }}" required>
                           </div>
 
                           <div class="mb-3">
                               <label for="email" class="form-label">Email</label>
-                              <input type="email" class="form-control" id="email" name="email" 
-                                     value="{{ old('email', $teacher->email) }}" required>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="address" class="form-label">Address</label>
-                              <input type="text" class="form-control" id="address" name="address" 
-                                     value="{{ old('address', $teacher->address) }}" required>
+                              <input type="email" class="form-control" id="email" name="email" value="{{ old('email', Auth::user()->email) }}" required>
                           </div>
 
                           <div class="mb-3">
                               <label for="mobile" class="form-label">Mobile</label>
-                              <input type="text" class="form-control" id="mobile" name="mobile" 
-                                     value="{{ old('mobile', $teacher->mobile) }}" required>
-                          </div>
-
-                          <!-- Multi-Select Class -->
-                          <div class="mb-3">
-                              <label for="class">Class</label>
-                              <select id="class" name="class[]" class="form-control" multiple size="6" style="height:auto;">
-                                  @php
-                                      $selectedClasses = collect(old('class', $teacher->class ?? []));
-                                  @endphp
-                                  @foreach ($classes as $c)
-                                      <option value="{{ $c->name }}" 
-                                          {{ $selectedClasses->contains($c->name) ? 'selected' : '' }}>
-                                          {{ $c->name }}
-                                      </option>
-                                  @endforeach
-                              </select>
-                              <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple.</small>
-                          </div>
-
-                          <!-- Multi-Select Subject -->
-                          <div class="mb-3">
-                              <label for="subject">Subject</label>
-                              <select id="subject" name="subject[]" class="form-control" multiple size="6" style="height:auto;">
-                                  @php
-                                      $selectedSubjects = collect(old('subject', $teacher->subject ?? []));
-                                  @endphp
-                                  @foreach ($subjects as $s)
-                                      <option value="{{ $s->id }}" 
-                                          {{ $selectedSubjects->contains($s->name) ? 'selected' : '' }}>
-                                          {{ $s->name }} - {{ $s->for }} 
-                                      </option>
-                                  @endforeach
-                              </select>
-                              <small class="text-muted">Hold CTRL (Windows) or CMD (Mac) to select multiple.</small>
-                          </div>
-
-                          <!-- Department -->
-                          <div class="mb-3">
-                              <label for="department" class="form-label">Department (Optional)</label>
-                              <select id="department" name="department" class="form-control">
-                                  <option value="">-- Select Department --</option>
-                                  @foreach ($depts as $dept)
-                                      <option value="{{ $dept->name }}" 
-                                          {{ old('department', $teacher->department) == $dept->name ? 'selected' : '' }}>
-                                          {{ $dept->name }}
-                                      </option>
-                                  @endforeach
-                              </select>
-                          </div>
-
-                          <div class="mb-3">
-                              <label for="avatar" class="form-label">Teacher Passport</label>
-                              <input type="file" class="form-control" id="avatar" name="avatar">
-                              <small class="form-text text-muted">Leave blank to keep the current image.</small>
+                              <input type="text" class="form-control" id="mobile" name="mobile" value="{{ old('mobile', Auth::user()->mobile) }}" required>
                           </div>
 
                           <div class="mb-3">
                               <label for="password" class="form-label">Password</label>
-                              <input type="password" class="form-control" id="password" name="password">
+                              <input type="password" class="form-control" id="password" name="password" autocomplete="new-password">
                               <small class="form-text text-muted">Leave blank to keep the current password.</small>
                           </div>
 
-                          <button type="submit" class="btn btn-success">Update Teacher</button>
+                          <button type="submit" class="btn btn-success">Update Profile</button>
                       </form>
                   </div>
+                </div>
               </div>
           </div>
-      </div>
-
+        </div>
       </div>
           <!-- ============================================================== -->
           <!-- End PAge Content -->
@@ -313,7 +223,7 @@
       function confirmStatusChange(url) {
           Swal.fire({
               title: 'Are you sure?',
-              text: "You are about this action?",
+              text: "You are about to change the status of this school.",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',

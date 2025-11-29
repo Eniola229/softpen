@@ -52,6 +52,8 @@ Route::post('post/login', [AdminAuthController::class, 'postLogin'])->name('admi
 //AUTH ADMIN
 Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminAuthController::class, 'dashboard'])->name('admin-dashboard');
+    Route::get('/profile', [AdminAuthController::class, 'profile'])->name('admin/profile');
+    Route::post('/profile', [AdminAuthController::class, 'update'])->name('admin/profile');
     Route::get('/schools', [SchoolController::class, 'index'])->name('admin/schools');
     Route::post('/schools', [SchoolController::class, 'create'])->name('admin/schools');
     Route::get('add/schools', [SchoolController::class, 'addSchool'])->name('admin/add/schools');

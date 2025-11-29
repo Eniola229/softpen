@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="keywords"
-      content="SoftPen Technologies for schools"
+      content="SoftPenTech for schools"
     />
     <meta
       name="description"
-      content="SoftPen Technologies for schools"
+      content="SoftPenTech for schools"
     />
     <meta name="robots" content="noindex,nofollow" />
-    <title>SoftPen Technologies</title>
+    <title>SoftPenTech</title>
     <!-- Custom CSS -->
     <link href="../dist/css/style.min.css" rel="stylesheet" />
 
@@ -50,7 +50,7 @@
         <div class="auth-box bg-dark border-top border-secondary">
           <div id="loginform">
             <div class="text-center pt-3 pb-3">
-              <span class="db"><h1 style="color: white;">SoftPen Technologies</h1></span>
+              <span class="db"><h1 style="color: white;">SoftPenTech</h1></span>
               <h3 style="color: white;">Admin Login</h3>
             </div>
             <!-- Form -->

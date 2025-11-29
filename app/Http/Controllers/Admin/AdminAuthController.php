@@ -112,6 +112,16 @@ class AdminAuthController extends Controller
         return redirect("admin/login")->withSuccess('Oops! You do not have access');
     }
 
+    public function profile()
+    {
+
+        if (Auth::guard('admin')->check()) {
+            return view('admin.profile');
+        }
+
+        return redirect("admin/login")->withSuccess('Oops! You do not have access');
+    }
+
     /**
      * Create a new admin instance.
      *
@@ -138,5 +148,32 @@ class AdminAuthController extends Controller
         Auth::guard('admin')->logout();
 
         return redirect('admin/login');
+    }
+
+    public function update(Request $request)
+    {
+        $admin = Auth::guard('admin')->user();
+
+        // Validate fields
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'mobile' => 'required|string|max:20',
+            'password' => 'nullable|min:6',
+        ]);
+
+        // Update fields
+        $admin->name = $request->name;
+        $admin->email = $request->email;
+        $admin->mobile = $request->mobile;
+
+        // Update password only if user typed a new one
+        if (!empty($request->password)) {
+            $admin->password = Hash::make($request->password);
+        }
+
+        $admin->save();
+
+        return back()->with('message', 'Profile updated successfully!');
     }
 }

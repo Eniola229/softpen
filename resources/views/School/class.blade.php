@@ -154,7 +154,7 @@
         <!-- footer -->
         <!-- ============================================================== -->
         <footer class="footer text-center">
-            All Rights Reserved by SoftPen Technologies | Developed by Softpen Tech
+            All Rights Reserved by SoftPenTech | Developed by SoftpenTech
         </footer>
         <!-- ============================================================== -->
         <!-- End footer -->
