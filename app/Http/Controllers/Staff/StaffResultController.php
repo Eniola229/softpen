@@ -223,6 +223,7 @@ public function showReportCard(Result $result)
         'school' => $school,
         'student' => $student,
         'session' => $result->session,
+        'class' => $result->class,
         'term' => $result->term,
         'results' => $processedCurrent,
         'cumulative' => $cumulative,

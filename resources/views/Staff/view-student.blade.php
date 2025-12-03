@@ -171,6 +171,7 @@
                         <div class="col-md-6 mb-3">
                             <label class="form-label">Term</label>
                             <select name="term" class="form-control" required>
+                                <option value="" selected disabled>Select a term</option>
                                 <option value="First Term">First Term</option>
                                 <option value="Second Term">Second Term</option>
                                 <option value="Third Term">Third Term</option>
@@ -359,6 +360,16 @@
               }
           });
       }
+
+      const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const term = document.getElementById('termSelect').value;
+            if (!term) {
+                e.preventDefault();
+                alert('Please select a term before proceeding.');
+            }
+        });
+
     </script>
   </body>
 </html>

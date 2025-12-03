@@ -152,20 +152,19 @@
                 <div class="card-body">
                   <div class="d-md-flex align-items-center">
                     <div>
-                      <h4 class="card-title">Site Analysis</h4>
-                      <h5 class="card-subtitle">Overview of Latest Month</h5>
+                      <h4 class="card-title">Analysis</h4>
                     </div>
                   </div>
                   <div class="row">
                     <!-- column -->
-                    <div class="col-lg-9">
+<!--                     <div class="col-lg-9">
                       <div class="flot-chart">
                         <div
                           class="flot-chart-content"
                           id="flot-line-chart"
                         ></div>
                       </div>
-                    </div>
+                    </div> -->
                     <div class="col-lg-3">
                       <div class="row">
                         <div class="col-6">

@@ -48,7 +48,7 @@ class StudentController extends Controller
             'school_id' => 'nullable|string|max:50',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:schools,email,' . $request->input('id'),
+            'email' => 'required|email|max:255|unique:students,email,' . $request->input('id'),
             'address' => 'nullable|string|max:255',
             'age' => 'required|string|max:2',
             'class' => 'nullable|string|max:100',
@@ -155,5 +155,43 @@ class StudentController extends Controller
         // Redirect with a success message
         return redirect()->to('school/student')->with('message', 'Student deleted successfully');
     }
+
+    public function promoteAll()
+    {
+        $school = Auth::guard('school')->user();
+
+        \DB::table('students')
+            ->where('school_id', $school->id)
+            ->update([
+                'class' => \DB::raw("
+                    CASE 
+                        -- SS
+                        WHEN UPPER(class) = 'SS1' THEN 'SS2'
+                        WHEN UPPER(class) = 'SS2' THEN 'SS3'
+                        WHEN UPPER(class) = 'SS3' THEN 'Graduating-SS'
+
+                        -- JSS
+                        WHEN UPPER(class) = 'JSS1' THEN 'JSS2'
+                        WHEN UPPER(class) = 'JSS2' THEN 'JSS3'
+                        WHEN UPPER(class) = 'JSS3' THEN 'Graduating-JSS'
+
+                        -- BASIC / PRIMARY
+                        WHEN UPPER(class) IN ('PRIMARY 1','BASIC 1') THEN 'Primary 2'
+                        WHEN UPPER(class) IN ('PRIMARY 2','BASIC 2') THEN 'Primary 3'
+                        WHEN UPPER(class) IN ('PRIMARY 3','BASIC 3') THEN 'Primary 4'
+                        WHEN UPPER(class) IN ('PRIMARY 4','BASIC 4') THEN 'Primary 5'
+                        WHEN UPPER(class) IN ('PRIMARY 5','BASIC 5') THEN 'Primary 6'
+                        WHEN UPPER(class) IN ('PRIMARY 6','BASIC 6') THEN 'Graduating-PRIMARY'
+
+                        ELSE class 
+                    END
+                ")
+            ]);
+
+        return response()->json([
+            'message' => 'All students in your school have been successfully promoted!'
+        ]);
+    }
+
 
 }

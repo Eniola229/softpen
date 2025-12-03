@@ -94,6 +94,9 @@ Route::middleware('auth:school')->prefix('school')->group(function () {
     Route::get('/result-report/{result}', [StaffResultController::class, 'showReportCard'])->name('school.result.report');
     Route::get('/change/{id}', [TeachersController::class, 'changeStatus'])->name('school/teacher/changeStatus');
     Route::get('/teacher/delete/{id}', [TeachersController::class, 'deleteTeacher'])->name('school/teacher/deleteTeacher');
+
+    Route::post('promote-students', [StudentController::class, 'promoteAll'])->name('school.promote.students');
+
     
 
     Route::get('logout', [SchoolAuthController::class, 'logout'])->name('school/logout');

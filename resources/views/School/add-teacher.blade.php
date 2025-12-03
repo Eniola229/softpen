@@ -92,7 +92,7 @@
           <!-- ============================================================== -->
           <div class="card">
             <div class="card-body wizard-content">
-              <h1 class="card-title">Add a New Student</h1>
+              <h1 class="card-title">Add a New Teacher</h1>
               <h6 class="card-subtitle"></h6>
                 <form id="example-form" action="{{ route('school/add/teacher') }}" method="post" class="mt-5" enctype="multipart/form-data"> 
                 @csrf

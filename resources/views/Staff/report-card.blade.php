@@ -417,14 +417,14 @@
 
     <!-- RIGHT: Empty -->
     <div class="header-right"></div>
-</div>
+</div> 
 
 <!-- Student Info & Avatar Container -->
 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px;">
     <!-- Student Info Table (Left) -->
     <div class="school-info-table">
         <div><span class="school-info-label">NAME:</span> <strong>{{ strtoupper($student->name) }}</strong></div>
-        <div><span class="school-info-label">CLASS:</span> {{ $student->class }}</div>
+        <div><span class="school-info-label">CLASS:</span> {{ strtoupper($class) }}</div>
         <div><span class="school-info-label">TERM:</span> {{ strtoupper($term) }}</div>
         <div><span class="school-info-label">SESSION:</span> {{ strtoupper($session) }}</div>
     </div>

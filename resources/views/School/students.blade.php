@@ -97,10 +97,13 @@
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
                       <h5 class="card-title">Students</h5>
+                      <div>
                       <a href="{{ url('school/add/student') }}">
                       <button class="btn btn-primary">Add New Student</button>
                     </a>
+                    <button id="promoteAllBtn" class="btn btn-info">Promote All Student's</button>
                   </div>
+                </div>
 
                   <div class="table-responsive">
                     <table
@@ -197,21 +200,52 @@
       $("#zero_config").DataTable();
     </script>
     <script type="text/javascript">
-      function confirmStatusChange(url) {
+      document.getElementById('promoteAllBtn').addEventListener('click', function () {
           Swal.fire({
-              title: 'Are you sure?',
-              text: "You are about to delete this schol.",
-              icon: 'warning',
+              title: "Are you sure?",
+              text: "This will promote ALL students in your school!",
+              icon: "warning",
               showCancelButton: true,
-              confirmButtonColor: '#3085d6',
-              cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, delete it!'
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, Promote All!"
           }).then((result) => {
               if (result.isConfirmed) {
-                  window.location.href = url; // Redirect to the link URL
+                  // Change button text to loading
+                  const btn = document.getElementById('promoteAllBtn');
+                  btn.disabled = true;
+                  const originalText = btn.innerHTML;
+                  btn.innerHTML = "Loading...";
+
+                  // Send POST request
+                  fetch("{{ route('school.promote.students') }}", {
+                      method: "POST",
+                      headers: {
+                          "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                          "Accept": "application/json"
+                      }
+                  })
+                  .then(res => res.json())
+                  .then(data => {
+                      Swal.fire({
+                          title: "Success!",
+                          text: data.message,
+                          icon: "success"
+                      }).then(() => {
+                          // Reload page after pressing OK
+                          location.reload();
+                      });
+                  })
+                  .catch(() => {
+                      Swal.fire("Error!", "Something went wrong", "error");
+                  })
+                  .finally(() => {
+                      // Restore button
+                      btn.disabled = false;
+                      btn.innerHTML = originalText;
+                  });
               }
           });
-      }
-    </script>
+      });    </script>
   </body>
 </html>
