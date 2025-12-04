@@ -106,40 +106,110 @@
             <div class="col-md-4">
               <img src="{{ $teacher->avatar }}" class="img-fluid rounded-start h-100" alt="teacher Image">
             </div>
+            <!-- Teacher Details Section -->
             <div class="col-md-8">
-              <div class="card-body">
-                <h2 class="card-title">{{ $teacher->name }}</h2>
-                <p class="card-text"><strong>Email:</strong> {{ $teacher->email }}</p>
-                <p class="card-text"><strong>Address:</strong> {{ $teacher->address }}</p>
-                <p class="card-text"><strong>Mobile:</strong> {{ $teacher->mobile }}</p>
-                <p class="card-text"><strong>Class:</strong> 
-                    {{ is_array($teacher->class) ? implode(', ', $teacher->class) : $teacher->class }}
-                </p>
-                <p class="card-text"><strong>Department:</strong> {{ $teacher->department ?? 'N/A' }}</p>
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                  <h5 class="card-title mb-0">Teacher Details</h5>
+                </div>
+                <div class="card-body p-4">
+                  
+                  <!-- Teacher Name -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Teacher Name</span>
+                        <strong>{{ $teacher->name }}</strong>
+                      </div>
+                    </div>
+                  </div>
 
-                <p class="card-text"><strong>Subject:</strong> 
-                    {{ implode(', ', $subjectNames) }}
-                </p>
+                  <!-- Email -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Email</span>
+                        <strong>{{ $teacher->email }}</strong>
+                      </div>
+                    </div>
+                  </div>
 
+                  <!-- Mobile -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Mobile</span>
+                        <strong>{{ $teacher->mobile }}</strong>
+                      </div>
+                    </div>
+                  </div>
 
-                <p class="card-text">
-                  @if ($teacher->status === 'ACTIVE')
-                      <a onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
-                      <button class="btn btn-warning">Disactivate Account</button>
-                      </a>
-                  @elseif ($teacher->status === 'DISACTIVATE')
-                     <a onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
-                      <button class="btn btn-success" style="color: white;">Activate Account</button>
-                    </a>
-                  @endif
-                      <a onclick="confirmStatusChange('{{ url('school/teacher/delete', $teacher->id) }}')">
-                      <button class="btn btn-danger">Delete Teacher</button>
-                      </a>
+                  <!-- Address -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Address</span>
+                        <strong>{{ $teacher->address }}</strong>
+                      </div>
+                    </div>
+                  </div>
 
-                     <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
-                        Edit Teacher
-                    </button>                   
-                  </p>
+                  <!-- Department -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Department</span>
+                        <strong>{{ $teacher->department ?? 'N/A' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Class -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Class</span>
+                        <strong>{{ is_array($teacher->class) ? implode(', ', $teacher->class) : $teacher->class }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Subject -->
+                  <div class="row mb-4">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Subject</span>
+                        <strong>{{ implode(', ', $subjectNames) }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Action Buttons -->
+                  <div class="row">
+                    <div class="col-12">
+                      <div class="d-flex flex-wrap gap-2">
+                        @if ($teacher->status === 'ACTIVE')
+                          <button class="btn btn-warning btn-sm" onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
+                            Deactivate Account
+                          </button>
+                        @elseif ($teacher->status === 'DISACTIVATE')
+                          <button class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ url('school/change', $teacher->id) }}')">
+                            Activate Account
+                          </button>
+                        @endif
+                        
+                        <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
+                          Edit Teacher
+                        </button>
+                        
+                        <button class="btn btn-danger btn-sm" onclick="confirmStatusChange('{{ url('school/teacher/delete', $teacher->id) }}')">
+                          Delete Teacher
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>

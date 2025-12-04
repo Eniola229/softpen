@@ -106,28 +106,78 @@
             <div class="col-md-4">
               <img src="{{ $school->avatar }}" class="img-fluid rounded-start" alt="School Image">
             </div>
-            <div class="col-md-8">
-              <div class="card-body">
-                <h2 class="card-title">{{ $school->name }}</h2>
-                <p class="card-text"><strong>Email:</strong> {{ $school->email }}</p>
-                <p class="card-text"><strong>Phone:</strong> {{ $school->mobile }}</p>
-                <p class="card-text"><strong>Address:</strong> {{ $school->address }}</p>
-                <p class="card-text">
-                  @if ($school->status === 'ACTIVE')
-                      <a onclick="confirmStatusChange('{{ url('admin/change', $school->id) }}')">
-                      <button class="btn btn-danger">Disactivate Account</button>
-                      </a>
-                  @elseif ($school->status === 'DISACTIVATE')
-                     <a onclick="confirmStatusChange('{{ url('admin/change', $school->id) }}')">
-                      <button class="btn btn-success" style="color: white;">Activate Account</button>
-                    </a>
-                  @endif
-                     <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
-                        Edit School
-                    </button>                   
-                  </p>
+              <!-- School Details Section -->
+              <div class="col-md-8">
+                <div class="card border-0 shadow-sm">
+                  <div class="card-header bg-white border-bottom">
+                    <h5 class="card-title mb-0">School Details</h5>
+                  </div>
+                  <div class="card-body p-4">
+                    
+                    <!-- School Name -->
+                    <div class="row mb-3">
+                      <div class="col-12">
+                        <div class="d-flex">
+                          <span class="text-muted" style="min-width: 150px;">School Name</span>
+                          <strong>{{ $school->name }}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="row mb-3">
+                      <div class="col-12">
+                        <div class="d-flex">
+                          <span class="text-muted" style="min-width: 150px;">Email</span>
+                          <strong>{{ $school->email }}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="row mb-3">
+                      <div class="col-12">
+                        <div class="d-flex">
+                          <span class="text-muted" style="min-width: 150px;">Phone</span>
+                          <strong>{{ $school->mobile }}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="row mb-4">
+                      <div class="col-12">
+                        <div class="d-flex">
+                          <span class="text-muted" style="min-width: 150px;">Address</span>
+                          <strong>{{ $school->address }}</strong>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="row">
+                      <div class="col-12">
+                        <div class="d-flex flex-wrap gap-2">
+                          @if ($school->status === 'ACTIVE')
+                            <button class="btn btn-danger btn-sm" onclick="confirmStatusChange('{{ url('admin/change', $school->id) }}')">
+                              Deactivate Account
+                            </button>
+                          @elseif ($school->status === 'DISACTIVATE')
+                            <button class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ url('admin/change', $school->id) }}')">
+                              Activate Account
+                            </button>
+                          @endif
+                          
+                          <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
+                            Edit School
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
               </div>
-            </div>
           </div>
         </div>
 

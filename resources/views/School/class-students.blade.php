@@ -13,7 +13,7 @@
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
     <!-- ============================================================== -->
-    <div class="preloader">
+     <div class="preloader">
       <div class="lds-ripple">
         <div class="lds-pos"></div>
         <div class="lds-pos"></div>
@@ -41,7 +41,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.student-nav') 
+      @include('components.school-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                    Student Profile
+                      Students
                     </li>
                   </ol>
                 </nav>
@@ -76,16 +76,10 @@
         <!-- Container fluid  -->
         <!-- ============================================================== -->
 
-      <div class="container my-5">
+          
         @if(session('message'))
             <div class="alert alert-success">
                 {{ session('message') }}
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
             </div>
         @endif
 
@@ -99,132 +93,43 @@
             </div>
         @endif
 
-          
-        <!-- School Info Section -->
-        <div class="card mb-4 shadow">
-          <div class="row g-0">
-            <div class="col-md-4">
-              <img src="{{ $student->avatar }}" class="img-fluid rounded-start h-100" alt="Student Image">
-            </div>
-            <!-- Student Result Details Section -->
-            <div class="col-md-8">
-              <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white border-bottom">
-                  <h5 class="card-title mb-0">Student Details</h5>
-                </div>
-                <div class="card-body p-4">
-                  
-                  <!-- Student Name -->
-                  <div class="row mb-3">
-                    <div class="col-12">
-                      <div class="d-flex">
-                        <span class="text-muted" style="min-width: 150px;">Student Name</span>
-                        <strong>{{ $student->name }}</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Email -->
-                  <div class="row mb-3">
-                    <div class="col-12">
-                      <div class="d-flex">
-                        <span class="text-muted" style="min-width: 150px;">Email</span>
-                        <strong>{{ $student->email }}</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Address -->
-                  <div class="row mb-3">
-                    <div class="col-12">
-                      <div class="d-flex">
-                        <span class="text-muted" style="min-width: 150px;">Address</span>
-                        <strong>{{ $student->address }}</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Class -->
-                  <div class="row mb-3">
-                    <div class="col-12">
-                      <div class="d-flex">
-                        <span class="text-muted" style="min-width: 150px;">Class</span>
-                        <strong>{{ $student->class }}</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Department -->
-                  <div class="row mb-4">
-                    <div class="col-12">
-                      <div class="d-flex">
-                        <span class="text-muted" style="min-width: 150px;">Department</span>
-                        <strong>{{ $student->department ?? 'N/A' }}</strong>
-                      </div>
-                    </div>
-                  </div>
-
-                  <!-- Action Button -->
-                  <div class="row">
-                    <div class="col-12">
-                      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addResultModal">
-                        Add This Session Result
-                      </button>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-            </div>
-          </div> 
-        </div>
-
-      </div>
-        <ul class="nav nav-tabs" id="profileTabs" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result" type="button" role="tab" aria-controls="result" aria-selected="false">Result's</button>
-          </li>
-          
-        </ul>
-                <div class="tab-content" id="profileTabsContent">
-          <!-- result Section -->
-              <div class="tab-pane fade" id="result" role="tabpanel" aria-labelledby="result-tab">
-              <div class="card">
+         <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="card-title">{{ $student->name }}'s Results ({{ $student->class }})</h5>
-                   </div>
+                      <h5 class="card-title">Students of {{ $class->name }}</h5>
+                  </div>
 
                   <div class="table-responsive">
-                    <table id="zero_config" class="table table-striped table-bordered">
+                    <table
+                      id="zero_config"
+                      class="table table-striped table-bordered"
+                    >
                       <thead>
                         <tr>
-                          <th>Session</th>
-                          <th>Term</th>
+                          <th>Passport</th>
+                          <th>Name</th>
+                          <th>Class</th>
+                          <th>Created At</th>
                           <th>Action</th>
                         </tr>
                       </thead>
-                      @foreach($results as $session => $terms)
-                        @foreach($terms as $term => $records)
-                          <tr>
-                            <td>{{ $session }}</td>
-                            <td>{{ $term }}</td>
-                            <td>
-                              @if($records->isNotEmpty())
-                                <a href="{{ route('student.result.report', $records->first()->id) }}" class="btn btn-info btn-sm">
-                                  View Report
-                                </a>
-                              @else
-                                <span class="text-muted">No data</span>
-                              @endif
-                            </td>
-                          </tr>
-                        @endforeach
-                      @endforeach
-                      <tfoot>
+                      @foreach($students as $student)
+                      <tbody>
                         <tr>
-                          <th>Session</th>
-                          <th>Term</th>
+                          <td><img src="{{ $student->avatar }}" alt="Passport" srcset="" style="height: 60px; width: 50px;"></td>
+                          <td>{{ $student->name }}</td>
+                          <td>{{ $student->class }}</td>
+                          <td>{{ $student->created_at ? $student->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
+                          <td class="gap-2"><a href="{{ url('school/view/student/' . $student->id) }}"><button class="btn btn-success m-2" style="color: white;">View</button></a>
+                          </td>
+                        </tr>
+                      <tfoot>
+                      @endforeach
+                        <tr>
+                          <th>Passport</th>
+                          <th>Name</th>
+                          <th>Class</th>
+                          <th>Created At</th>
                           <th>Action</th>
                         </tr>
                       </tfoot>
@@ -232,11 +137,6 @@
                   </div>
                 </div>
               </div>
-            </div>
-
-       
-      
-      </div>
           <!-- ============================================================== -->
           <!-- End PAge Content -->
           <!-- ============================================================== -->
@@ -270,42 +170,48 @@
     <!-- ============================================================== -->
     <!-- All Jquery -->
     <!-- ============================================================== -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
     <script src="{{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
+
     <!-- Bootstrap tether Core JavaScript -->
     <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+
     <!-- slimscrollbar scrollbar JavaScript -->
     <script src="{{ asset('assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js') }}"></script>
+
     <script src="{{ asset('assets/extra-libs/sparkline/sparkline.js') }}"></script>
-    <!-- Wave Effects -->
+
+    <!--Wave Effects -->
     <script src="{{ asset('dist/js/waves.js') }}"></script>
-    <!-- Menu sidebar -->
+
+    <!--Menu sidebar -->
     <script src="{{ asset('dist/js/sidebarmenu.js') }}"></script>
-    <!-- Custom JavaScript -->
+
+    <!--Custom JavaScript -->
     <script src="{{ asset('dist/js/custom.min.js') }}"></script>
+
     <!-- this page js -->
     <script src="{{ asset('assets/extra-libs/multicheck/datatable-checkbox-init.js') }}"></script>
     <script src="{{ asset('assets/extra-libs/multicheck/jquery.multicheck.js') }}"></script>
     <script src="{{ asset('assets/extra-libs/DataTables/datatables.min.js') }}"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
  <script>
-      /****************************************
+      /**************************************** 
        *       Basic Table                   *
        ****************************************/
       $("#zero_config").DataTable();
     </script>
-
     <script type="text/javascript">
       function confirmStatusChange(url) {
           Swal.fire({
               title: 'Are you sure?',
-              text: "You are about to change the status of this school.",
+              text: "You are about to delete this schol.",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',
               cancelButtonColor: '#d33',
-              confirmButtonText: 'Yes, change it!'
+              confirmButtonText: 'Yes, delete it!'
           }).then((result) => {
               if (result.isConfirmed) {
                   window.location.href = url; // Redirect to the link URL

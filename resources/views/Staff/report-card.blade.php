@@ -21,34 +21,30 @@
         box-shadow: 0 0 10px rgba(0,0,0,0.1);
     }
 
-    .header {
+     .header {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
         margin-bottom: 30px;
         padding-bottom: 20px;
     }
-
     .header-left {
-        flex: 1;
+        flex: 0.8;
     }
-
     .header-center {
-        flex: 2;
+        flex: 3;
         text-align: center;
+        padding: 0 20px;
     }
-
     .header-right {
-        flex: 1;
+        flex: 0.7;
         text-align: right;
     }
-
     .school-logo {
         max-height: 80px;
         width: auto;
         margin-bottom: 10px;
     }
-
     .school-info-table {
         font-size: 15px;
         color: #555;
@@ -57,18 +53,15 @@
         margin-bottom: 0px;
         margin-top: 10px;
     }
-
     .school-info-table div {
         margin-bottom: 3px;
     }
-
     .school-info-label {
         font-weight: bold;
         color: #333;
         display: inline-block;
         width: 80px;
     }
-
     .school-name {
         font-size: 27px;
         font-weight: 900;
@@ -76,26 +69,23 @@
         margin-bottom: 3px;
         letter-spacing: 1px;
     }
-
     .school-tagline {
         font-size: 13px;
         color: #666;
         margin-bottom: 8px;
         font-style: italic;
     }
-
     .school-address {
         font-size: 13px;
         color: #555;
         margin-bottom: 8px;
     }
-    
+
     .school-mobile {
         font-size: 13px;
         color: #555;
         margin-bottom: 8px;
     }
-
     .school-contact {
         font-size: 9px;
         color: #555;
@@ -464,15 +454,22 @@
     <!-- RESULTS TABLE -->
     <!-- <div class="section-title">{{ strtoupper($term) }} - RESULTS</div> -->
     <div class="report-title">
-    @php
-        $levelFull = match(strtoupper($level)) {
-            'SSS' => 'SENIOR SECONDARY SCHOOL',
-            'JS', 'JSS' => 'JUNIOR SECONDARY SCHOOL',
-            default => strtoupper($level)
-        };
-    @endphp
-    TERMLY REPORT FOR 
-    {{ $levelFull }}
+        @php
+            // Extract just the level part (SS1, SS2, SS3, etc)
+            $classClean = preg_replace('/\s+.*/', '', strtoupper($class));
+            
+            // Determine level based on class
+            $levelFull = match(true) {
+                in_array($classClean, ['SS1', 'SS2', 'SS3']) => 'SENIOR SECONDARY SCHOOL',
+                in_array($classClean, ['JSS1', 'JSS2', 'JSS3']) => 'JUNIOR SECONDARY SCHOOL',
+                preg_match('/^PRIMARY\s+[1-6]$/i', $class) => 'PRIMARY SCHOOL',
+                preg_match('/^BASIC\s+[1-3]$/i', $class) => 'BASIC SCHOOL',
+                default => strtoupper($class)
+            };
+        @endphp
+
+        TERMLY REPORT FOR 
+        {{ $levelFull }}
     </div>
 
     {{-- FIRST AND SECOND TERM: Simple Table --}}

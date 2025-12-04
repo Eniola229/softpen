@@ -106,18 +106,74 @@
             <div class="col-md-4">
               <img src="{{ $student->avatar }}" class="img-fluid rounded-start h-100" alt="Student Image">
             </div>
+            <!-- Student Result Details Section -->
             <div class="col-md-8">
-              <div class="card-body">
-                <h2 class="card-title">{{ $student->name }}</h2>
-                <p class="card-text"><strong>Email:</strong> {{ $student->email }}</p>
-                <p class="card-text"><strong>Address:</strong> {{ $student->address }}</p>
-                <p class="card-text"><strong>Class:</strong> {{ $student->class }}</p>
-                <p class="card-text"><strong>Department:</strong> {{ $student->department ?? 'N/A' }}</p>
-                <p class="card-text">
-                     <button class="btn btn-success" style="color: white;" data-bs-toggle="modal" data-bs-target="#addResultModal">
+              <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white border-bottom">
+                  <h5 class="card-title mb-0">Student Details</h5>
+                </div>
+                <div class="card-body p-4">
+                  
+                  <!-- Student Name -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Student Name</span>
+                        <strong>{{ $student->name }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Email -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Email</span>
+                        <strong>{{ $student->email }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Address -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Address</span>
+                        <strong>{{ $student->address }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Class -->
+                  <div class="row mb-3">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Class</span>
+                        <strong>{{ $student->class }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Department -->
+                  <div class="row mb-4">
+                    <div class="col-12">
+                      <div class="d-flex">
+                        <span class="text-muted" style="min-width: 150px;">Department</span>
+                        <strong>{{ $student->department ?? 'N/A' }}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Action Button -->
+                  <div class="row">
+                    <div class="col-12">
+                      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addResultModal">
                         Add This Session Result
-                    </button>                   
-                  </p>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div> 

@@ -121,7 +121,9 @@
                           <td>{{ $class->name }}</td>
                           <td>{{ $class->description }}</td>
                           <td>{{ $class->created_at ? $class->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                          <td class="gap-2"><a onclick="confirmStatusChange('{{ url('school/class-remove', $class->id) }}')"><button class="btn btn-danger m-2">Delete</button></a>
+                          <td class="gap-2">
+                            <a href="{{ url('school/view/class/' . $class->id) }}"><button class="btn btn-success m-2" style="color: white;">View Students</button></a>
+                            <a onclick="confirmStatusChange('{{ url('school/class-remove', $class->id) }}')"><button class="btn btn-danger m-2">Delete</button></a>
                           </td>
                         </tr>
                       <tfoot>

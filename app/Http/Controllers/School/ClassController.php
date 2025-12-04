@@ -87,4 +87,31 @@ public function addClass()
         return redirect()->back()->with('message', 'Class deleted successfully');
     }
 
+    public function students($id)
+    {
+        $school = School::where('id', Auth::guard('school')->user()->id)->first();
+
+        if (!$school) {
+            abort(404, 'School not found.');
+        }
+
+        // Fetch the class using $id and make sure it belongs to the current school
+        $class = SchClass::where('id', $id)
+            ->where('school_id', $school->id)
+            ->first();
+
+        if (!$class) {
+            abort(404, 'Class not found.');
+        }
+
+        $students = Student::where('school_id', $school->id)
+            ->where('class', $class->name) 
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return view('school.class-students', [
+            'students' => $students,
+            'class' => $class, 
+        ]);
+    }
 }

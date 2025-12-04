@@ -73,6 +73,7 @@ Route::middleware('auth:school')->prefix('school')->group(function () {
     Route::post('/class', [ClassController::class, 'create'])->name('/class');
     Route::get('add/class', [ClassController::class, 'addClass'])->name('school/add/class');
     Route::get('/class-remove/{id}', [ClassController::class, 'deleteClass'])->name('/delete/class');
+    Route::get('/view/class/{id}', [ClassController::class, 'students'])->name('staff-students');
     Route::get('/department', [DepartmentController::class, 'index'])->name('school/department');
     Route::get('add/department', [DepartmentController::class, 'addDepartments'])->name('school/add/department');
     Route::post('/department', [DepartmentController::class, 'create'])->name('school/department');
@@ -94,6 +95,7 @@ Route::middleware('auth:school')->prefix('school')->group(function () {
     Route::get('/result-report/{result}', [StaffResultController::class, 'showReportCard'])->name('school.result.report');
     Route::get('/change/{id}', [TeachersController::class, 'changeStatus'])->name('school/teacher/changeStatus');
     Route::get('/teacher/delete/{id}', [TeachersController::class, 'deleteTeacher'])->name('school/teacher/deleteTeacher');
+
 
     Route::post('promote-students', [StudentController::class, 'promoteAll'])->name('school.promote.students');
 
