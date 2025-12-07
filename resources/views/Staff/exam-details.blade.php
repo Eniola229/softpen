@@ -119,6 +119,8 @@
                     <p><strong>Duration:</strong> {{ $exam->duration }} minutes</p>
                     <p><strong>Total Questions Required:</strong> {{ $exam->total_questions }}</p>
                     <p><strong>Passing Score:</strong> {{ $exam->passing_score }}%</p>
+                    <p><strong>Session:</strong> {{ $exam->session ?? "N/A" }}</p>
+                    <p><strong>Term:</strong> {{ $exam->term ?? "N/A"}}</p>
                   </div>
                   <div class="col-md-6">
                     <p><strong>Status:</strong> 

@@ -410,7 +410,7 @@
             @php
                 $duration = \Carbon\Carbon::parse($examResult->started_at)->diffInMinutes($examResult->submitted_at);
             @endphp
-            <p class="mb-0"><i class="fas fa-hourglass-half me-2"></i>Time Taken: {{ $duration }} minutes ({{ $examResult->exam->duration - $duration }} minutes remaining)</p>
+            <p class="mb-0"><i class="fas fa-hourglass-half me-2"></i>Time Taken: {{ floor($duration) }} mins {{ round(($duration - floor($duration)) * 60) }} secs ({{ floor($examResult->exam->duration - $duration) }} mins {{ round((($examResult->exam->duration - $duration) - floor($examResult->exam->duration - $duration)) * 60) }} secs remaining)</p>
           </div>
 
           <!-- Results Wizard -->
@@ -517,7 +517,7 @@
             <button onclick="downloadResult()" class="btn btn-download">
               <i class="fas fa-download"></i> Download PDF
             </button> -->
-            <a href="{{ route('student-dashboard') }}" class="btn btn-secondary">
+            <a href="{{ route('student/logout') }}" class="btn btn-secondary">
               <i class="fas fa-home"></i> Back to Dashboard
             </a>
           </div>

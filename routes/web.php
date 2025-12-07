@@ -141,7 +141,9 @@ Route::middleware('auth:staff')->prefix('staff')->group(function () {
             Route::delete('/{questionId}', [QuestionController::class, 'destroy'])->name('staff.questions.destroy');
         });
     });
-    
+    Route::get('/student/{studentId}/cbt-result/{resultId}', [QuestionController::class, 'viewCBTResult'])
+        ->name('staff.cbt.result.view');
+
     Route::get('logout', [StaffAuthController::class, 'logout'])->name('staff/logout');
 });
 

@@ -68,6 +68,8 @@ class ExamController extends Controller
             'show_one_question_at_time' => 'nullable|boolean',
             'show_results' => 'nullable|boolean',
             'acceptTerms' => 'required|accepted',
+            'session' => 'required|string',
+            'term' => 'required|string',
         ]);
 
         try {
@@ -87,6 +89,8 @@ class ExamController extends Controller
                 'randomize_questions' => $validated['randomize_questions'] ?? false,
                 'show_one_question_at_time' => $validated['show_one_question_at_time'] ?? false,
                 'show_results' => $validated['show_results'] ?? true,
+                'session' => $validated['session'],
+                'term' => $validated['term'],
                 'is_published' => false,
             ]);
 
@@ -188,6 +192,8 @@ class ExamController extends Controller
             'randomize_questions' => 'nullable|boolean',
             'show_one_question_at_time' => 'nullable|boolean',
             'show_results' => 'nullable|boolean',
+            'session' => 'required|string',
+            'term' => 'required|string',
             'exam_date_time' => 'required|date_format:Y-m-d\TH:i',
         ]);
 

@@ -198,6 +198,32 @@
 
                     <p>(*) Mandatory</p>
                   </section>
+ 
+                  <!-- Step 3: Exam Options -->
+                  <h3>Session/Term</h3>
+                  <section>
+                      <label for="session" class="mt-3">Session *</label>
+                    <input
+                      id="session"
+                      name="session"
+                      type="text"
+                      class="required form-control"
+                      value="{{ old('session') }}"
+                    />
+                    <label for="term" class="mt-3">Term *</label>
+                    <select
+                        id="term"
+                        name="term"
+                        class="required form-control"
+                        required
+                    >
+                        <option disabled selected>Select a term</option>
+                        <option value="First Term" {{ old('term')=='First Term' ? 'selected' : '' }}>First Term</option>
+                        <option value="Second Term" {{ old('term')=='Second Term' ? 'selected' : '' }}>Second Term</option>
+                        <option value="Third Term" {{ old('term')=='Third Term' ? 'selected' : '' }}>Third Term</option>
+                    </select>
+
+                  </section>
 
                   <!-- Step 3: Exam Options -->
                   <h3>Options</h3>

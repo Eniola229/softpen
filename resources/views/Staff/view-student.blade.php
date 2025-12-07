@@ -286,7 +286,9 @@
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result" type="button" role="tab" aria-controls="result" aria-selected="false">Result's</button>
           </li>
-          
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="cbt-result-tab" data-bs-toggle="tab" data-bs-target="#cbt-result" type="button" role="tab" aria-controls="cbt-result" aria-selected="false">CBT Exam Results</button>
+          </li>
         </ul>
                 <div class="tab-content" id="profileTabsContent">
           <!-- result Section -->
@@ -337,7 +339,79 @@
                 </div>
               </div>
             </div>
-
+            <!-- CBT Results Tab Content -->
+            <div class="tab-pane fade" id="cbt-result" role="tabpanel" aria-labelledby="cbt-result-tab">
+              <div class="card">
+                <div class="card-body">
+                  <h5 class="card-title mb-4">{{ $student->name }}'s CBT Exam Results</h5>
+                  
+                  @if($cbtResults->count() > 0)
+                  <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                      <thead>
+                        <tr>
+                          <th>Session</th>
+                          <th>Term</th>
+                          <th>Exam Title</th>
+                          <th>Subject</th>
+                          <th>Date Taken</th>
+                          <th>Score</th>
+                          <th>Percentage</th>
+                          <th>Status</th>
+                          <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @foreach($cbtResults as $result)
+                        <tr>
+                          <td>{{ $result->exam->session ?? 'N/A' }}</td>
+                          <td>{{ $result->exam->term ?? 'N/A' }}</td>
+                          <td>{{ $result->exam->title }}</td>
+                          <td>{{ $subjectsMap[$result->exam->subject] ?? $result->exam->subject }}</td>
+                          <td>{{ $result->submitted_at ? $result->submitted_at->format('M d, Y h:i A') : 'In Progress' }}</td>
+                          <td>
+                            <strong>{{ $result->total_score ?? 0 }}</strong> / {{ $result->exam->questions->sum('mark') }}
+                          </td>
+                          <td>
+                            @if($result->percentage)
+                              <span class="badge {{ $result->percentage >= $result->exam->passing_score ? 'bg-success' : 'bg-danger' }}">
+                                {{ number_format($result->percentage, 1) }}%
+                              </span>
+                            @else
+                              <span class="badge bg-secondary">N/A</span>
+                            @endif
+                          </td>
+                          <td>
+                            @if(!$result->submitted_at)
+                              <span class="badge bg-warning">In Progress</span>
+                            @elseif($result->percentage >= $result->exam->passing_score)
+                              <span class="badge bg-success">Passed</span>
+                            @else
+                              <span class="badge bg-danger">Failed</span>
+                            @endif
+                          </td>
+                          <td>
+                            @if($result->submitted_at)
+                              <a href="{{ route('staff.cbt.result.view', [$student->id, $result->id]) }}" class="btn btn-info btn-sm">
+                                <i class="fas fa-eye"></i> View Details
+                              </a>
+                            @else
+                              <span class="text-muted">Not completed</span>
+                            @endif
+                          </td>
+                        </tr>
+                        @endforeach
+                      </tbody>
+                    </table>
+                  </div>
+                  @else
+                  <div class="alert alert-info">
+                    <i class="fas fa-info-circle"></i> This student has not taken any CBT exams yet.
+                  </div>
+                  @endif
+                </div>
+              </div>
+            </div>
        
       
       </div>

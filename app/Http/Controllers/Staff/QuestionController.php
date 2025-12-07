@@ -7,6 +7,10 @@ use App\Models\Exam;
 use App\Models\Question;
 use App\Models\Option;
 use App\Models\SchClass;
+use App\Models\School;
+use App\Models\Student;
+use App\Models\ExamResult;
+use App\Models\Subject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -212,5 +216,34 @@ class QuestionController extends Controller
         } catch (\Exception $e) {
             return back()->with('error', 'Failed to delete question: ' . $e->getMessage());
         }
+    }
+
+    public function viewCBTResult($studentId, $resultId)
+    {
+        $staff = Auth::guard('staff')->user();
+        $school = School::findOrFail($staff->school_id);
+        
+        // Get student
+        $student = Student::where('id', $studentId)
+            ->where('school_id', $school->id)
+            ->firstOrFail();
+        
+        // Get exam result with all relationships
+        $examResult = ExamResult::with([
+            'exam.questions.options',
+            'studentAnswers.question.options',
+            'studentAnswers.selectedOption'
+        ])
+        ->where('id', $resultId)
+        ->where('student_id', $studentId)
+        ->whereHas('exam', function($query) use ($school) {
+            $query->where('school_id', $school->id);
+        })
+        ->firstOrFail();
+        
+        // Get the subject name
+        $subject = Subject::find($examResult->exam->subject);
+        
+        return view('staff.cbt-result-view', compact('student', 'examResult', 'subject'));
     }
 }

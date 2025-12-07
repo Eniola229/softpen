@@ -12,6 +12,7 @@ use App\Models\Department;
 use App\Models\Subject;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Result;
+use App\Models\ExamResult;
 use App\Models\CBT;
 
 class StaffStudentController extends Controller
@@ -75,47 +76,54 @@ class StaffStudentController extends Controller
     {
         $staff = Auth::guard('staff')->user();
         $school = School::findOrFail($staff->school_id);
-
         $student = Student::where('id', $id)
             ->where('school_id', $school->id)
             ->firstOrFail();
-
         $class = $student->class;
         $department = $student->department;
-
+        
         // Decode staff subjects (IDs)
         $staffSubjects = is_array($staff->subject)
             ? $staff->subject
             : json_decode($staff->subject, true);
-
         if (!$staffSubjects) {
             $staffSubjects = [];
         }
-
-        // Fetch subjects that:
-        // 1. match student class (SS2 or SS)
-        // 2. are taught by the teacher (by ID)
-        // 3. match department or are general
+        
+        // Fetch subjects
         $subjects = Subject::where('school_id', $school->id)
             ->where(function ($query) use ($class) {
                 $query->where('for', $class)
-                      ->orWhere('for', substr($class, 0, 2)); // SS or JSS
+                      ->orWhere('for', substr($class, 0, 2));
             })
-            ->whereIn('id', $staffSubjects) // Teacher is assigned to these subjects
+            ->whereIn('id', $staffSubjects)
             ->where(function ($query) use ($department) {
-                $query->whereNull('department') // general subjects
-                      ->orWhere('department', '') // empty department
-                      ->orWhere('department', $department); // student dept subjects
+                $query->whereNull('department')
+                      ->orWhere('department', '')
+                      ->orWhere('department', $department);
             })
             ->get();
-
+        
         // Fetch results
         $results = Result::where('student_id', $student->id)
             ->where('school_id', $school->id)
             ->get()
             ->groupBy(['session', 'term']);
-
-        return view('staff.view-student', compact('student', 'subjects', 'results', 'staffSubjects'));
+        
+        // Fetch CBT exam results with subject relationship
+        $cbtResults = ExamResult::with(['exam.questions'])
+            ->where('student_id', $student->id)
+            ->whereHas('exam', function($query) use ($school) {
+                $query->where('school_id', $school->id);
+            })
+            ->orderBy('created_at', 'desc')
+            ->get();
+        
+        // Eager load subjects for all exams
+        $subjectIds = $cbtResults->pluck('exam.subject')->unique()->toArray();
+        $subjectsMap = Subject::whereIn('id', $subjectIds)->pluck('name', 'id')->toArray();
+        
+        return view('staff.view-student', compact('student', 'subjects', 'results', 'staffSubjects', 'cbtResults', 'subjectsMap'));
     }
 
 

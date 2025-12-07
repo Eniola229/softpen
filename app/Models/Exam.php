@@ -37,6 +37,8 @@ class Exam extends Model
         'show_one_question_at_time',
         'exam_date_time',
         'department',
+        'session',
+        'term',
     ];
 
     protected $casts = [

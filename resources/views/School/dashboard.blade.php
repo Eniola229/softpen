@@ -142,7 +142,24 @@
             </a>
             </div>
           </div>
-
+                        @if(!$cbt)
+                            <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>CBT Not Available!</strong> Your school plan does not have CBT exam included. Please contact your administrator to upgrade.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @elseif($cbt->status != 'ACTIVE')
+                            <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                                <i class="fas fa-times-circle"></i>
+                                <strong>CBT Inactive!</strong> The CBT exam system is currently inactive for your school. Please contact your administrator.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @else
+                            <div class="alert alert-success fade show mt-2" role="alert">
+                                <i class="fas fa-check-circle"></i>
+                                <strong>CBT Active!</strong> Your school's CBT exam system is active and ready to use.
+                                </div>
+                        @endif
           <!-- ============================================================== -->
           <!-- Sales chart -->
           <!-- ============================================================== -->
@@ -166,6 +183,7 @@
                       </div>
                     </div> -->
                     <div class="col-lg-3">
+
                       <div class="row">
                         <div class="col-6">
                           <div class="bg-dark p-10 text-white text-center">
