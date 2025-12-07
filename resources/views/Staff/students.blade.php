@@ -97,6 +97,15 @@
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
                       <h5 class="card-title">Students of {{ $class->name }}</h5>
+                       @if ($cbt)
+                          @if ($cbt->status === 'ACTIVE')
+                              <a href="{{ url('staff/cbt/' . $class->id) }}">
+                                <button class="btn btn-primary btn-sm" >
+                                  CBT EXAM
+                                </button>
+                              </a>
+                          @endif
+                        @endif
                   </div>
 
                   <div class="table-responsive">

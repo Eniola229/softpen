@@ -12,6 +12,7 @@ use App\Models\Department;
 use App\Models\Subject;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Result;
+use App\Models\CBT;
 
 class StaffStudentController extends Controller
 {
@@ -43,6 +44,7 @@ class StaffStudentController extends Controller
     public function students($id)
     {
         $school = School::where('id', Auth::guard('staff')->user()->school_id)->first();
+        $cbt = CBT::where('school_id', $school->id)->first();
 
         if (!$school) {
             abort(404, 'School not found.');
@@ -64,7 +66,8 @@ class StaffStudentController extends Controller
 
         return view('staff.students', [
             'students' => $students,
-            'class' => $class, // pass the specific class, not all classes
+            'class' => $class,
+            'cbt' => $cbt
         ]);
     }
 

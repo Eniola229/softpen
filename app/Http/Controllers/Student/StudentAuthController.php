@@ -71,17 +71,17 @@ class StudentAuthController extends Controller
             return redirect("student/login")->with('error', 'Oops! You have entered invalid credentials');
         }
 
-    public function dashboard()
-    {
-        // $schools = School::orderBy('created_at', 'desc')->get();
-        $student = Auth::guard('student')->user();
+    // public function dashboard()
+    // {
+    //     // $schools = School::orderBy('created_at', 'desc')->get();
+    //     $student = Auth::guard('student')->user();
 
-        if (Auth::guard('student')->check()) {
-            return view('student.dashboard');
-        }
+    //     if (Auth::guard('student')->check()) {
+    //         return view('student.dashboard');
+    //     }
 
-        return redirect("student/login")->withSuccess('Oops! You do not have access');
-    }
+    //     return redirect("student/login")->withSuccess('Oops! You do not have access');
+    // }
 
     public function Result()
     {

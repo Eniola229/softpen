@@ -103,7 +103,7 @@
         <!-- School Info Section -->
         <div class="card mb-4 shadow">
           <div class="row g-0">
-            <div class="col-md-4">
+            <div class="col-md-4 p-2 p-md-0">
               <img src="{{ $student->avatar }}" class="img-fluid rounded-start h-100" alt="Student Image">
             </div>
             <!-- Student Result Details Section -->
@@ -161,15 +161,6 @@
                         <span class="text-muted" style="min-width: 150px;">Department</span>
                         <strong>{{ $student->department ?? 'N/A' }}</strong>
                       </div>
-                    </div>
-                  </div>
-
-                  <!-- Action Button -->
-                  <div class="row">
-                    <div class="col-12">
-                      <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#addResultModal">
-                        Add This Session Result
-                      </button>
                     </div>
                   </div>
 

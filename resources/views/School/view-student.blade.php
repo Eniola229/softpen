@@ -103,7 +103,7 @@
         <!-- School Info Section -->
         <div class="card mb-4 shadow">
           <div class="row g-0">
-            <div class="col-md-4">
+            <div class="col-md-4 p-2 p-md-0">
               <img src="{{ $student->avatar }}" class="img-fluid rounded-start h-100" alt="Student Image">
             </div>
               <div class="col-md-8">

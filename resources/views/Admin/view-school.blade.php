@@ -167,7 +167,21 @@
                               Activate Account
                             </button>
                           @endif
-                          
+                            @if ($cbt)
+                              @if ($cbt->status === 'ACTIVE')
+                                <button class="btn btn-danger btn-sm" onclick="confirmStatusChange('{{ url('admin/activate', $school->id) }}')">
+                                  Deactivate CBT
+                                </button>
+                              @elseif ($cbt->status === 'DISACTIVATE')
+                                <button class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ url('admin/activate', $school->id) }}')">
+                                  Activate CBT
+                                </button>
+                              @endif
+                            @else
+                                <button class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ url('admin/activate', $school->id) }}')">
+                                  Activate CBT
+                                </button>
+                            @endif
                           <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
                             Edit School
                           </button>
@@ -453,7 +467,7 @@
                         <tr>
                           <td>{{ $subject->name }}</td>
                           <td>{{ $subject->department }}</td>
-                          <td>{{ $subject->created_at ? $staff->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
+                          <td>{{ $subject->created_at ? $subject->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
                           <td class="gap-2"><a  href="{{ url('admin/view/class/' . $subject->id) }}"><button class="btn btn-info m-2">View</button></a>
                           </td>
                         </tr>

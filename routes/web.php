@@ -19,9 +19,13 @@ use App\Http\Controllers\School\SubjectController;
 use App\Http\Controllers\Staff\StaffAuthController;
 use App\Http\Controllers\Staff\StaffStudentController;
 use App\Http\Controllers\Staff\StaffResultController;
+use App\Http\Controllers\Staff\StaffCBTController;
+use App\Http\Controllers\Staff\ExamController;
+use App\Http\Controllers\Staff\QuestionController;
 
 //STUDENT
 use App\Http\Controllers\Student\StudentAuthController;
+use App\Http\Controllers\Student\StudentExamController;
 use App\Http\Controllers\ResultController;
 
 
@@ -59,6 +63,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('add/schools', [SchoolController::class, 'addSchool'])->name('admin/add/schools');
     Route::get('view/schools/{id}', [SchoolController::class, 'view'])->name('admin/view/schools');
     Route::get('/change/{id}', [SchoolController::class, 'changeStatus'])->name('admin/changeStatus');
+    Route::get('/activate/{id}', [SchoolController::class, 'Activate'])->name('admin/Activate');
 
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin/logout');
 });
@@ -112,13 +117,31 @@ Route::middleware('auth:staff')->prefix('staff')->group(function () {
     Route::get('dashboard', [StaffAuthController::class, 'dashboard'])->name('staff-dashboard');
     Route::get('classes', [StaffStudentController::class, 'index'])->name('staff-classes');
     Route::get('/view/class/{id}', [StaffStudentController::class, 'students'])->name('staff-students');
+    Route::get('/cbt/{id}', [StaffCBTController::class, 'index'])->name('staff-cbt');
     Route::get('/view/student/{id}', [StaffStudentController::class, 'viewStudent'])->name('staff/view/student/');
     Route::post('staff/upload/result', [StaffResultController::class, 'store'])->name('staff.upload.result');
     Route::get('/staff/result-report/{result}', [StaffResultController::class, 'showReportCard'])
         ->name('staff.result.report');
 
+    Route::prefix('classes/{classId}/exams')->group(function () {
+        Route::get('/', [ExamController::class, 'index'])->name('staff.exams.index');
+        Route::get('/create', [ExamController::class, 'create'])->name('staff.exams.create');
+        Route::post('/', [ExamController::class, 'store'])->name('staff.exams.store');
+        Route::get('/{examId}', [ExamController::class, 'show'])->name('staff.exams.show');
+        Route::get('/{examId}/edit', [ExamController::class, 'edit'])->name('staff.exams.edit');
+        Route::put('/{examId}', [ExamController::class, 'update'])->name('staff.exams.update');
+        Route::delete('/{examId}', [ExamController::class, 'destroy'])->name('staff.exams.destroy');
+        Route::post('/{examId}/publish', [ExamController::class, 'publish'])->name('staff.exams.publish');
 
-
+        Route::prefix('{examId}/questions')->group(function () {
+            Route::get('/create', [QuestionController::class, 'create'])->name('staff.questions.create');
+            Route::post('/', [QuestionController::class, 'store'])->name('staff.questions.store');
+            Route::get('/{questionId}/edit', [QuestionController::class, 'edit'])->name('staff.questions.edit');
+            Route::put('/{questionId}', [QuestionController::class, 'update'])->name('staff.questions.update');
+            Route::delete('/{questionId}', [QuestionController::class, 'destroy'])->name('staff.questions.destroy');
+        });
+    });
+    
     Route::get('logout', [StaffAuthController::class, 'logout'])->name('staff/logout');
 });
 
@@ -127,12 +150,18 @@ Route::post('student/post/login', [StudentAuthController::class, 'postLogin'])->
 
 //AUTH STUDENT
 Route::middleware('auth:student')->prefix('student')->group(function () {
-    Route::get('dashboard', [StudentAuthController::class, 'dashboard'])->name('student-dashboard');
+    Route::get('dashboard', [StudentExamController::class, 'dashboard'])->name('student-dashboard');
+    
+    // Exam routes
+    Route::get('exam/{examId}/start', [StudentExamController::class, 'startExam'])->name('student.exam.start');
+    Route::get('exam/{examId}/take', [StudentExamController::class, 'takeExam'])->name('student.exam.take');
+    Route::post('exam/{examId}/submit', [StudentExamController::class, 'submitExam'])->name('student.exam.submit');
+    Route::post('exam/{examId}/save-answer', [StudentExamController::class, 'saveAnswer'])->name('student.exam.save-answer');
+    Route::get('exam/result/{resultId}', [StudentExamController::class, 'showResult'])->name('student.exam.result');
+    
+    // Results
     Route::get('/result-report/{result}', [StaffResultController::class, 'showReportCard'])->name('student.result.report');
-        Route::get('results', [StudentAuthController::class, 'Result'])
-        ->name('student.results');
-
-
-
+    Route::get('results', [StudentAuthController::class, 'Result'])->name('student.results');
+    
     Route::get('logout', [StudentAuthController::class, 'logout'])->name('student/logout');
 });

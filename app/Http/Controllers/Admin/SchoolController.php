@@ -13,6 +13,7 @@ use App\Models\Student;
 use App\Models\SchClass;
 use App\Models\Department;
 use App\Models\Subject;
+use App\Models\CBT;
 
 class SchoolController extends Controller
 {
@@ -106,8 +107,9 @@ public function create(Request $request)
         $classes = SchClass::where('school_id', $school->id)->get();
         $subjects = Subject::where('school_id', $school->id)->get();
         $departments = Department::where('school_id', $school->id)->get();
+        $cbt = CBT::where('school_id', $school->id)->first();
 
-       return view('admin.view-school', compact('school', 'staffs', 'students', 'classes', 'subjects', 'departments'));
+       return view('admin.view-school', compact('school', 'staffs', 'students', 'classes', 'subjects', 'departments', 'cbt'));
     }
 
     public function changeStatus($id)
@@ -129,6 +131,37 @@ public function create(Request $request)
         return redirect()->back()->with('message', $message);
     }
 
+    public function Activate($id)
+    {   
+        $school = School::findOrFail($id);
+        
+        // Get or create CBT record
+        $cbt = CBT::where('school_id', $school->id)->first();
+        
+        if (!$cbt) {
+            // Create new CBT record with ACTIVE status
+            $cbt = CBT::create([
+                'school_id' => $school->id,
+                'status' => 'ACTIVE'
+            ]);
+            $message = 'CBT has been created and activated.';
+        } else {
+            // Toggle status based on current value
+            if ($cbt->status == "ACTIVE") {
+                $cbt->update(['status' => 'DISACTIVATE']);
+                $message = 'CBT has been deactivated.';
+            } elseif ($cbt->status == "DISACTIVATE") {
+                $cbt->update(['status' => 'ACTIVE']);
+                $message = 'CBT has been activated.';
+            } else {
+                $message = "Something seems wrong";
+                return redirect()->back()->with('error', $message);
+            }
+        }
+        
+        // Redirect back with a success message
+        return redirect()->back()->with('message', $message);
+    }
 
     public function delete($id)
     {
