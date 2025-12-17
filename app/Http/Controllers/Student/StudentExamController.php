@@ -10,9 +10,11 @@ use App\Models\SchClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 class StudentExamController extends Controller
 {
+
     protected function getClassId($student)
     {
         $studentClass = SchClass::where('school_id', $student->school_id)
@@ -35,8 +37,9 @@ class StudentExamController extends Controller
             return redirect()->route('student-dashboard')
                 ->with('error', 'Your class was not found.');
         }
+        
+        $now = $this->getNigeriaOnlineTime();
 
-        $now = Carbon::now();
 
         $activeExam = Exam::with('subject')
             ->where('school_id', $student->school_id)
@@ -50,10 +53,9 @@ class StudentExamController extends Controller
                         return false;
                     }
                 }
-
                 $examDateTime = Carbon::parse($exam->exam_date_time);
                 $startWindow = $examDateTime->copy()->subMinutes(10);
-                $endWindow = $examDateTime->copy()->addMinutes($exam->duration);
+                $endWindow = $examDateTime->copy()->addMinutes((int) $exam->duration);
 
                 if (!$now->between($startWindow, $endWindow)) return false;
 
@@ -96,10 +98,10 @@ class StudentExamController extends Controller
         }
     }
 
-    $now = Carbon::now();
+    $now = $this->getNigeriaOnlineTime();
     $examDateTime = Carbon::parse($exam->exam_date_time);
     $startWindow = $examDateTime->copy()->subMinutes(10);
-    $endWindow = $examDateTime->copy()->addMinutes($exam->duration);
+    $endWindow = $examDateTime->copy()->addMinutes((int) $exam->duration);
 
     if (!$now->between($startWindow, $endWindow)) {
         return redirect()->route('student-dashboard')
@@ -150,8 +152,8 @@ class StudentExamController extends Controller
             ->whereNull('submitted_at')
             ->firstOrFail();
 
-        $now = Carbon::now();
-        $endTime = Carbon::parse($exam->exam_date_time)->addMinutes($exam->duration);
+        $now = $this->getNigeriaOnlineTime();
+        $endTime = Carbon::parse($exam->exam_date_time)->addMinutes((int) $exam->duration);
         if ($now->gt($endTime)) {
             return $this->submitExam(new Request(), $exam->id);
         }
@@ -277,5 +279,29 @@ class StudentExamController extends Controller
         );
 
         return response()->json(['success' => true]);
+    }
+
+        private function getNigeriaOnlineTime(): Carbon
+    {
+        return Cache::remember('nigeria_time', 300, function () {
+            try {
+                $response = Http::timeout(5)
+                    ->retry(2, 100)
+                    ->get('https://worldtimeapi.org/api/timezone/Africa/Lagos');
+                
+                if ($response->successful()) {
+                    $data = $response->json();
+                    return Carbon::parse($data['datetime']);
+
+                }
+
+            } catch (\Exception $e) {
+                \Log::debug("Time API failed: {$e->getMessage()}");
+            }
+            
+            // Fallback to system time
+            return Carbon::now('Africa/Lagos');
+
+        });
     }
 }

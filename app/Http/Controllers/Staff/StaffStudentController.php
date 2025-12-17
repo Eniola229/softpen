@@ -122,8 +122,10 @@ class StaffStudentController extends Controller
         // Eager load subjects for all exams
         $subjectIds = $cbtResults->pluck('exam.subject')->unique()->toArray();
         $subjectsMap = Subject::whereIn('id', $subjectIds)->pluck('name', 'id')->toArray();
+        //CBT
+        $cbt = CBT::where('school_id', $school->id)->first();
         
-        return view('staff.view-student', compact('student', 'subjects', 'results', 'staffSubjects', 'cbtResults', 'subjectsMap'));
+        return view('staff.view-student', compact('student', 'subjects', 'results', 'staffSubjects', 'cbtResults', 'subjectsMap', 'cbt'));
     }
 
 

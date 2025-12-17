@@ -269,6 +269,7 @@
         border: 1px solid #ddd;
         background-color: #fafafa;
         line-height: 1.4;
+        font-size: 13px;
     }
 
     /* FOOTER */
@@ -297,7 +298,7 @@
         }
     }
 
-    @media print {
+/*    @media print {
     * {
         margin: 0;
         padding: 0;
@@ -376,7 +377,7 @@
         width: 60px;
         height: 60px;
     }
-}
+}*/
 </style>
 
 <div class="print-btn">
@@ -859,7 +860,7 @@
       function confirmStatusChange(url) {
           Swal.fire({
               title: 'Are you sure?',
-              text: "You are about to delete this schol.",
+              text: "You are about to delete this.",
               icon: 'warning',
               showCancelButton: true,
               confirmButtonColor: '#3085d6',

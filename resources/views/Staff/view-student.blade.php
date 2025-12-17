@@ -286,9 +286,13 @@
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result" type="button" role="tab" aria-controls="result" aria-selected="false">Result's</button>
           </li>
+           @if ($cbt)
+            @if ($cbt->status === 'ACTIVE')
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="cbt-result-tab" data-bs-toggle="tab" data-bs-target="#cbt-result" type="button" role="tab" aria-controls="cbt-result" aria-selected="false">CBT Exam Results</button>
           </li>
+          @endif
+          @endif
         </ul>
                 <div class="tab-content" id="profileTabsContent">
           <!-- result Section -->

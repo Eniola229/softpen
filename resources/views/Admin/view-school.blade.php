@@ -168,7 +168,7 @@
                             </button>
                           @endif
                             @if ($cbt)
-                              @if ($cbt->status === 'ACTIVE')
+                              @if ($cbt->status === 'ACTIVE') 
                                 <button class="btn btn-danger btn-sm" onclick="confirmStatusChange('{{ url('admin/activate', $school->id) }}')">
                                   Deactivate CBT
                                 </button>
