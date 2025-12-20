@@ -258,6 +258,43 @@
 
     .comment-label {
         font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .comment-textarea {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-family: inherit;
+        font-size: 14px;
+        resize: vertical;
+    }
+
+    .comment-textarea:focus {
+        outline: none;
+        border-color: #4CAF50;
+        box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+    }
+
+    .btn-primary {
+        background-color: #4CAF50;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-primary:hover {
+        background-color: #45a049;
+    }
+
+    .mt-2 {
+        margin-top: 10px;
+    }
+    .comment-label {
+        font-weight: bold;
         color: #333;
         margin-bottom: 4px;
     }
@@ -269,7 +306,7 @@
         border: 1px solid #ddd;
         background-color: #fafafa;
         line-height: 1.4;
-        font-size: 13px;
+        font-size: 15px;
     }
 
     /* FOOTER */
@@ -488,18 +525,30 @@
                 </tr>
             </thead>
             <tbody>
-                @forelse($results as $subjectId => $score)
-                 @php
-                    $avg = $score['total'] ?? 0;
+                @php
+                    $displayedCount = 0;
                 @endphp
+                @forelse($results as $subjectId => $score)
+                    @php
+                        $test = $score['test'] ?? 0;
+                        $exam = $score['exam'] ?? 0;
+                        $avg = $score['total'] ?? 0;
+                        
+                        // Skip this row if both test and exam are 0
+                        if ($test == 0 && $exam == 0) {
+                            continue;
+                        }
+                        
+                        $displayedCount++;
+                    @endphp
                     <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td class="subject-name">{{ $score['name'] }}</td>
-                        <td>{{ $score['test'] ?? 0 }}</td>
-                        <td>{{ $score['exam'] ?? 0 }}</td>
-                        <td><strong>{{ $score['total'] ?? 0 }}</strong></td>
+                        <td>{{ $displayedCount }}</td>
+                        <td class="subject-name"><strong>{{ $score['name'] }}</strong></td>
+                        <td><strong>{{ $test }}</strong></td>
+                        <td><strong>{{ $exam }}</strong></td>
+                        <td><strong>{{ $avg }}</strong></td>
                         <td><strong>{{ $score['grade'] ?? '-' }}</strong></td>
-                        <td>
+                        <td><strong>
                             @if($level === 'SSS')
                                 @if($avg >= 80)
                                     EXCELLENT
@@ -535,118 +584,142 @@
                                     FAIL
                                 @endif
                             @endif
-                        </td>
+                        </strong></td>
                     </tr>
                 @empty
                     <tr>
                         <td colspan="7" class="text-center">No results available.</td>
                     </tr>
                 @endforelse
+                @if($displayedCount == 0 && count($results) > 0)
+                    <tr>
+                        <td colspan="7" class="text-center">No results available.</td>
+                    </tr>
+                @endif
             </tbody>
         </table>
 
         {{-- THIRD TERM: Extended Table with All Terms --}}
         @else
-            <table class="results-table">
-                <thead>
+        <table class="results-table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>SUBJECTS</th>
+                    <th>1st Term</th>
+                    <th>2nd Term</th>
+                    <th colspan="2">3rd Term</th>
+                    <th>3rd Total</th>
+                    <th>Cumulative</th>
+                    <th>Grade</th>
+                    <th>Remark</th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th>(100)</th>
+                    <th>(100)</th>
+                    <th>Test (40)</th>
+                    <th>Exam (60)</th>
+                    <th>(100)</th>
+                    <th>(100)</th>
+                    <th></th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $displayedCount = 0;
+                @endphp
+                @forelse($results as $subjectId => $score)
+                    @php
+                        $test = $score['test'] ?? 0;
+                        $exam = $score['exam'] ?? 0;
+                        
+                        // Skip this row if both test and exam are 0
+                        if ($test == 0 && $exam == 0) {
+                            continue;
+                        }
+                        
+                        $displayedCount++;
+                        $t1 = $cumulative[$subjectId]['t1'] ?? 0;
+                        $t2 = $cumulative[$subjectId]['t2'] ?? 0;
+                        $t3 = $cumulative[$subjectId]['t3'] ?? 0;
+                        $avg = $cumulative[$subjectId]['average'] ?? 0;
+                        $grade = $cumulative[$subjectId]['grade'] ?? '-';
+                        $t3Total = $test + $exam;
+                        $cumulativeAvg = ($t1 + $t2 + $t3Total) / 3;
+                    @endphp
                     <tr>
-                        <th>#</th>
-                        <th>SUBJECTS</th>
-                        <th>1st Term</th>
-                        <th>2nd Term</th>
-                        <th colspan="2">3rd Term</th>
-                        <th>3rd Total</th>
-                        <th>Cumulative</th>
-                        <th>Grade</th>
-                        <th>Remark</th>
-                    </tr>
-                    <tr>
-                        <th></th>
-                        <th></th>
-                        <th>(100)</th>
-                        <th>(100)</th>
-                        <th>Test (40)</th>
-                        <th>Exam (60)</th>
-                        <th>(100)</th>
-                        <th>(100)</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($results as $subjectId => $score)
-                        @php
-                            $t1 = $cumulative[$subjectId]['t1'] ?? 0;
-                            $t2 = $cumulative[$subjectId]['t2'] ?? 0;
-                            $t3 = $cumulative[$subjectId]['t3'] ?? 0;
-                            $avg = $cumulative[$subjectId]['average'] ?? 0;
-                            $grade = $cumulative[$subjectId]['grade'] ?? '-';
-                            $t3Total = ($score['test'] ?? 0) + ($score['exam'] ?? 0);
-                            $cumulativeAvg = ($t1 + $t2 + $t3Total) / 3;
-                        @endphp
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td class="subject-name">{{ $score['name'] }}</td>
-                            
-                            {{-- 1st Term Total --}}
-                            <td><strong>{{ $t1 ?? '-' }}</strong></td>
-                            {{-- 2nd Term Total --}}
-                            <td><strong>{{ $t2 ?? '-' }}</strong></td>
-                            {{-- 3rd Term (Test & Exam) --}}
-                            <td>{{ $score['test'] ?? 0 }}</td>
-                            <td>{{ $score['exam'] ?? 0 }}</td>
-                            {{-- 3rd Term Total --}}
-                            <td><strong>{{ $t3Total }}</strong></td>
-                            {{-- Cumulative Average --}}
-                            <td><strong>{{ round($cumulativeAvg, 2) }}</strong></td>
-                            {{-- Grade --}}
-                            <td><strong>{{ $grade }}</strong></td>
-                            {{-- Remark --}}
-                            <td>
-                                @if($level === 'SSS')
-                                    @if($cumulativeAvg >= 80)
-                                        EXCELLENT
-                                    @elseif($cumulativeAvg >= 75)
-                                        V.GOOD
-                                    @elseif($cumulativeAvg >= 70)
-                                        GOOD
-                                    @elseif($cumulativeAvg >= 65)
-                                        CREDIT
-                                    @elseif($cumulativeAvg >= 60)
-                                        CREDIT
-                                    @elseif($cumulativeAvg >= 50)
-                                        CREDIT
-                                    @elseif($cumulativeAvg >= 45)
-                                        PASS
-                                    @elseif($cumulativeAvg >= 40)
-                                        PASS
-                                    @else
-                                        FAIL
-                                    @endif
+                        <td>{{ $displayedCount }}</td>
+                        <td class="subject-name"><strong>{{ $score['name'] }}</strong></td>
+                        
+                        {{-- 1st Term Total --}}
+                        <td><strong>{{ $t1 ?? '-' }}</strong></td>
+                        {{-- 2nd Term Total --}}
+                        <td><strong>{{ $t2 ?? '-' }}</strong></td>
+                        {{-- 3rd Term (Test & Exam) --}}
+                        <td><strong>{{ $test }}</strong></td>
+                        <td><strong>{{ $exam }}</strong></td>
+                        {{-- 3rd Term Total --}}
+                        <td><strong>{{ $t3Total }}</strong></td>
+                        {{-- Cumulative Average --}}
+                        <td><strong>{{ round($cumulativeAvg, 2) }}</strong></td>
+                        {{-- Grade --}}
+                        <td><strong>{{ $grade }}</strong></td>
+                        {{-- Remark --}}
+                        <td>
+                            <strong>
+                            @if($level === 'SSS')
+                                @if($cumulativeAvg >= 80)
+                                    EXCELLENT
+                                @elseif($cumulativeAvg >= 75)
+                                    V.GOOD
+                                @elseif($cumulativeAvg >= 70)
+                                    GOOD
+                                @elseif($cumulativeAvg >= 65)
+                                    CREDIT
+                                @elseif($cumulativeAvg >= 60)
+                                    CREDIT
+                                @elseif($cumulativeAvg >= 50)
+                                    CREDIT
+                                @elseif($cumulativeAvg >= 45)
+                                    PASS
+                                @elseif($cumulativeAvg >= 40)
+                                    PASS
                                 @else
-                                    @if($cumulativeAvg >= 70)
-                                        EXCELLENT
-                                    @elseif($cumulativeAvg >= 60)
-                                        V. GOOD
-                                    @elseif($cumulativeAvg >= 50)
-                                        GOOD
-                                    @elseif($cumulativeAvg >= 45)
-                                        PASS
-                                    @elseif($cumulativeAvg >= 40)
-                                        FAIR
-                                    @else
-                                        FAIL
-                                    @endif
+                                    FAIL
                                 @endif
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="10" class="text-center">No results available.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                            @else
+                                @if($cumulativeAvg >= 70)
+                                    EXCELLENT
+                                @elseif($cumulativeAvg >= 60)
+                                    V. GOOD
+                                @elseif($cumulativeAvg >= 50)
+                                    GOOD
+                                @elseif($cumulativeAvg >= 45)
+                                    PASS
+                                @elseif($cumulativeAvg >= 40)
+                                    FAIR
+                                @else
+                                    FAIL
+                                @endif
+                            @endif
+                            </strong>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="10" class="text-center">No results available.</td>
+                    </tr>
+                @endforelse
+                @if($displayedCount == 0 && count($results) > 0)
+                    <tr>
+                        <td colspan="10" class="text-center">No results available.</td>
+                    </tr>
+                @endif
+            </tbody>
+        </table>
         @endif
         <!-- AFFECTIVE DISPOSITION & PSYCHOMOTOR SKILLS RATING TABLE -->
 <!--     <div style="margin-top: 30px; margin-bottom: 30px;">
@@ -777,7 +850,38 @@
     <div class="comments">
         <div class="comment-box">
             <div class="comment-label">CLASS TEACHER'S COMMENT:</div>
-            <div class="comment-text">{{ $teachersComment ?? 'No comment yet.' }}</div>
+            @if(empty($teachersComment))
+                @auth('staff')
+                    <form action="{{ route('teacher.comment.update', ['student' => $student->id, 'term' => $term, 'session' => $session]) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <textarea 
+                            name="teacher_comment" 
+                            class="comment-textarea" 
+                            rows="3" 
+                            placeholder="Enter your comment here..."
+                            required
+                        ></textarea>
+                        <button type="submit" class="btn btn-primary mt-2">Save Comment</button>
+                    </form>
+                @else
+                    <div class="comment-text">No comment yet.</div>
+                @endauth
+            @else
+                <div class="comment-text">{{ $teachersComment }}</div>
+                @auth('staff')
+                    <form action="{{ route('teacher.comment.update', ['student' => $student->id, 'term' => $term, 'session' => $session]) }}" method="POST" class="mt-2">
+                        @csrf
+                        @method('PUT')
+                        <textarea 
+                            name="teacher_comment" 
+                            class="comment-textarea" 
+                            rows="3"
+                        >{{ $teachersComment }}</textarea>
+                        <button type="submit" class="btn btn-primary mt-2">Update Comment</button>
+                    </form>
+                @endauth
+            @endif
         </div>
         <div class="comment-box">
             <div class="comment-label">PRINCIPAL'S COMMENT:</div>

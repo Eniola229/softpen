@@ -18,7 +18,7 @@ public function store(Request $request)
     $validated = $request->validate([
         'student_id' => 'required|uuid|exists:students,id',
         'school_id'  => 'required|uuid|exists:schools,id',
-        'teachers_comment' => 'nullable|string|max:500',
+        // 'teachers_comment' => 'nullable|string|max:500',
         'class'      => 'required|string',
         'session'    => 'required|string',
         'term'       => 'required|string',
@@ -39,7 +39,7 @@ public function store(Request $request)
             'term'       => $validated['term'],
         ],
         [
-            'teachers_comment'  => $validated['teachers_comment'],
+            // 'teachers_comment'  => $validated['teachers_comment'],
             'class'  => $validated['class'],
             'scores' => json_encode([]),
         ]
@@ -64,7 +64,7 @@ public function store(Request $request)
     // Update the result with merged scores and teachers comment
     $result->update([
         'scores' => json_encode($scores),
-        'teachers_comment' => $validated['teachers_comment'] ?? $result->teachers_comment,
+        // 'teachers_comment' => $validated['teachers_comment'] ?? $result->teachers_comment,
         'class' => $validated['class'] ?? $result->class,
     ]);
 
@@ -293,4 +293,26 @@ private function principalComment($average, $term = null)
         return "Poor performance. Urgent improvement required in the next term.";
     }
 }
+
+    public function updateComment(Request $request, $studentId, $term, $session)
+    {
+        $request->validate([
+            'teacher_comment' => 'required|string|max:1000',
+        ]);
+
+        // Update all results for this student, term, and session with the same comment
+        $updated = Result::where('student_id', $studentId)
+            ->where('term', $term)
+            ->where('session', $session)
+            ->update([
+                'teachers_comment' => $request->teacher_comment,
+                'updated_at' => now(),
+            ]);
+
+        if ($updated) {
+            return redirect()->back()->with('success', 'Comment updated successfully.');
+        }
+
+        return redirect()->back()->with('error', 'No results found to update.');
+    }
 }

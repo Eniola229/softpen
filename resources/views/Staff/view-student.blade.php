@@ -267,10 +267,10 @@
                             @endforeach
                         </tbody>
                     </table>
-                    <div class="col-md-6 mb-3">
+              <!--       <div class="col-md-6 mb-3">
                         <label class="form-label">Teacher's Comment (Only for Class Teacher)</label>
                         <textarea name="teachers_comment" class="form-control" maxlength="500" rows="4" placeholder="Enter your comment (max 500 characters)"></textarea>
-                    </div>
+                    </div> -->
                     <button type="submit" class="btn btn-success">Submit Results</button>
 
                 </form>

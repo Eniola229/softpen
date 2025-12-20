@@ -4,6 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>home</title>
+        <meta
+      name="description"
+      content="SoftPenTech helps schools record students and exams data with ease, it also include CBT exam"
+    />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.jpg') }}">
 </head>
 <body>
 

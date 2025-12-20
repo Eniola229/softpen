@@ -123,6 +123,10 @@ Route::middleware('auth:staff')->prefix('staff')->group(function () {
     Route::get('/staff/result-report/{result}', [StaffResultController::class, 'showReportCard'])
         ->name('staff.result.report');
 
+   Route::put('/comment/{student}/{term}/{session}', [StaffResultController::class, 'updateComment'])
+    ->name('teacher.comment.update')
+    ->where('session', '.*'); 
+
     Route::prefix('classes/{classId}/exams')->group(function () {
         Route::get('/', [ExamController::class, 'index'])->name('staff.exams.index');
         Route::get('/create', [ExamController::class, 'create'])->name('staff.exams.create');
@@ -143,6 +147,8 @@ Route::middleware('auth:staff')->prefix('staff')->group(function () {
     });
     Route::get('/student/{studentId}/cbt-result/{resultId}', [QuestionController::class, 'viewCBTResult'])
         ->name('staff.cbt.result.view');
+
+
 
     Route::get('logout', [StaffAuthController::class, 'logout'])->name('staff/logout');
 });

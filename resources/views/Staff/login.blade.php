@@ -15,6 +15,11 @@
     />
     <meta name="robots" content="noindex,nofollow" />
     <title>SoftPenTech</title>
+    <meta
+      name="description"
+      content="SoftPenTech helps schools record students and exams data with ease, it also include CBT exam"
+    />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.jpg') }}">
     <!-- Custom CSS -->
     <link href="../dist/css/style.min.css" rel="stylesheet" />
 
