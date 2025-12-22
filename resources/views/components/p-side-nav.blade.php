@@ -7,7 +7,7 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="{{ url('admin/dashboard') }}"
+                  href="{{ url('dashboard') }}"
                   aria-expanded="false"
                   ><i class="mdi mdi-view-dashboard"></i
                   ><span class="hide-menu">Dashboard</span></a
@@ -16,29 +16,14 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="{{ url('admin/schools') }}"
+                  href="{{ url('classes') }}"
                   aria-expanded="false"
-                  ><i class="mdi mdi-school"></i><span class="hide-menu">Schools</span></a
-                >
-              </li>
-              <li class="sidebar-item">
-                <a
-                  class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="{{ url('admin/users') }}"
-                  aria-expanded="false"
-                  ><i class="mdi mdi-account"></i><span class="hide-menu">Users</span></a
-                >
-              </li>
-              <li class="sidebar-item">
-                <a
-                  class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="{{ url('admin/classes') }}"
-                  aria-expanded="false"
-                  ><i class="mdi mdi-book"></i><span class="hide-menu">Pratice Exam's</span></a
+                  ><i class="mdi mdi-school"></i><span class="hide-menu">Classes</span></a
                 >
               </li>
               <li class="sidebar-item p-3">
-                <form method="get" action="{{ route('admin/logout') }}">
+                <form method="post" action="{{ route('logout') }}">
+                  @csrf
                 <button
                   class="
                     w-100

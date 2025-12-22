@@ -7,16 +7,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="keywords"
-      content="SoftPen Technologies for schools"
+      content="SchoolCode for online pratice exam"
     />
     <meta
       name="description"
-      content="SoftPen Technologies for schools"
+      content="SchoolCode for online pratice exam"
     />
     <meta name="robots" content="noindex,nofollow" />
-    <title>SoftPen Technologies</title>
+    <title>SchoolCode Africa</title>
     <!-- Custom CSS -->
     <link href="../dist/css/style.min.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.jpg') }}">
 
   </head>
 
@@ -50,8 +51,8 @@
         <div class="auth-box bg-dark border-top border-secondary">
           <div id="loginform">
             <div class="text-center pt-3 pb-3">
-              <span class="db"><h1 style="color: white;">SoftPen Technologies</h1></span>
-              <h3 style="color: white;">Student Login</h3>
+              <span class="db"><h1 style="color: white;">SchoolCode Africa</h1></span>
+              <h3 style="color: white;">Login</h3>
             </div>
             <!-- Form -->
             <form
@@ -70,6 +71,11 @@
                                         </ul>
                                     </div>   
                                    @endif  
+            @if (session('status'))
+              <div class="alert alert-success mb-4">
+                {{ session('status') }}
+              </div>
+            @endif
               <div class="row pb-4">
                 <div class="col-12">
                   <div class="input-group mb-3">
@@ -108,6 +114,11 @@
                       name="password"
                     />
                   </div>
+                                   <div class="text-right">
+                  <span class="text-white"
+                    >Don't have an account? <a href="{{ route('register') }}" style="color: white;">Click here to create an account</a></span
+                  >
+                </div>
                 </div>
               </div>
               <div class="row border-top border-secondary">
@@ -142,7 +153,8 @@
             </div>
             <div class="row mt-3">
               <!-- Form -->
-              <form class="col-12" action="index.html">
+              <form class="col-12" method="POST" action="{{ route('password.email') }}">
+                @csrf
                 <!-- email -->
                 <div class="input-group mb-3">
                   <div class="input-group-prepend">
@@ -153,11 +165,13 @@
                     ></span>
                   </div>
                   <input
-                    type="text"
-                    class="form-control form-control-lg"
-                    placeholder="Email Address"
-                    aria-label="Username"
-                    aria-describedby="basic-addon1"
+                      type="email" 
+                      class="form-control form-control-lg" 
+                      placeholder="Email Address" 
+                      name="email" 
+                      value="{{ old('email') }}" 
+                      required 
+                      autofocus
                   />
                 </div>
                 <!-- pwd -->
@@ -172,7 +186,7 @@
                     >
                     <button
                       class="btn btn-info float-end"
-                      type="button"
+                      type="submit"
                       name="action"
                     >
                       Recover

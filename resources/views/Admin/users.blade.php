@@ -61,7 +61,7 @@
                   <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="#">Softpen</a></li>
                     <li class="breadcrumb-item active" aria-current="page">
-                      Schools
+                      Users
                     </li>
                   </ol>
                 </nav>
@@ -81,61 +81,61 @@
          <div class="card">
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="card-title">School using SoftPenTech Software</h5>
-                      <a href="{{ url('admin/add/schools') }}">
-                      <button class="btn btn-primary">Add New School</button>
-                    </a>
+                      <h5 class="card-title">Users using SchoolCode Software</h5>
+                     
                   </div>
 
                   <div class="table-responsive">
-                    <table
-                      id="zero_config"
-                      class="table table-striped table-bordered"
-                    >
+                    <table id="zero_config" class="table table-striped table-bordered">
                       <thead>
                         <tr>
-                          <th>School Picture</th>
-                          <th>School Name</th>
+                          <th>Name</th>
                           <th>Email</th>
-                          <th>Mobile</th>
-                          <th>Status</th>
+                          <th>Class</th>
+                          <th>Age</th>
+                          <th>School</th>
+                          <th>Department</th>
+                          <th>Balance</th>
                           <th>Created At</th>
                           <th>Action</th>
                         </tr>
                       </thead>
-                      @foreach($schools as $school)
+
+                      @foreach($users as $user)
                       <tbody>
                         <tr>
-                          <td><img 
-                            src="{{ $school->avatar }}" 
-                            alt="{{ $school->name }}" 
-                            class="img-thumbnail" 
-                            style="width: 150px; height: 150px; object-fit: cover;" 
-                          />
-                          </td>
-                          <td>{{ $school->name }}</td>
-                          <td>{{ $school->email }}</td>
-                          <td>{{ $school->mobile }}</td>
-                         <td class="{{ $school->status === 'ACTIVE' ? 'text-success' : 'text-danger' }}">
-                              {{ $school->status }}
-                          </td>
-                          <td>{{ $school->created_at ? $school->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
-                          <td class="gap-2"><a  href="{{ url('admin/view/schools/' . $school->id) }}"><button class="btn btn-info m-2">View</button></a>
+                          <td>{{ $user->name }}</td>
+                          <td>{{ $user->email }}</td>
+                          <td>{{ $user->class ?? 'N/A' }}</td>
+                          <td>{{ $user->age ?? 'N/A' }}</td>
+                          <td>{{ $user->school ?? 'N/A' }}</td>
+                          <td>{{ $user->department ?? 'N/A' }}</td>
+                          <td>{{ isset($user->balance) ? number_format($user->balance, 2) : 'N/A' }}</td>
+                          <td>{{ $user->created_at ? $user->created_at->format('F j, Y g:i A') : 'N/A' }}</td>
+                          <td>
+                            <a href="{{ url('admin/view/users/' . $user->id) }}">
+                              <button class="btn btn-info m-2">View User</button>
+                            </a>
                           </td>
                         </tr>
-                      <tfoot>
+                      </tbody>
                       @endforeach
+
+                      <tfoot>
                         <tr>
-                          <th>School Picture</th>
-                          <th>School Name</th>
+                          <th>Name</th>
                           <th>Email</th>
-                          <th>Mobile</th>
-                          <th>Status</th>
+                          <th>Class</th>
+                          <th>Age</th>
+                          <th>School</th>
+                          <th>Department</th>
+                          <th>Balance</th>
                           <th>Created At</th>
                           <th>Action</th>
                         </tr>
                       </tfoot>
                     </table>
+
                   </div>
                 </div>
               </div>

@@ -104,9 +104,10 @@ class AdminAuthController extends Controller
         $schoolCount = School::all()->count();
         $staffCount = Staff::all()->count();
         $studentCount = Student::all()->count();
+        $userCount = User::all()->count();
 
         if (Auth::guard('admin')->check()) {
-            return view('admin.dashboard', compact("schoolCount", "staffCount", "studentCount"));
+            return view('admin.dashboard', compact("schoolCount", "staffCount", "studentCount", "userCount"));
         }
 
         return redirect("admin/login")->withSuccess('Oops! You do not have access');

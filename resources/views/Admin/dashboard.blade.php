@@ -93,6 +93,30 @@
               </div>
             </a>
             </div>
+              <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ url('admin/users') }}">
+              <div class="card card-hover">
+                <div class="box bg-warning text-center">
+                  <h1 class="font-light text-white">
+                    <i class="mdi mdi-account"></i>
+                  </h1>
+                  <h6 class="text-white">Users</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+                        <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ url('admin/classes') }}">
+              <div class="card card-hover">
+                <div class="box bg-danger text-center">
+                  <h1 class="font-light text-white">
+                    <i class="mdi mdi-book"></i>
+                  </h1>
+                  <h6 class="text-white">Pratice Exam's</h6>
+                </div>
+              </div>
+            </a>
+            </div>
           </div>
           <!-- ============================================================== -->
           <!-- Sales chart -->
@@ -140,13 +164,13 @@
                             <small class="font-light">Total Teachers</small>
                           </div>
                         </div>
-                      <!--   <div class="col-6 mt-3">
+                       <div class="col-6 mt-3">
                           <div class="bg-dark p-10 text-white text-center">
-                            <i class="mdi mdi-trophy fs-3 mb-1 font-16"></i>
-                            <h5 class="mb-0 mt-1">9540</h5>
-                            <small class="font-light">Total Result</small>
+                            <i class="mdi mdi-account fs-3 mb-1 font-16"></i>
+                            <h5 class="mb-0 mt-1">{{ $userCount }}</h5>
+                            <small class="font-light">Total Users</small>
                           </div>
-                        </div> -->
+                        </div>
                       </div>
                     </div>
                     <!-- column -->

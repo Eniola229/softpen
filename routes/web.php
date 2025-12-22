@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 //ADMIN
 use App\Http\Controllers\Admin\AdminAuthController;
 use App\Http\Controllers\Admin\SchoolController;
+use App\Http\Controllers\Admin\UserController;
 
 //SCHOOL
 use App\Http\Controllers\School\SchoolAuthController;
@@ -38,8 +39,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::get('/result', [ResultController::class, 'index'])->name('student.result');
@@ -64,7 +65,36 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('view/schools/{id}', [SchoolController::class, 'view'])->name('admin/view/schools');
     Route::get('/change/{id}', [SchoolController::class, 'changeStatus'])->name('admin/changeStatus');
     Route::get('/activate/{id}', [SchoolController::class, 'Activate'])->name('admin/Activate');
+    Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
+    Route::get('/view/users/{id}', [UserController::class, 'show'])->name('admin.users.view');
+    Route::post('/update/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
 
+    // Practice Classes
+    Route::get('/classes', [App\Http\Controllers\Admin\PClassController::class, 'index'])->name('classes.index');
+    Route::get('/classes/create', [App\Http\Controllers\Admin\PClassController::class, 'create'])->name('classes.create');
+    Route::post('/classes', [App\Http\Controllers\Admin\PClassController::class, 'store'])->name('classes.store');
+    Route::get('/classes/{class}', [App\Http\Controllers\Admin\PClassController::class, 'show'])->name('classes.show');
+    Route::get('/classes/{class}/edit', [App\Http\Controllers\Admin\PClassController::class, 'edit'])->name('classes.edit');
+    Route::put('/classes/{class}', [App\Http\Controllers\Admin\PClassController::class, 'update'])->name('classes.update');
+    Route::delete('/classes/{class}', [App\Http\Controllers\Admin\PClassController::class, 'destroy'])->name('classes.destroy');
+
+    // Practice Exams
+    Route::get('/class/{class}/exams', [App\Http\Controllers\Admin\PExamController::class, 'index'])->name('exams.index');
+    Route::get('/class/{class}/exams/create', [App\Http\Controllers\Admin\PExamController::class, 'create'])->name('exams.create');
+    Route::post('/class/{class}/exams', [App\Http\Controllers\Admin\PExamController::class, 'store'])->name('exams.store');
+    Route::get('/class/{class}/exams/{exam}', [App\Http\Controllers\Admin\PExamController::class, 'show'])->name('exams.show');
+    Route::get('/class/{class}/exams/{exam}/edit', [App\Http\Controllers\Admin\PExamController::class, 'edit'])->name('exams.edit');
+    Route::put('/class/{class}/exams/{exam}', [App\Http\Controllers\Admin\PExamController::class, 'update'])->name('exams.update');
+    Route::delete('/class/{class}/exams/{exam}', [App\Http\Controllers\Admin\PExamController::class, 'destroy'])->name('exams.destroy');
+    Route::post('/class/{class}/exams/{exam}/publish', [App\Http\Controllers\Admin\PExamController::class, 'publish'])->name('exams.publish');
+
+    // Practice Questions
+    Route::get('/class/{class}/exams/{exam}/questions/create', [App\Http\Controllers\Admin\PQuestionController::class, 'create'])->name('questions.create');
+    Route::post('/class/{class}/exams/{exam}/questions', [App\Http\Controllers\Admin\PQuestionController::class, 'store'])->name('questions.store');
+    Route::get('/class/{class}/exams/{exam}/questions/{question}/edit', [App\Http\Controllers\Admin\PQuestionController::class, 'edit'])->name('questions.edit');
+    Route::put('/class/{class}/exams/{exam}/questions/{question}', [App\Http\Controllers\Admin\PQuestionController::class, 'update'])->name('questions.update');
+    Route::delete('/class/{class}/exams/{exam}/questions/{question}', [App\Http\Controllers\Admin\PQuestionController::class, 'destroy'])->name('questions.destroy');
+    
     Route::get('logout', [AdminAuthController::class, 'logout'])->name('admin/logout');
 });
 

@@ -15,6 +15,11 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('class');
+            $table->string('age');
+            $table->string('school');
+            $table->string('department')->nullable();
+            $table->decimal('balance', 10, 2)->default(0.00);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -25,6 +30,27 @@ return new class extends Migration
             $table->string('email')->primary();
             $table->string('token');
             $table->timestamp('created_at')->nullable();
+        });
+
+        Schema::create('transactions', function (Blueprint $table) {
+            $table->uuid('id')->primary();
+            $table->uuid('user_id');
+            $table->string('type'); // credit, debit, payment, refund
+            $table->string('category'); // course_purchase, wallet_topup, withdrawal, course_refund
+            $table->decimal('amount', 10, 2);
+            $table->decimal('balance_before', 10, 2);
+            $table->decimal('balance_after', 10, 2);
+            $table->string('reference')->unique(); // transaction reference/ID
+            $table->string('status')->default('pending'); // pending, completed, failed, cancelled
+            $table->string('payment_method')->nullable(); // card, bank_transfer, wallet, paystack
+            $table->uuid('subject_id')->nullable(); // if transaction is related to a subject
+            $table->text('description')->nullable();
+            $table->text('metadata')->nullable();
+            $table->timestamps();
+            
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->index('status');
+            $table->index('type');
         });
 
         Schema::create('sessions', function (Blueprint $table) {

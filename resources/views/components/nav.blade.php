@@ -96,7 +96,11 @@
                   aria-labelledby="navbarDropdown"
                 >
                   <a class="dropdown-item"
-                     href="{{ Auth::guard('admin')->check() ? route('admin/profile') : '#' }}">
+                     href="{{
+                          (Auth::guard('student')->check() || Auth::guard('staff')->check()) ? '#' :
+                          (Auth::guard('admin')->check() ? route('admin/profile') :
+                          (Auth::guard('web')->check() ? route('profile') : '#'))
+                      }}">
                       <i class="mdi mdi-account me-1 ms-1"></i> My Profile
                   </a>
                 </ul>
