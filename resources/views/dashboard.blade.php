@@ -82,17 +82,55 @@
               </div>
             </div>
               <div class="col-md-6 col-lg-2 col-xlg-3">
-              <a href="{{ url('result') }}">
+              <a href="{{ url('practice') }}">
               <div class="card card-hover">
                 <div class="box bg-info text-center">
                   <h1 class="font-light text-white">
                      <i class="mdi mdi-school fs-4 fs-3 mb-1 font-16"></i>
                   </h1>
-                  <h6 class="text-white">Classes</h6>
+                  <h6 class="text-white">Choose Class and Subject To Start</h6>
                 </div>
               </div>
             </a>
             </div>
+              <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ route('practice.attempts') }}">
+              <div class="card card-hover">
+                <div class="box bg-primary text-center">
+                  <h1 class="font-light text-white">
+                     <i class="mdi mdi-history fs-4 fs-3 mb-1 font-16"></i>
+                  </h1>
+                  <h6 class="text-white">View My Attempt History</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+              <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ url('/transactions/history') }}">
+              <div class="card card-hover">
+                <div class="box bg-warning text-center">
+                  <h1 class="font-light text-white">
+                     <i class="mdi mdi-wallet fs-4 fs-3 mb-1 font-16"></i>
+                  </h1>
+                  <h6 class="text-white">Transaction History</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+             <div class="col-md-6 col-lg-2 col-xlg-3">
+              <a href="{{ route('profile') }}">
+              <div class="card card-hover">
+                <div class="box bg-success text-center">
+                  <h1 class="font-light text-white">
+                     <i class="mdi mdi-account fs-4 fs-3 mb-1 font-16"></i>
+                  </h1>
+                  <h6 class="text-white">Profile</h6>
+                </div>
+              </div>
+            </a>
+            </div>
+              </div>
+
           </div>
 
         <!-- ============================================================== -->

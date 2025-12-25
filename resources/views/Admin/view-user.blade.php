@@ -41,11 +41,11 @@
         <div class="card-body">
           <h2 class="card-title">{{ $user->name }}</h2>
           <p class="card-text"><strong>Email:</strong> {{ $user->email }}</p>
-          <p class="card-text"><strong>Phone:</strong> {{ $user->mobile ?? 'N/A' }}</p>
           <p class="card-text"><strong>Class:</strong> {{ $user->class ?? 'N/A' }}</p>
           <p class="card-text"><strong>Age:</strong> {{ $user->age ?? 'N/A' }}</p>
           <p class="card-text"><strong>School:</strong> {{ $user->school ?? 'N/A' }}</p>
           <p class="card-text"><strong>Department:</strong> {{ $user->department ?? 'N/A' }}</p>
+          <p class="card-text"><strong>Country:</strong> {{ $user->country ?? 'N/A' }}</p>
           <p class="card-text"><strong>Wallet Balance:</strong> {{ isset($user->balance) ? number_format($user->balance, 2) : 'N/A' }}</p>
         </div>
       </div>

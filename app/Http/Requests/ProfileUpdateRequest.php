@@ -17,14 +17,25 @@ class ProfileUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            
             'email' => [
                 'required',
                 'string',
-                'lowercase',
                 'email',
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+
+            'class' => ['required', 'string', 'max:50'], // e.g., JSS1, SS2
+            'age' => ['required', 'integer', 'min:5', 'max:120'],
+            'school' => ['required', 'string', 'max:255'],
+            
+            'department' => ['nullable', 'string', 'in:Science,Art,Commercial'], // 3 main streams
+        
+            
+            'country' => ['required', 'string', 'max:255'],
+            
+            'password' => ['nullable', 'string', 'min:8'], 
         ];
     }
 }

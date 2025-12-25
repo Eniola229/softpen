@@ -69,7 +69,7 @@
         
         <div class="bonus-amount">
             <p style="margin: 0; font-size: 18px; color: #666;">Welcome Bonus</p>
-            <h2>₦2,000.00</h2>
+            <h2>₦500</h2>
             <p style="margin: 0; color: #666;">Credited to your wallet</p>
         </div>
         
@@ -81,7 +81,7 @@
             <li>Start learning immediately</li>
         </ul>
         
-        <p>This bonus is our way of saying thank you for joining SchoolCode. We're committed to helping you achieve your educational goals!</p>
+        <p>This bonus is our way of saying thank you for joining SchoolCode Africa. We're committed to helping you achieve your educational goals!</p>
         
         <p style="text-align: center;">
             <a href="{{ url('/dashboard') }}" class="button">Start Learning Now</a>
@@ -90,7 +90,7 @@
         <p><strong>Important:</strong> Your bonus has been automatically added to your account and is ready to use.</p>
         
         <p>Best regards,<br>
-        <strong>The SchoolCode Team</strong></p>
+        <strong>The SchoolCode Africa Team</strong></p>
     </div>
     <div class="footer">
         <p>&copy; {{ date('Y') }} SoftPen Technologies. All rights reserved.</p>

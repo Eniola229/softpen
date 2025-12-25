@@ -59,7 +59,7 @@ class PExamController extends Controller
 
         PExam::create($validated);
 
-        return redirect()->route('admin.practice.exams.index', $classId)
+        return redirect()->route('exams.index', $classId)
             ->with('message', 'Practice exam created successfully!');
     }
 
@@ -68,10 +68,10 @@ class PExamController extends Controller
         $class = PClass::findOrFail($classId);
         $exam = PExam::with('questions.options')->findOrFail($examId);
         $questions = $exam->questions()->orderBy('order')->get();
-        $subject = Subject::find($exam->subject);
+        // $subject = Subject::find($exam->subject);
         $department = Department::find($exam->department_id);
 
-        return view('admin.practice.exams.show', compact('class', 'exam', 'questions', 'subject', 'department'));
+        return view('admin.practice.exams.show', compact('class', 'exam', 'questions', 'department'));
     }
 
     public function edit($classId, $examId)
@@ -113,7 +113,7 @@ class PExamController extends Controller
 
         $exam->update($validated);
 
-        return redirect()->route('admin.practice.exams.show', [$classId, $examId])
+        return redirect()->route('exams.show', [$classId, $examId])
             ->with('message', 'Practice exam updated successfully!');
     }
 
@@ -122,7 +122,7 @@ class PExamController extends Controller
         $exam = PExam::findOrFail($examId);
         $exam->delete();
 
-        return redirect()->route('admin.practice.exams.index', $classId)
+        return redirect()->route('exams.index', $classId)
             ->with('message', 'Practice exam deleted successfully!');
     }
 
@@ -136,7 +136,7 @@ class PExamController extends Controller
 
         $exam->update(['is_published' => true]);
 
-        return redirect()->route('admin.practice.exams.show', [$classId, $examId])
+        return redirect()->route('exams.show', [$classId, $examId])
             ->with('message', 'Practice exam published successfully!');
     }
 }

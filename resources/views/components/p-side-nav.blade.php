@@ -16,9 +16,33 @@
               <li class="sidebar-item">
                 <a
                   class="sidebar-link waves-effect waves-dark sidebar-link"
-                  href="{{ url('classes') }}"
+                  href="{{ url('practice') }}"
                   aria-expanded="false"
-                  ><i class="mdi mdi-school"></i><span class="hide-menu">Classes</span></a
+                  ><i class="mdi mdi-school"></i><span class="hide-menu"> Choose Class and Subject</span></a
+                >
+              </li>
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link waves-effect waves-dark sidebar-link"
+                  href="{{ route('practice.attempts') }}"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-history"></i><span class="hide-menu">My Attempt History</span></a
+                >
+              </li>
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link waves-effect waves-dark sidebar-link"
+                  href="{{ url('/transactions/history') }}"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-wallet"></i><span class="hide-menu">Transaction History</span></a
+                >
+              </li>
+              <li class="sidebar-item">
+                <a
+                  class="sidebar-link waves-effect waves-dark sidebar-link"
+                  href="{{ url('profile') }}"
+                  aria-expanded="false"
+                  ><i class="mdi mdi-account"></i><span class="hide-menu">Profile</span></a
                 >
               </li>
               <li class="sidebar-item p-3">

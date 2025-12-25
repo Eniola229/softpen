@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('age');
             $table->string('school');
             $table->string('department')->nullable();
+            $table->string('state');
+            $table->string('country');
             $table->decimal('balance', 10, 2)->default(0.00);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');

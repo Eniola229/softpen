@@ -65,17 +65,65 @@
                 <input type="text" id="name" name="name" class="form-control" placeholder="e.g., JSS 1, SS 2, Year 7" value="{{ old('name') }}" required>
               </div>
 
-              <div class="form-group mb-3">
-                <label for="subject">Subject *</label>
-                <select id="subject" name="subject" class="form-control" required>
+          <div class="form-group mb-3">
+              <label for="subject">Subject *</label>
+              <select id="subject" name="subject" class="form-control select2" required>
                   <option value="">-- Select Subject --</option>
-                  @foreach($subjects as $subject)
-                    <option value="{{ $subject->id }}" {{ old('subject') == $subject->id ? 'selected' : '' }}>
-                      {{ $subject->name }}
-                    </option>
-                  @endforeach
-                </select>
-              </div>
+
+                  <!-- PRIMARY SCHOOL SUBJECTS -->
+                  <optgroup label="Primary School">
+                      <option value="english">English Language</option>
+                      <option value="mathematics">Mathematics</option>
+                      <option value="basic_science">Basic Science</option>
+                      <option value="social_studies">Social Studies</option>
+                      <option value="yoruba">Yoruba</option>
+                      <option value="igbo">Igbo</option>
+                      <option value="hausa">Hausa</option>
+                      <option value="civic_education">Civic Education</option>
+                      <option value="religious_knowledge">Religious Knowledge</option>
+                      <option value="physical_education">Physical Education</option>
+                  </optgroup>
+
+                  <!-- JUNIOR SECONDARY SCHOOL (JSS1-JSS3) -->
+                  <optgroup label="Junior Secondary School (JSS)">
+                      <option value="english">English Language</option>
+                      <option value="mathematics">Mathematics</option>
+                      <option value="basic_science">Basic Science</option>
+                      <option value="basic_technology">Basic Technology</option>
+                      <option value="social_studies">Social Studies</option>
+                      <option value="yoruba">Yoruba</option>
+                      <option value="igbo">Igbo</option>
+                      <option value="hausa">Hausa</option>
+                      <option value="civic_education">Civic Education</option>
+                      <option value="religious_knowledge">Religious Knowledge</option>
+                      <option value="computer_studies">Computer Studies</option>
+                      <option value="physical_education">Physical Education</option>
+                  </optgroup>
+
+                  <!-- SENIOR SECONDARY SCHOOL (SS1-SS3) -->
+                  <optgroup label="Senior Secondary School (SS)">
+                      <option value="english">English Language</option>
+                      <option value="mathematics">Mathematics</option>
+                      <option value="physics">Physics</option>
+                      <option value="chemistry">Chemistry</option>
+                      <option value="biology">Biology</option>
+                      <option value="economics">Economics</option>
+                      <option value="commerce">Commerce</option>
+                      <option value="government">Government</option>
+                      <option value="literature">Literature in English</option>
+                      <option value="accounting">Accounting</option>
+                      <option value="financial_accounting">Financial Accounting</option>
+                      <option value="computer_science">Computer Science</option>
+                      <option value="yoruba">Yoruba</option>
+                      <option value="igbo">Igbo</option>
+                      <option value="hausa">Hausa</option>
+                      <option value="civic_education">Civic Education</option>
+                      <option value="religious_knowledge">Religious Knowledge</option>
+                      <option value="physical_education">Physical Education</option>
+                  </optgroup>
+
+              </select>
+          </div>
 
               <div class="form-group mt-4">
                 <button type="submit" class="btn btn-primary">
@@ -95,6 +143,17 @@
       </footer>
     </div>
   </div>
+
+  <script>
+  $(document).ready(function() {
+      $('#subject').select2({
+          placeholder: "-- Select Subject --",
+          allowClear: true,
+          width: '100%'
+      });
+  });
+  </script>
+
 
   <script src="{{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
   <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>

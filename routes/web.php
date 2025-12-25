@@ -42,9 +42,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile');
     Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    Route::get('/result', [ResultController::class, 'index'])->name('student.result');
-    Route::get('/view-result/{result}', [ResultController::class, 'showMyReportCard'])->name('student.result.view');
+    Route::get('/transactions/history', [App\Http\Controllers\PStudent\PracticeController::class, 'transactionHistory'])->name('transactions.history');
+    Route::prefix('practice')->name('practice.')->middleware(['auth'])->group(function () {
+        Route::get('/', [App\Http\Controllers\PStudent\PracticeController::class, 'index'])->name('index');
+        Route::get('/class/{class}/exams', [App\Http\Controllers\PStudent\PracticeController::class, 'showExams'])->name('exams');
+        Route::get('/class/{class}/exam/{exam}/instructions', [App\Http\Controllers\PStudent\PracticeController::class, 'showInstructions'])->name('instructions');
+        Route::post('/class/{class}/exam/{exam}/start', [App\Http\Controllers\PStudent\PracticeController::class, 'startExam'])->name('start');
+        Route::get('/class/{class}/exam/{exam}/attempt/{attempt}/take', [App\Http\Controllers\PStudent\PracticeController::class, 'takeExam'])->name('take');
+        Route::post('/class/{class}/exam/{exam}/attempt/{attempt}/submit', [App\Http\Controllers\PStudent\PracticeController::class, 'submitExam'])->name('submit');
+        Route::get('/class/{class}/exam/{exam}/attempt/{attempt}/result', [App\Http\Controllers\PStudent\PracticeController::class, 'showResult'])->name('result');
+        Route::get('/my-attempts', [App\Http\Controllers\PStudent\PracticeController::class, 'myAttempts'])->name('attempts');
+    });
 });
 
 require __DIR__.'/auth.php';

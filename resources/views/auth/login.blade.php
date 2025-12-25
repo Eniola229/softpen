@@ -16,7 +16,7 @@
     <meta name="robots" content="noindex,nofollow" />
     <title>SchoolCode Africa</title>
     <!-- Custom CSS -->
-    <link href="../dist/css/style.min.css" rel="stylesheet" />
+   <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet" />
     <link rel="icon" type="image/png" href="{{ asset('assets/images/favicon.jpg') }}">
 
   </head>
@@ -200,9 +200,9 @@
       </div>
     </div>
 
-    <script src="../assets/libs/jquery/dist/jquery.min.js"></script>
-    <!-- Bootstrap tether Core JavaScript -->
-    <script src="../assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="{{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
+  <!-- Bootstrap tether Core JavaScript -->
+  <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
 
     <script>
       $(".preloader").fadeOut();

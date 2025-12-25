@@ -42,7 +42,7 @@
 </head>
 <body>
     <div class="header">
-        <h1>Welcome to SchoolCode!</h1>
+        <h1>Welcome to SchoolCode Africa!</h1>
     </div>
     <div class="content">
         <h2>Hello {{ $user->name }}!</h2>
@@ -66,7 +66,7 @@
         <p>If you have any questions, feel free to reach out to our support team.</p>
         
         <p>Happy Learning!<br>
-        <strong>The SchoolCode Team</strong></p>
+        <strong>The SchoolCode Africa Team</strong></p>
     </div>
     <div class="footer">
         <p>&copy; {{ date('Y') }} SoftPen Technologies. All rights reserved.</p>

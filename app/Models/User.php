@@ -55,6 +55,8 @@ class User extends Authenticatable
         'school',
         'department',
         'balance',
+        'state',
+        'country',
         'password',
     ];
 

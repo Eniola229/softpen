@@ -38,6 +38,8 @@ class RegisteredUserController extends Controller
             'age' => ['required', 'string', 'max:255'],
             'school' => ['required', 'string', 'max:255'],
             'department' => ['nullable', 'string', 'max:255'],
+            'country' => ['required', 'string', 'max:255'],
+            'state' => ['required', 'string', 'max:255'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
@@ -49,7 +51,9 @@ class RegisteredUserController extends Controller
             'age' => $request->age,
             'school' => $request->school,
             'department' => $request->department,
-            'balance' => 2000.00, // Set initial bonus
+            'balance' => 500.00, // Set initial bonus
+            'state' => $request->state,
+            'country' => $request->country,
             'password' => Hash::make($request->password),
         ]);
 
@@ -58,9 +62,9 @@ class RegisteredUserController extends Controller
             'user_id' => $user->id,
             'type' => Transaction::TYPE_CREDIT,
             'category' => Transaction::CATEGORY_WALLET_TOPUP,
-            'amount' => 2000.00,
+            'amount' => 500.00,
             'balance_before' => 0.00,
-            'balance_after' => 2000.00,
+            'balance_after' => 500.00,
             'reference' => Transaction::generateReference(),
             'status' => Transaction::STATUS_COMPLETED,
             'payment_method' => 'bonus',
@@ -78,7 +82,7 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(route('dashboard'))->with('success', 'Welcome! You have received a bonus of ₦2,000.00 in your wallet!');
+        return redirect(route('dashboard'))->with('success', 'Welcome! You have received a bonus of ₦500.00 in your wallet!');
     }
 
     /**
@@ -89,7 +93,7 @@ class RegisteredUserController extends Controller
         try {
             Mail::send('emails.welcome', ['user' => $user], function ($message) use ($user) {
                 $message->to($user->email, $user->name)
-                        ->subject('Welcome to SchoolCode');
+                        ->subject('Welcome to SchoolCode Africa');
             });
         } catch (\Exception $e) {
             \Log::error('Welcome email failed: ' . $e->getMessage());
@@ -104,7 +108,7 @@ class RegisteredUserController extends Controller
         try {
             Mail::send('emails.bonus', ['user' => $user], function ($message) use ($user) {
                 $message->to($user->email, $user->name)
-                        ->subject('Congratulations! You\'ve Received ₦2,000 Bonus');
+                        ->subject('Congratulations! You\'ve Received ₦500 Bonus');
             });
         } catch (\Exception $e) {
             \Log::error('Bonus email failed: ' . $e->getMessage());

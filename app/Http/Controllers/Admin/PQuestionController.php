@@ -83,7 +83,7 @@ class PQuestionController extends Controller
             }
         }
 
-        return redirect()->route('admin.practice.exams.show', [$classId, $examId])
+        return redirect()->route('exams.show', [$classId, $examId])
             ->with('message', 'Practice question added successfully!');
     }
 
@@ -156,7 +156,7 @@ class PQuestionController extends Controller
             }
         }
 
-        return redirect()->route('admin.practice.exams.show', [$classId, $examId])
+        return redirect()->route('exams.show', [$classId, $examId])
             ->with('message', 'Practice question updated successfully!');
     }
 
@@ -165,7 +165,7 @@ class PQuestionController extends Controller
         $question = PQuestion::findOrFail($questionId);
         $question->delete();
 
-        return redirect()->route('admin.practice.exams.show', [$classId, $examId])
+        return redirect()->route('exams.show', [$classId, $examId])
             ->with('message', 'Practice question deleted successfully!');
     }
 }
