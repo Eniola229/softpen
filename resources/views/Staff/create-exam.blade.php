@@ -120,7 +120,7 @@
                     <option value="">-- Select Subject --</option>
                     @foreach($subjects as $subject)
                       <option value="{{ $subject->id }}" {{ old('subject') == $subject->name ? 'selected' : '' }}>
-                        {{ $subject->name }}
+                        {{ $subject->name }} - {{ $subject->for }}
                       </option>
                     @endforeach
                   </select>

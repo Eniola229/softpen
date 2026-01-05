@@ -1,5 +1,6 @@
 @include('components.header')
 <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet" />
+<script src="https://cdn.tiny.cloud/1/9lcsi17by61qxgfug4h9ns3wl0mkdwithf1yovboozc6qd27/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 
 <body>
   <div class="preloader">
@@ -55,7 +56,7 @@
       <div class="container-fluid">
         <div class="card">
           <div class="card-body">
-            <h1 class="card-title">Edit Question: {{ Str::limit($question->question_text, 50) }}</h1>
+            <h1 class="card-title">Edit Question: {!! Str::limit($question->question_text, 50) !!}</h1>
             <h6 class="card-subtitle mb-4">Update practice question details</h6>
 
             <form action="{{ route('questions.update', [$class->id, $exam->id, $question->id]) }}" method="POST" enctype="multipart/form-data" id="questionForm">
@@ -65,7 +66,15 @@
               <!-- Question Text -->
               <div class="form-group mb-3">
                 <label for="question_text">Question Text *</label>
-                <textarea id="question_text" name="question_text" class="form-control" rows="4" placeholder="Enter your question here..." required>{{ old('question_text', $question->question_text) }}</textarea>
+                    <textarea
+                        class="form-control rich-editor"
+                        id="question_text"
+                        name="question_text"
+                        rows="4"
+                        required
+                    >
+                     {{ old('question_text', $question->question_text ?? '') }}
+                    </textarea>
               </div>
 
               <!-- Question Image -->
@@ -108,7 +117,15 @@
               <!-- Explanation (Important for Practice) -->
               <div class="form-group mb-3">
                 <label for="explanation">Explanation * <span class="badge bg-info">Practice Mode</span></label>
-                <textarea id="explanation" name="explanation" class="form-control" rows="5" placeholder="Provide a detailed explanation for the correct answer. This will help students learn." required>{{ old('explanation', $question->explanation) }}</textarea>
+                    <textarea
+                        class="form-control rich-editor"
+                        id="explanation"
+                        name="explanation"
+                        rows="5"
+                        required
+                    >
+                    {{ old('explanation', $question->explanation ?? '') }}
+                    </textarea>
                 <small class="text-muted">This explanation will be shown to students after they answer the question</small>
               </div>
 
@@ -157,7 +174,18 @@
   <script src="{{ asset('dist/js/waves.js') }}"></script>
   <script src="{{ asset('dist/js/sidebarmenu.js') }}"></script>
   <script src="{{ asset('dist/js/custom.min.js') }}"></script>
-
+<script>
+tinymce.init({
+    selector: 'textarea.rich-editor',
+    height: 400,
+    menubar: false,
+   plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+     toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | table | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+    toolbar_mode: 'sliding',
+    contextmenu: 'link image table',
+    branding: false
+});
+</script>
   <script>
     let optionCount = 0;
     const existingOptions = @json($question->options);

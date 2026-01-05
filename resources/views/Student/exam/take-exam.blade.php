@@ -242,7 +242,7 @@
         @foreach($questions as $index => $question)
           <h3>Question {{ $index + 1 }} of {{ $questions->count() }}</h3>
           <section>
-            <div class="question-text">{{ $question->question_text }}</div>
+            <div class="question-text">{!! $question->question_text !!}</div>
             
             {{-- Display question image if it exists and is not empty --}}
             @if($question->question_image && $question->question_image != '')

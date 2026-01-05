@@ -474,7 +474,7 @@
                   <div class="question-container {{ $answer->is_correct ? 'correct' : 'incorrect' }}">
                     <div class="mb-3">
                       <span class="question-number">{{ $index+1 }}</span>
-                      <strong>{{ $answer->question->question_text }}</strong>
+                      <strong>{!! $answer->question->question_text !!}</strong>
                       <span class="answer-status {{ $answer->is_correct ? 'correct' : 'incorrect' }}">
                         {{ $answer->is_correct ? 'Correct' : 'Wrong' }}
                       </span>

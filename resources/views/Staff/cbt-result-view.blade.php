@@ -180,7 +180,7 @@
                             </div>
 
                             <div class="mb-3">
-                                <p class="mb-2"><strong>{{ $answer->question->question_text }}</strong></p>
+                                <p class="mb-2"><strong>{!! $answer->question->question_text !!}</strong></p>
                                 @if($answer->question->question_image)
                                     <img src="{{ $answer->question->question_image }}" alt="Question" style="max-width: 400px; border-radius: 8px;">
                                 @endif

@@ -217,7 +217,7 @@
                     <tr>
                       <td>Q{{ $question->order }}</td>
                       <td>
-                        {{ Str::limit($question->question_text, 50) }}
+                        {!! Str::limit($question->question_text, 50) !!}
                         @if($question->question_image)
                           <br><small class="text-muted"><i class="fas fa-image"></i> Has Image</small>
                         @endif

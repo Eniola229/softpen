@@ -278,6 +278,7 @@
                 <div class="card-body">
                   <div class="d-flex justify-content-between align-items-center mb-2">
                       <h5 class="card-title">Students under {{ $school->name }}</h5>
+                      <h5 class="card-title">Number of Students: <span style="color: red;">{{ $studentCount }}</span></h5>
                   </div>
 
                   <div class="table-responsive">

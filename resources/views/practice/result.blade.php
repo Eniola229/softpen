@@ -108,7 +108,7 @@
                       </div>
 
                       <div class="mt-3">
-                        <p><strong>{{ $answer->pQuestion->question_text }}</strong></p>
+                        <p><strong>{!! $answer->pQuestion->question_text !!}</strong></p>
                         
                         @if($answer->pQuestion->question_image)
                           <img src="{{ asset('storage/' . $answer->pQuestion->question_image) }}" 
@@ -149,7 +149,7 @@
                         @if($answer->pQuestion->explanation)
                           <div class="alert alert-info mt-3">
                             <strong><i class="mdi mdi-information"></i> Explanation:</strong><br>
-                            {{ $answer->pQuestion->explanation }}
+                            {!! $answer->pQuestion->explanation !!}
                           </div>
                         @endif
 

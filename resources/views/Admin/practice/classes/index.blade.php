@@ -2,6 +2,34 @@
 <link rel="stylesheet" type="text/css" href="{{ asset('assets/extra-libs/multicheck/multicheck.css') }}" />
 <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet" />
 <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet" />
+<style>
+  .group-header {
+    background-color: #f8f9fa;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 12px;
+    border-left: 4px solid #007bff;
+    transition: all 0.3s;
+  }
+  .group-header:hover {
+    background-color: #e9ecef;
+  }
+  .group-header i {
+    transition: transform 0.3s;
+  }
+  .group-header.collapsed i {
+    transform: rotate(-90deg);
+  }
+  .group-content {
+    display: none;
+  }
+  .group-content.show {
+    display: table-row-group;
+  }
+  .group-row td {
+    padding-left: 30px;
+  }
+</style>
 
 <body>
   <div class="preloader">
@@ -81,9 +109,9 @@
                     <th>Action</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody id="table_body">
                   @foreach($classes as $class)
-                    <tr>
+                    <tr data-class-name="{{ $class->name }}">
                       <td>{{ $class->name }}</td>
                       <td>{{ $class->subject }}</td>
                       <td>{{ $class->created_at->format('M d, Y') }}</td>
@@ -106,10 +134,6 @@
                   @endforeach
                 </tbody>
               </table>
-            </div>
-
-            <div class="d-flex justify-content-center mt-3">
-              {{ $classes->links() }}
             </div>
           @else
             <div class="alert alert-info">
@@ -138,7 +162,95 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    $("#classes_table").DataTable();
+    function extractClassLevel(className) {
+      // Extract class level like SS3, SS2, JSS1, etc.
+      const match = className.match(/^(SS\d|JSS\d|PRIMARY\d|YEAR\d)/i);
+      return match ? match[1].toUpperCase() : 'OTHER';
+    }
+
+    function groupClasses() {
+      const tbody = $('#table_body');
+      const rows = tbody.find('tr').toArray();
+      
+      // Group rows by class level
+      const groups = {};
+      rows.forEach(row => {
+        const className = $(row).data('class-name');
+        const classLevel = extractClassLevel(className);
+        
+        if (!groups[classLevel]) {
+          groups[classLevel] = [];
+        }
+        groups[classLevel].push(row);
+      });
+
+      // Clear tbody
+      tbody.empty();
+
+      // Sort groups
+      const sortedGroups = Object.keys(groups).sort();
+
+      // Add grouped rows
+      sortedGroups.forEach(group => {
+        const groupId = 'group_' + group.replace(/\s+/g, '_');
+        const count = groups[group].length;
+        
+        // Add group header (collapsed by default)
+        const headerRow = $(`
+          <tr class="group-header collapsed" data-group="${groupId}">
+            <td colspan="4">
+              <i class="fas fa-chevron-right"></i>
+              <strong>${group}</strong> (${count} ${count === 1 ? 'class' : 'classes'})
+            </td>
+          </tr>
+        `);
+        tbody.append(headerRow);
+
+        // Add group content wrapper (closed by default)
+        const contentWrapper = $(`<tbody class="group-content" id="${groupId}"></tbody>`);
+        groups[group].forEach(row => {
+          $(row).addClass('group-row');
+          contentWrapper.append(row);
+        });
+        tbody.append(contentWrapper);
+      });
+
+      // Add click event to group headers
+      $('.group-header').on('click', function() {
+        const groupId = $(this).data('group');
+        const content = $('#' + groupId);
+        const icon = $(this).find('i');
+        
+        if (content.hasClass('show')) {
+          content.removeClass('show');
+          $(this).addClass('collapsed');
+          icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+        } else {
+          content.addClass('show');
+          $(this).removeClass('collapsed');
+          icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
+        }
+      });
+    }
+
+    // Initialize DataTable with pagination
+    $(document).ready(function() {
+      const table = $("#classes_table").DataTable({
+        "paging": true,
+        "pageLength": 10,
+        "lengthMenu": [10, 25, 50, 100],
+        "ordering": true,
+        "info": true,
+        "searching": true,
+        "drawCallback": function(settings) {
+          // Reapply grouping after DataTable draws
+          groupClasses();
+        }
+      });
+
+      // Initial grouping
+      groupClasses();
+    });
 
     function confirmDelete(url, className) {
       Swal.fire({

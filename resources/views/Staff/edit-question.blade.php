@@ -2,6 +2,7 @@
 <link href="{{ asset('assets/libs/jquery-steps/jquery.steps.css') }}" rel="stylesheet" />
 <link href="{{ asset('assets/libs/jquery-steps/steps.css') }}" rel="stylesheet" />
 <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet" />
+<script src="https://cdn.tiny.cloud/1/9lcsi17by61qxgfug4h9ns3wl0mkdwithf1yovboozc6qd27/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
   <body>
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->
@@ -34,7 +35,7 @@
       <!-- ============================================================== -->
       <!-- Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
-      @include('components.side-nav') 
+      @include('components.staff-nav') 
       <!-- ============================================================== -->
       <!-- End Left Sidebar - style you can find in sidebar.scss  -->
       <!-- ============================================================== -->
@@ -105,11 +106,13 @@
                   <section>
                     <label for="question_text">Question Text *</label>
                     <textarea
-                      id="question_text"
-                      name="question_text"
-                      class="required form-control"
-                      rows="4"
-                      placeholder="Enter the question text...">{{ old('question_text', $question->question_text) }}</textarea>
+                        id="question_text"
+                        name="question_text"
+                        class="rich-editor required form-control"
+                        rows="4"
+                        placeholder="Enter the question text..."
+                    >{{ old('question_text', $question->question_text ?? '') }}</textarea>
+
 
                     <label for="question_image" class="mt-3">Question Image (optional)</label>
                     @if($question->question_image)
@@ -253,7 +256,18 @@
 <!-- This Page JS -->
 <script src="{{ asset('assets/libs/jquery-steps/build/jquery.steps.min.js') }}"></script>
 <script src="{{ asset('assets/libs/jquery-validation/dist/jquery.validate.min.js') }}"></script>
-
+<script>
+tinymce.init({
+    selector: 'textarea.rich-editor',
+    height: 400,
+    menubar: false,
+   plugins: 'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media template codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+     toolbar: 'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | table | fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl',
+    toolbar_mode: 'sliding',
+    contextmenu: 'link image table',
+    branding: false
+});
+</script>
 <script>
   // Basic Example with form
   var form = $("#question-form");

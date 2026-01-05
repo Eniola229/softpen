@@ -24,80 +24,80 @@ class SchoolController extends Controller
 
   }  
 
-public function addSchool()
+    public function addSchool()
   {
         return view('admin.add-school');
 
   } 
 
-public function create(Request $request)
-{
-    // Determine if this is a create or update operation
-    $isUpdate = $request->filled('id');
+    public function create(Request $request)
+    {
+        // Determine if this is a create or update operation
+        $isUpdate = $request->filled('id');
 
-    // Validation
-    $validatedData = Validator::make($request->all(), [
-        'id' => 'nullable',
-        'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
-        'name' => 'required|string|max:255',
-        'motto' => 'nullable|string|max:500',
-        'email' => 'required|email|max:255|unique:schools,email,' . $request->input('id'),
-        'mobile' => 'nullable|string|max:15',
-        'address' => 'nullable|string|max:255',
-        'password' => $isUpdate ? 'nullable|min:6' : 'required|min:6',
-    ]);
+        // Validation
+        $validatedData = Validator::make($request->all(), [
+            'id' => 'nullable',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5048',
+            'name' => 'required|string|max:255',
+            'motto' => 'nullable|string|max:500',
+            'email' => 'required|email|max:255|unique:schools,email,' . $request->input('id'),
+            'mobile' => 'nullable|string|max:15',
+            'address' => 'nullable|string|max:255',
+            'password' => $isUpdate ? 'nullable|min:6' : 'required|min:6',
+        ]);
 
-    if ($validatedData->fails()) {
-        return redirect()->back()
-            ->withErrors($validatedData)
-            ->withInput();
-    }
-
-    // Prepare data for create or update
-    $data = [
-        'name' => $request->input('name'),
-        'motto' => $request->input('motto'),
-        'email' => $request->input('email'),
-        'mobile' => $request->input('mobile'),
-        'address' => $request->input('address'),
-    ];
-
-    // If password is provided or it's a new record, include it
-    if (!$isUpdate || $request->filled('password')) {
-        $data['password'] = Hash::make($request->input('password'));
-    }
-
-    // Create or update the school
-    $admin = School::updateOrCreate(
-        ['id' => $request->input('id')],
-        $data
-    );
-
-    // Handle avatar upload using Cloudinary
-    if ($request->hasFile('avatar')) {
-        // If the admin has an existing avatar, delete it from Cloudinary
-        if ($admin->image_id) {
-            Cloudinary::destroy($admin->image_id);
+        if ($validatedData->fails()) {
+            return redirect()->back()
+                ->withErrors($validatedData)
+                ->withInput();
         }
 
-        // Upload the new avatar to Cloudinary
-        $avatarUpload = Cloudinary::upload($request->file('avatar')->getRealPath(), [
-            'folder' => 'school_avatars',
-        ]);
+        // Prepare data for create or update
+        $data = [
+            'name' => $request->input('name'),
+            'motto' => $request->input('motto'),
+            'email' => $request->input('email'),
+            'mobile' => $request->input('mobile'),
+            'address' => $request->input('address'),
+        ];
 
-        // Get image URL and public ID from Cloudinary
-        $uploadedFileUrl = $avatarUpload->getSecurePath();
-        $imageId = $avatarUpload->getPublicId();
+        // If password is provided or it's a new record, include it
+        if (!$isUpdate || $request->filled('password')) {
+            $data['password'] = Hash::make($request->input('password'));
+        }
 
-        // Update admin with new avatar info
-        $admin->update([
-            'avatar' => $uploadedFileUrl,
-            'image_id' => $imageId,
-        ]);
+        // Create or update the school
+        $admin = School::updateOrCreate(
+            ['id' => $request->input('id')],
+            $data
+        );
+
+        // Handle avatar upload using Cloudinary
+        if ($request->hasFile('avatar')) {
+            // If the admin has an existing avatar, delete it from Cloudinary
+            if ($admin->image_id) {
+                Cloudinary::destroy($admin->image_id);
+            }
+
+            // Upload the new avatar to Cloudinary
+            $avatarUpload = Cloudinary::upload($request->file('avatar')->getRealPath(), [
+                'folder' => 'school_avatars',
+            ]);
+
+            // Get image URL and public ID from Cloudinary
+            $uploadedFileUrl = $avatarUpload->getSecurePath();
+            $imageId = $avatarUpload->getPublicId();
+
+            // Update admin with new avatar info
+            $admin->update([
+                'avatar' => $uploadedFileUrl,
+                'image_id' => $imageId,
+            ]);
+        }
+
+        return redirect()->back()->with('message', 'School record has been created or updated successfully.');
     }
-
-    return redirect()->back()->with('message', 'School record has been created or updated successfully.');
-}
 
     public function view($id)
     {
@@ -108,8 +108,9 @@ public function create(Request $request)
         $subjects = Subject::where('school_id', $school->id)->get();
         $departments = Department::where('school_id', $school->id)->get();
         $cbt = CBT::where('school_id', $school->id)->first();
+        $studentCount = Student::where('school_id', $school->id)->count();
 
-       return view('admin.view-school', compact('school', 'staffs', 'students', 'classes', 'subjects', 'departments', 'cbt'));
+       return view('admin.view-school', compact('school', 'staffs', 'students', 'classes', 'subjects', 'departments', 'cbt', 'studentCount'));
     }
 
     public function changeStatus($id)

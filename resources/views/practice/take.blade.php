@@ -88,7 +88,7 @@
               <div class="card-body">
                 <h5 class="card-title">Question {{ $index + 1 }} of {{ $questions->count() }} ({{ $question->mark }} mark{{ $question->mark > 1 ? 's' : '' }})</h5>
                 
-                <p class="mb-3">{!! nl2br(e($question->question_text)) !!}</p>
+                <p class="mb-3">{!! $question->question_text !!}</p>
 
                 @if($question->question_image)
                   <div class="mb-3">
