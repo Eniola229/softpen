@@ -82,6 +82,13 @@
                       <option value="civic_education">Civic Education</option>
                       <option value="religious_knowledge">Religious Knowledge</option>
                       <option value="physical_education">Physical Education</option>
+                      <option value="ict">ICT</option>
+                      <option value="agric_science">Agric Science</option>
+                      <option value="music">Music</option>
+                      <option value="home_management">Home Management</option>
+                      <option value="history">History</option>
+                      <option value="cca">CCA</option>
+                      <option value="robotics">Robotics</option>
                   </optgroup>
 
                   <!-- JUNIOR SECONDARY SCHOOL (JSS1-JSS3) -->
@@ -98,6 +105,13 @@
                       <option value="religious_knowledge">Religious Knowledge</option>
                       <option value="computer_studies">Computer Studies</option>
                       <option value="physical_education">Physical Education</option>
+                      <option value="ict">ICT</option>
+                      <option value="cca">CCA</option>
+                      <option value="music">Music</option>
+                      <option value="business_studies">Business Studies</option>
+                      <option value="robotics">Robotics</option>
+                      <option value="home_management">Home Management</option>
+                      <option value="history">History</option>
                   </optgroup>
 
                   <!-- SENIOR SECONDARY SCHOOL (SS1-SS3) -->
@@ -120,6 +134,10 @@
                       <option value="civic_education">Civic Education</option>
                       <option value="religious_knowledge">Religious Knowledge</option>
                       <option value="physical_education">Physical Education</option>
+                      <option value="futher_mathematics">Futher Mathematics</option>
+                      <option value="technical_drawing">Technical Drawing</option>
+                      <option value="history">History</option>
+                      <option value="robotics">Robotics</option>
                   </optgroup>
 
               </select>
