@@ -141,23 +141,56 @@
               </div>
             </a>
             </div>
+            @if($attendance && $attendance->status == 'ACTIVE')
+            <div class="col-md-6 col-lg-2 col-xlg-3">
+                <a href="{{ route('attendance.staff.index') }}">
+                    <div class="card card-hover">
+                        <div class="box bg-warning text-center">
+                            <h1 class="font-light text-white">
+                                <i class="mdi mdi-calendar-check fs-3 mb-1 font-16"></i>
+                            </h1>
+                            <h6 class="text-white">Staff Attendance</h6>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            @endif
           </div>
                         @if(!$cbt)
                             <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
                                 <i class="fas fa-exclamation-triangle"></i>
-                                <strong>CBT Not Available!</strong> Your school plan does not have CBT exam included. Please contact your administrator to upgrade.
+                                <strong>CBT Not Available!</strong> Your school plan does not have CBT exam included. Please contact administrator to upgrade.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @elseif($cbt->status != 'ACTIVE')
                             <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
                                 <i class="fas fa-times-circle"></i>
-                                <strong>CBT Inactive!</strong> The CBT exam system is currently inactive for your school. Please contact your administrator.
+                                <strong>CBT Inactive!</strong> The CBT exam system is currently inactive for your school. Please contact administrator.
                                 <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                         @else
                             <div class="alert alert-success fade show mt-2" role="alert">
                                 <i class="fas fa-check-circle"></i>
                                 <strong>CBT Active!</strong> Your school's CBT exam system is active and ready to use.
+                                </div>
+                        @endif
+
+                        @if(!$attendance)
+                            <div class="alert alert-warning alert-dismissible fade show mt-2" role="alert">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <strong>Attendance Not Available!</strong> Your school plan does not have attendance included. Please contact administrator to upgrade.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @elseif($attendance->status != 'ACTIVE')
+                            <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert">
+                                <i class="fas fa-times-circle"></i>
+                                <strong>Attendance Inactive!</strong> The attendance system is currently inactive for your school. Please contact administrator.
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @else
+                            <div class="alert alert-success fade show mt-2" role="alert">
+                                <i class="fas fa-check-circle"></i>
+                                <strong>Attendance Active!</strong> Your school's attendance system is active and ready to use.
                                 </div>
                         @endif
           <!-- ============================================================== -->

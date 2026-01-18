@@ -78,4 +78,9 @@ class Student extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed', // You can keep this as 'hashed' in Laravel 10+
     ];
+
+    public function attendances()
+    {
+        return $this->hasMany(StudentAttendance::class);
+    }
 }

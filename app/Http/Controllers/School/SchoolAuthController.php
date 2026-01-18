@@ -14,6 +14,7 @@ use App\Models\Staff;
 use App\Models\Student;
 use App\Models\Result;
 use App\Models\CBT;
+use App\Models\Attendance;
 
 class SchoolAuthController extends Controller
 {
@@ -77,9 +78,10 @@ class SchoolAuthController extends Controller
         $studentCount = Student::where('school_id', $school->id)->get()->count();
         $resultCount = Result::where('school_id', $school->id)->get()->count();
         $cbt = CBT::where('school_id', $school->id)->first();
+        $attendance = Attendance::where('school_id', $school->id)->first();
     
         if (Auth::guard('school')->check()) {
-            return view('school.dashboard', compact("staffCount", "studentCount", "resultCount", "cbt"));
+            return view('school.dashboard', compact("staffCount", "studentCount", "resultCount", "cbt", "attendance"));
         }
 
         return redirect("school/login")->withSuccess('Oops! You do not have access');

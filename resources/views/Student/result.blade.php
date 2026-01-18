@@ -1,57 +1,22 @@
 @include('components.header') 
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="../assets/extra-libs/multicheck/multicheck.css"
-    />
-    <link
-      href="../assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css"
-      rel="stylesheet"
-    />
-    <link href="../dist/css/style.min.css" rel="stylesheet" />
-  <body>
-    <!-- ============================================================== -->
-    <!-- Preloader - style you can find in spinners.css -->
-    <!-- ============================================================== -->
+<link rel="stylesheet" type="text/css" href="{{ asset('assets/extra-libs/multicheck/multicheck.css') }}" />
+<link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet" />
+<link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet" />
+<body>
     <div class="preloader">
       <div class="lds-ripple">
         <div class="lds-pos"></div>
         <div class="lds-pos"></div>
       </div>
     </div>
-    <!-- ============================================================== -->
-    <!-- Main wrapper - style you can find in pages.scss -->
-    <!-- ============================================================== -->
-    <div
-      id="main-wrapper"
-      data-layout="vertical"
-      data-navbarbg="skin5"
-      data-sidebartype="full"
-      data-sidebar-position="absolute"
-      data-header-position="absolute"
-      data-boxed-layout="full"
-    >
-      <!-- ============================================================== -->
-      <!-- Topbar header - style you can find in pages.scss -->
-      <!-- ============================================================== -->
+
+    <div id="main-wrapper" data-layout="vertical" data-navbarbg="skin5" data-sidebartype="full" 
+         data-sidebar-position="absolute" data-header-position="absolute" data-boxed-layout="full">
+      
       @include('components.nav') 
-      <!-- ============================================================== -->
-      <!-- End Topbar header -->
-      <!-- ============================================================== -->
-      <!-- ============================================================== -->
-      <!-- Left Sidebar - style you can find in sidebar.scss  -->
-      <!-- ============================================================== -->
       @include('components.student-nav') 
-      <!-- ============================================================== -->
-      <!-- End Left Sidebar - style you can find in sidebar.scss  -->
-      <!-- ============================================================== -->
-      <!-- ============================================================== -->
-      <!-- Page wrapper  -->
-      <!-- ============================================================== -->
+
       <div class="page-wrapper">
-        <!-- ============================================================== -->
-        <!-- Bread crumb and right sidebar toggle -->
-        <!-- ============================================================== -->
         <div class="page-breadcrumb">
           <div class="row">
             <div class="col-12 d-flex no-block align-items-center">
@@ -69,12 +34,6 @@
             </div>
           </div>
         </div>
-        <!-- ============================================================== -->
-        <!-- End Bread crumb and right sidebar toggle -->
-        <!-- ============================================================== -->
-        <!-- ============================================================== -->
-        <!-- Container fluid  -->
-        <!-- ============================================================== -->
 
       <div class="container my-5">
         @if(session('message'))
@@ -100,13 +59,12 @@
         @endif
 
           
-        <!-- School Info Section -->
+        <!-- Student Info Section -->
         <div class="card mb-4 shadow">
           <div class="row g-0">
             <div class="col-md-4 p-2 p-md-0">
               <img src="{{ $student->avatar }}" class="img-fluid rounded-start h-100" alt="Student Image">
             </div>
-            <!-- Student Result Details Section -->
             <div class="col-md-8">
               <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white border-bottom">
@@ -114,7 +72,6 @@
                 </div>
                 <div class="card-body p-4">
                   
-                  <!-- Student Name -->
                   <div class="row mb-3">
                     <div class="col-12">
                       <div class="d-flex">
@@ -124,7 +81,6 @@
                     </div>
                   </div>
 
-                  <!-- Email -->
                   <div class="row mb-3">
                     <div class="col-12">
                       <div class="d-flex">
@@ -134,7 +90,6 @@
                     </div>
                   </div>
 
-                  <!-- Address -->
                   <div class="row mb-3">
                     <div class="col-12">
                       <div class="d-flex">
@@ -144,7 +99,6 @@
                     </div>
                   </div>
 
-                  <!-- Class -->
                   <div class="row mb-3">
                     <div class="col-12">
                       <div class="d-flex">
@@ -154,7 +108,6 @@
                     </div>
                   </div>
 
-                  <!-- Department -->
                   <div class="row mb-4">
                     <div class="col-12">
                       <div class="d-flex">
@@ -171,30 +124,40 @@
         </div>
 
       </div>
+
+        <!-- Tabs -->
         <ul class="nav nav-tabs" id="profileTabs" role="tablist">
           <li class="nav-item" role="presentation">
             <button class="nav-link" id="result-tab" data-bs-toggle="tab" data-bs-target="#result" type="button" role="tab" aria-controls="result" aria-selected="false">Result's</button>
           </li>
           
+          @if($attendanceActive)
+          <li class="nav-item" role="presentation">
+            <button class="nav-link" id="attendance-tab" data-bs-toggle="tab" data-bs-target="#attendance" type="button" role="tab" aria-controls="attendance" aria-selected="false">My Attendance</button>
+          </li>
+          @endif
         </ul>
-                <div class="tab-content" id="profileTabsContent">
-          <!-- result Section -->
-              <div class="tab-pane fade" id="result" role="tabpanel" aria-labelledby="result-tab">
-              <div class="card">
-                <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                    <h5 class="card-title">{{ $student->name }}'s Results ({{ $student->class }})</h5>
-                   </div>
 
-                  <div class="table-responsive">
-                    <table id="zero_config" class="table table-striped table-bordered">
-                      <thead>
-                        <tr>
-                          <th>Session</th>
-                          <th>Term</th>
-                          <th>Action</th>
-                        </tr>
-                      </thead>
+        <div class="tab-content" id="profileTabsContent">
+          
+          <!-- Results Section -->
+          <div class="tab-pane fade" id="result" role="tabpanel" aria-labelledby="result-tab">
+            <div class="card">
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                  <h5 class="card-title">{{ $student->name }}'s Results ({{ $student->class }})</h5>
+                </div>
+
+                <div class="table-responsive">
+                  <table id="zero_config" class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Session</th>
+                        <th>Term</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
                       @foreach($results as $session => $terms)
                         @foreach($terms as $term => $records)
                           <tr>
@@ -212,79 +175,148 @@
                           </tr>
                         @endforeach
                       @endforeach
-                      <tfoot>
-                        <tr>
-                          <th>Session</th>
-                          <th>Term</th>
-                          <th>Action</th>
-                        </tr>
-                      </tfoot>
-                    </table>
+                    </tbody>
+                    <tfoot>
+                      <tr>
+                        <th>Session</th>
+                        <th>Term</th>
+                        <th>Action</th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attendance Section -->
+          @if($attendanceActive)
+          <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
+            
+            <!-- Stats Cards -->
+            <div class="row mb-4">
+              <div class="col-md-3">
+                <div class="card">
+                  <div class="card-body text-center">
+                    <h6 class="card-title text-muted">This Month</h6>
+                    <h2 class="mb-0">{{ $attendanceStats['total'] }}</h2>
+                    <small class="text-muted">Total Days</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-success text-white">
+                  <div class="card-body text-center">
+                    <h6 class="card-title text-white">Present</h6>
+                    <h2 class="mb-0 text-white">{{ $attendanceStats['present'] }}</h2>
+                    <small class="text-white">Days</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card bg-danger text-white">
+                  <div class="card-body text-center">
+                    <h6 class="card-title text-white">Absent</h6>
+                    <h2 class="mb-0 text-white">{{ $attendanceStats['absent'] }}</h2>
+                    <small class="text-white">Days</small>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="card 
+                  @if($attendanceStats['percentage'] >= 90) bg-success
+                  @elseif($attendanceStats['percentage'] >= 75) bg-warning
+                  @else bg-danger
+                  @endif
+                  text-white">
+                  <div class="card-body text-center">
+                    <h6 class="card-title text-white">Attendance Rate</h6>
+                    <h2 class="mb-0 text-white">{{ $attendanceStats['percentage'] }}%</h2>
+                    <small class="text-white">This Month</small>
                   </div>
                 </div>
               </div>
             </div>
 
-       
+            <!-- Attendance Records Table -->
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title mb-3">My Attendance Records (Last 20 Days)</h5>
+
+                <div class="table-responsive">
+                  <table id="attendanceTable" class="table table-striped table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Day</th>
+                        <th>Status</th>
+                        <th>Check-in Time</th>
+                        <th>Remarks</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @forelse($attendanceRecords as $record)
+                      <tr>
+                        <td>{{ $record->attendance_date->format('M d, Y') }}</td>
+                        <td>{{ $record->attendance_date->format('l') }}</td>
+                        <td>
+                          @if($record->status == 'PRESENT')
+                            <span class="badge bg-success">Present</span>
+                          @elseif($record->status == 'ABSENT')
+                            <span class="badge bg-danger">Absent</span>
+                          @elseif($record->status == 'LATE')
+                            <span class="badge bg-warning">Late</span>
+                          @else
+                            <span class="badge bg-info">Half Day</span>
+                          @endif
+                        </td>
+                        <td>{{ $record->check_in_time ?? '-' }}</td>
+                        <td>{{ $record->remarks ?? '-' }}</td>
+                      </tr>
+                      @empty
+                      <tr>
+                        <td colspan="5" class="text-center">No attendance records found.</td>
+                      </tr>
+                      @endforelse
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          @endif
+
+        </div>
       
       </div>
-          <!-- ============================================================== -->
-          <!-- End PAge Content -->
-          <!-- ============================================================== -->
-          <!-- ============================================================== -->
-          <!-- Right sidebar -->
-          <!-- ============================================================== -->
-          <!-- .right-sidebar -->
-          <!-- ============================================================== -->
-          <!-- End Right sidebar -->
-          <!-- ============================================================== -->
-        </div>
 
-     
-        <!-- ============================================================== -->
-        <!-- footer -->
-        <!-- ============================================================== -->
         <footer class="footer text-center">
             All Rights Reserved by SoftPenTech | Developed by SoftpenTech
         </footer>
-        <!-- ============================================================== -->
-        <!-- End footer -->
-        <!-- ============================================================== -->
       </div>
-      <!-- ============================================================== -->
-      <!-- End Page wrapper  -->
-      <!-- ============================================================== -->
     </div>
-    <!-- ============================================================== -->
-    <!-- End Wrapper -->
-    <!-- ============================================================== -->
-    <!-- ============================================================== -->
-    <!-- All Jquery -->
-    <!-- ============================================================== -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="{{ asset('assets/libs/jquery/dist/jquery.min.js') }}"></script>
-    <!-- Bootstrap tether Core JavaScript -->
     <script src="{{ asset('assets/libs/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
-    <!-- slimscrollbar scrollbar JavaScript -->
     <script src="{{ asset('assets/libs/perfect-scrollbar/dist/perfect-scrollbar.jquery.min.js') }}"></script>
     <script src="{{ asset('assets/extra-libs/sparkline/sparkline.js') }}"></script>
-    <!-- Wave Effects -->
     <script src="{{ asset('dist/js/waves.js') }}"></script>
-    <!-- Menu sidebar -->
     <script src="{{ asset('dist/js/sidebarmenu.js') }}"></script>
-    <!-- Custom JavaScript -->
     <script src="{{ asset('dist/js/custom.min.js') }}"></script>
-    <!-- this page js -->
     <script src="{{ asset('assets/extra-libs/multicheck/datatable-checkbox-init.js') }}"></script>
     <script src="{{ asset('assets/extra-libs/multicheck/jquery.multicheck.js') }}"></script>
     <script src="{{ asset('assets/extra-libs/DataTables/datatables.min.js') }}"></script>
 
- <script>
-      /****************************************
-       *       Basic Table                   *
-       ****************************************/
+    <script>
       $("#zero_config").DataTable();
+      
+      @if($attendanceActive)
+      $("#attendanceTable").DataTable({
+        "order": [[ 0, "desc" ]] // Sort by date descending
+      });
+      @endif
     </script>
 
     <script type="text/javascript">
@@ -299,10 +331,10 @@
               confirmButtonText: 'Yes, change it!'
           }).then((result) => {
               if (result.isConfirmed) {
-                  window.location.href = url; // Redirect to the link URL
+                  window.location.href = url;
               }
           });
       }
     </script>
-  </body>
+</body>
 </html>

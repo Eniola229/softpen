@@ -181,7 +181,22 @@
                                 <button class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ url('admin/activate', $school->id) }}')">
                                   Activate CBT
                                 </button>
-                            @endif
+                            @endif 
+                            @if ($attendance)
+                              @if ($attendance->status === 'ACTIVE') 
+                                <button class="btn btn-danger btn-sm" onclick="confirmStatusChange('{{ url('admin/activate/attendance', $school->id) }}')">
+                                  Deactivate Attendance
+                                </button>
+                              @elseif ($attendance->status === 'DISACTIVATE')
+                                <button class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ url('admin/activate/attendance', $school->id) }}')">
+                                  Activate Attendance
+                                </button>
+                              @endif
+                            @else
+                                <button class="btn btn-success btn-sm" onclick="confirmStatusChange('{{ url('admin/activate/attendance', $school->id) }}')">
+                                  Activate Attendance
+                                </button>
+                            @endif 
                           <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editSchoolModal">
                             Edit School
                           </button>

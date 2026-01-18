@@ -95,4 +95,22 @@ class Staff extends Authenticatable
         return is_array($this->subject) ? implode(', ', $this->subject) : $this->subject;
     }
 
+    public function attendances()
+    {
+        return $this->hasMany(StaffAttendance::class);
+    }
+
+
+
+    // Add this helper method to get subject names
+    public function getSubjectNamesAttribute()
+    {
+        // If subject field contains comma-separated IDs
+        if($this->subject && is_string($this->subject)) {
+            $subjectIds = explode(',', $this->subject);
+            $subjects = \App\Models\Subject::whereIn('id', $subjectIds)->pluck('name')->toArray();
+            return implode(', ', $subjects);
+        }
+        return 'N/A';
+    }
 }

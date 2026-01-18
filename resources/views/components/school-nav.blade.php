@@ -53,6 +53,19 @@
                   ><i class="mdi-lightbulb-outline fs-3 mb-1 font-16"></i><span class="hide-menu">Departments</span></a
                 >
               </li>
+              @php
+    $school = auth()->guard('school')->user();
+    $attendance = \App\Models\Attendance::where('school_id', $school->id)->first();
+@endphp
+
+@if($attendance && $attendance->status == 'ACTIVE')
+<li class="sidebar-item">
+    <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{{ route('attendance.staff.index') }}" aria-expanded="false">
+        <i class="mdi mdi-calendar-check"></i>
+        <span class="hide-menu">Staff Attendance</span>
+    </a>
+</li>
+@endif
               <li class="sidebar-item p-3">
                 <form method="get" action="{{ route('school/logout') }}">
                 <button

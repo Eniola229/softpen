@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+
 class StudentExamController extends Controller
 {
 
@@ -33,6 +35,8 @@ class StudentExamController extends Controller
         $student = Auth::guard('student')->user();
         $classId = $this->getClassId($student);
 
+        dd(Carbon::now()->setTimezone('Africa/Lagos'));
+
         if (!$classId) {
             return redirect()->route('student-dashboard')
                 ->with('error', 'Your class was not found.');
@@ -40,33 +44,36 @@ class StudentExamController extends Controller
         
         $now = $this->getNigeriaOnlineTime();
 
-
-        $activeExam = Exam::with('subject')
+        $allExams = Exam::with('subject')
             ->where('school_id', $student->school_id)
             ->where('class_id', $classId)
             ->where('is_published', true)
-            ->get()
-            ->filter(function($exam) use ($student, $now) {
-                // FIX: Check if subject is an object before accessing department
-                if (is_object($exam->subject) && property_exists($exam->subject, 'department') && $exam->subject->department) {
-                    if ($exam->subject->department !== $student->department) {
-                        return false;
-                    }
+            ->get();
+
+        $activeExam = $allExams->filter(function($exam) use ($student, $now) {
+            if (is_object($exam->subject) && property_exists($exam->subject, 'department') && $exam->subject->department) {
+                if ($exam->subject->department !== $student->department) {
+                    return false;
                 }
-                $examDateTime = Carbon::parse($exam->exam_date_time);
-                $startWindow = $examDateTime->copy()->subMinutes(10);
-                $endWindow = $examDateTime->copy()->addMinutes((int) $exam->duration);
+            }
 
-                if (!$now->between($startWindow, $endWindow)) return false;
+            $examDateTime = Carbon::parse($exam->exam_date_time);
+            $startWindow = $examDateTime->copy()->subMinutes(10);
+            $endWindow = $examDateTime->copy()->addMinutes((int) $exam->duration);
 
-                $result = ExamResult::where('exam_id', $exam->id)
-                    ->where('student_id', $student->id)
-                    ->whereNotNull('submitted_at')
-                    ->first();
+            $isWithinWindow = $now->greaterThanOrEqualTo($startWindow) && $now->lessThanOrEqualTo($endWindow);
 
-                return !$result;
-            })
-            ->first();
+            if (!$isWithinWindow) {
+                return false;
+            }
+
+            $result = ExamResult::where('exam_id', $exam->id)
+                ->where('student_id', $student->id)
+                ->whereNotNull('submitted_at')
+                ->first();
+
+            return !$result;
+        })->first();
 
         if ($activeExam) {
             if ($now->gt(Carbon::parse($activeExam->exam_date_time)->addMinutes(10))) {
@@ -79,56 +86,57 @@ class StudentExamController extends Controller
         return view('student.dashboard');
     }
 
- public function startExam($examId)
-{
-    $student = Auth::guard('student')->user();
-    $classId = $this->getClassId($student);
+    public function startExam($examId)
+    {
+        $student = Auth::guard('student')->user();
+        $classId = $this->getClassId($student);
 
-    $exam = Exam::with('subject')
-        ->where('id', $examId)
-        ->where('school_id', $student->school_id)
-        ->where('class_id', $classId)
-        ->where('is_published', true)
-        ->firstOrFail();
+        $exam = Exam::with('subject')
+            ->where('id', $examId)
+            ->where('school_id', $student->school_id)
+            ->where('class_id', $classId)
+            ->where('is_published', true)
+            ->firstOrFail();
 
-    // FIX: Check if subject is an object before accessing department
-    if (is_object($exam->subject) && property_exists($exam->subject, 'department') && $exam->subject->department) {
-        if ($exam->subject->department !== $student->department) {
-            abort(403, 'You are not allowed to take this exam.');
+        if (is_object($exam->subject) && property_exists($exam->subject, 'department') && $exam->subject->department) {
+            if ($exam->subject->department !== $student->department) {
+                abort(403, 'You are not allowed to take this exam.');
+            }
         }
+
+        $now = $this->getNigeriaOnlineTime();
+        $examDateTime = Carbon::parse($exam->exam_date_time);
+        $startWindow = $examDateTime->copy()->subMinutes(10);
+        $endWindow = $examDateTime->copy()->addMinutes((int) $exam->duration);
+
+        $isWithinWindow = $now->greaterThanOrEqualTo($startWindow) && $now->lessThanOrEqualTo($endWindow);
+
+        if (!$isWithinWindow) {
+            return redirect()->route('student-dashboard')
+                ->with('error', 'This exam is not currently available.');
+        }
+
+        $existingResult = ExamResult::where('exam_id', $exam->id)
+            ->where('student_id', $student->id)
+            ->first();
+
+        if ($existingResult && $existingResult->submitted_at) {
+            return redirect()->route('student-dashboard')
+                ->with('error', 'You have already completed this exam.');
+        }
+
+        if (!$existingResult) {
+            $existingResult = ExamResult::create([
+                'exam_id' => $exam->id,
+                'student_id' => $student->id,
+                'started_at' => Carbon::now(),
+                'status' => 'in_progress',
+            ]);
+        }
+
+        return view('student.exam.exam-start', compact('exam', 'existingResult'));
     }
-
-    $now = $this->getNigeriaOnlineTime();
-    $examDateTime = Carbon::parse($exam->exam_date_time);
-    $startWindow = $examDateTime->copy()->subMinutes(10);
-    $endWindow = $examDateTime->copy()->addMinutes((int) $exam->duration);
-
-    if (!$now->between($startWindow, $endWindow)) {
-        return redirect()->route('student-dashboard')
-            ->with('error', 'This exam is not currently available.');
-    }
-
-    $existingResult = ExamResult::where('exam_id', $exam->id)
-        ->where('student_id', $student->id)
-        ->first();
-
-    if ($existingResult && $existingResult->submitted_at) {
-        return redirect()->route('student-dashboard')
-            ->with('error', 'You have already completed this exam.');
-    }
-
-    if (!$existingResult) {
-        $existingResult = ExamResult::create([
-            'exam_id' => $exam->id,
-            'student_id' => $student->id,
-            'started_at' => Carbon::now(),
-            'status' => 'in_progress',
-        ]);
-    }
-
-    return view('student.exam.exam-start', compact('exam', 'existingResult'));
-}
-      public function takeExam($examId)
+    public function takeExam($examId)
     {
         $student = Auth::guard('student')->user();
         $classId = $this->getClassId($student);
@@ -140,7 +148,6 @@ class StudentExamController extends Controller
             ->where('is_published', true)
             ->firstOrFail();
 
-        // FIX: Check if subject is an object before accessing department
         if (is_object($exam->subject) && property_exists($exam->subject, 'department') && $exam->subject->department) {
             if ($exam->subject->department !== $student->department) {
                 abort(403, 'You are not allowed to take this exam.');
@@ -152,8 +159,10 @@ class StudentExamController extends Controller
             ->whereNull('submitted_at')
             ->firstOrFail();
 
-        $now = $this->getNigeriaOnlineTime();
-        $endTime = Carbon::parse($exam->exam_date_time)->addMinutes((int) $exam->duration);
+        // Use reliable server time instead of cached API time
+        $now = $this->getReliableNigeriaTime();
+        $endTime = Carbon::parse($exam->exam_date_time, 'Africa/Lagos')->addMinutes((int) $exam->duration);
+        
         if ($now->gt($endTime)) {
             return $this->submitExam(new Request(), $exam->id);
         }
@@ -167,12 +176,13 @@ class StudentExamController extends Controller
             ->pluck('selected_option_id', 'question_id')
             ->toArray();
 
-        $startedAt = Carbon::parse($examResult->started_at);
+        $startedAt = Carbon::parse($examResult->started_at, 'Africa/Lagos');
         $elapsedMinutes = $now->diffInMinutes($startedAt);
         $remainingMinutes = max(0, $exam->duration - $elapsedMinutes);
 
         return view('student.exam.take-exam', compact('exam', 'examResult', 'questions', 'existingAnswers', 'remainingMinutes'));
     }
+
     public function submitExam(Request $request, $examId)
     {
         $student = Auth::guard('student')->user();
@@ -184,7 +194,6 @@ class StudentExamController extends Controller
             ->where('class_id', $classId)
             ->firstOrFail();
 
-        // FIX: Check if subject is an object before accessing department
         if (is_object($exam->subject) && property_exists($exam->subject, 'department') && $exam->subject->department) {
             if ($exam->subject->department !== $student->department) {
                 abort(403, 'You are not allowed to submit this exam.');
@@ -202,7 +211,6 @@ class StudentExamController extends Controller
         foreach ($exam->questions as $question) {
             $totalMarks += $question->mark;
             
-            // Use array notation to match the form field names
             $answerId = $request->input("answers.{$question->id}", $request->input("question_{$question->id}"));
 
             if ($answerId) {
@@ -227,12 +235,11 @@ class StudentExamController extends Controller
 
         $percentage = $totalMarks > 0 ? ($totalScore / $totalMarks) * 100 : 0;
 
-        // FIX: Use 'submitted' status instead of 'completed'
         $examResult->update([
             'submitted_at' => Carbon::now(),
             'total_score' => $totalScore,
             'percentage' => round($percentage, 2),
-            'status' => 'submitted', // Changed from 'completed' to 'submitted'
+            'status' => 'submitted',
         ]);
 
         if ($exam->show_results) {
@@ -243,6 +250,7 @@ class StudentExamController extends Controller
                 ->with('message', 'Exam submitted successfully! Results will be available later.');
         }
     }
+
     public function showResult($resultId)
     {
         $student = Auth::guard('student')->user();
@@ -281,27 +289,16 @@ class StudentExamController extends Controller
         return response()->json(['success' => true]);
     }
 
-        private function getNigeriaOnlineTime(): Carbon
+private function getNigeriaOnlineTime(): Carbon
+{
+    return Carbon::now();
+}
+
+
+    private function getReliableNigeriaTime(): Carbon
     {
-        return Cache::remember('nigeria_time', 300, function () {
-            try {
-                $response = Http::timeout(5)
-                    ->retry(2, 100)
-                    ->get('https://worldtimeapi.org/api/timezone/Africa/Lagos');
-                
-                if ($response->successful()) {
-                    $data = $response->json();
-                    return Carbon::parse($data['datetime']);
-
-                }
-
-            } catch (\Exception $e) {
-                \Log::debug("Time API failed: {$e->getMessage()}");
-            }
-            
-            // Fallback to system time
-            return Carbon::now('Africa/Lagos');
-
-        });
+        // For exam timing, use server time set to Nigeria timezone
+        // This is more reliable than external API calls
+        return Carbon::now('Africa/Lagos');
     }
 }

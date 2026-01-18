@@ -95,18 +95,33 @@
 
          <div class="card">
                 <div class="card-body">
-                  <div class="d-flex justify-content-between align-items-center mb-2">
-                      <h5 class="card-title">Students of {{ $class->name }}</h5>
-                       @if ($cbt)
-                          @if ($cbt->status === 'ACTIVE')
-                              <a href="{{ url('staff/cbt/' . $class->id) }}">
-                                <button class="btn btn-primary btn-sm" >
-                                  CBT EXAM
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <h5 class="card-title">Students of {{ $class->name }}</h5>
+                    <div>
+                        @php
+                            $school = \App\Models\School::where('id', Auth::guard('staff')->user()->school_id)->first();
+                            $attendance = \App\Models\Attendance::where('school_id', $school->id)->first();
+                        @endphp
+                        
+                        @if ($attendance && $attendance->status === 'ACTIVE')
+                            <a href="{{ route('attendance.student.index', $class->id) }}">
+                                <button class="btn btn-warning btn-sm me-2">
+                                    <i class="mdi mdi-calendar-check"></i> ATTENDANCE
                                 </button>
-                              </a>
-                          @endif
+                            </a>
                         @endif
-                  </div>
+                        
+                        @if ($cbt)
+                            @if ($cbt->status === 'ACTIVE')
+                                <a href="{{ url('staff/cbt/' . $class->id) }}">
+                                    <button class="btn btn-primary btn-sm">
+                                        CBT EXAM
+                                    </button>
+                                </a>
+                            @endif
+                        @endif
+                    </div>
+                </div>
 
                   <div class="table-responsive">
                     <table

@@ -3,32 +3,29 @@
 <link href="{{ asset('assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.css') }}" rel="stylesheet" />
 <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet" />
 <style>
-  .group-header {
-    background-color: #f8f9fa;
-    cursor: pointer;
-    font-weight: bold;
-    padding: 12px;
-    border-left: 4px solid #007bff;
-    transition: all 0.3s;
-  }
-  .group-header:hover {
-    background-color: #e9ecef;
-  }
-  .group-header i {
-    transition: transform 0.3s;
-  }
-  .group-header.collapsed i {
-    transform: rotate(-90deg);
-  }
-  .group-content {
-    display: none;
-  }
-  .group-content.show {
-    display: table-row-group;
-  }
-  .group-row td {
-    padding-left: 30px;
-  }
+.group-header {
+  background-color: #f8f9fa;
+  cursor: pointer;
+  font-weight: bold;
+  padding: 12px;
+  border-left: 4px solid #007bff;
+  transition: all 0.3s;
+}
+.group-header:hover {
+  background-color: #e9ecef;
+}
+.group-header i {
+  transition: transform 0.3s;
+}
+.group-header.collapsed i {
+  transform: rotate(-90deg);
+}
+.group-content {
+  display: none;
+}
+.group-row td {
+  padding-left: 30px;
+}
 </style>
 
 <body>
@@ -162,128 +159,127 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <script>
-    function extractClassLevel(className) {
-      // Extract class level like SS3, SS2, JSS1, etc.
-      const match = className.match(/^(SS\d|JSS\d|PRIMARY\d|YEAR\d)/i);
-      return match ? match[1].toUpperCase() : 'OTHER';
+function extractClassLevel(className) {
+  // Extract class level like SS3, SS2, JSS1, etc.
+  const match = className.match(/^(SS\d|JSS\d|PRIMARY\d|YEAR\d)/i);
+  return match ? match[1].toUpperCase() : 'OTHER';
+}
+
+function groupClasses() {
+  const tbody = $('#table_body');
+  const rows = tbody.find('tr:not(.group-header)').toArray();
+  
+  // Group rows by class level
+  const groups = {};
+  rows.forEach(row => {
+    const className = $(row).data('class-name');
+    const classLevel = extractClassLevel(className);
+    
+    if (!groups[classLevel]) {
+      groups[classLevel] = [];
     }
+    groups[classLevel].push(row);
+  });
 
-    function groupClasses() {
-      const tbody = $('#table_body');
-      const rows = tbody.find('tr').toArray();
-      
-      // Group rows by class level
-      const groups = {};
-      rows.forEach(row => {
-        const className = $(row).data('class-name');
-        const classLevel = extractClassLevel(className);
-        
-        if (!groups[classLevel]) {
-          groups[classLevel] = [];
-        }
-        groups[classLevel].push(row);
-      });
+  // Clear tbody
+  tbody.empty();
 
-      // Clear tbody
-      tbody.empty();
+  // Sort groups
+  const sortedGroups = Object.keys(groups).sort();
 
-      // Sort groups
-      const sortedGroups = Object.keys(groups).sort();
+  // Add grouped rows
+  sortedGroups.forEach(group => {
+    const groupId = 'group_' + group.replace(/\s+/g, '_');
+    const count = groups[group].length;
+    
+    // Add group header (collapsed by default)
+    const headerRow = $(`
+      <tr class="group-header collapsed" data-group="${groupId}">
+        <td colspan="4">
+          <i class="fas fa-chevron-right"></i>
+          <strong>${group}</strong> (${count} ${count === 1 ? 'class' : 'classes'})
+        </td>
+      </tr>
+    `);
+    tbody.append(headerRow);
 
-      // Add grouped rows
-      sortedGroups.forEach(group => {
-        const groupId = 'group_' + group.replace(/\s+/g, '_');
-        const count = groups[group].length;
-        
-        // Add group header (collapsed by default)
-        const headerRow = $(`
-          <tr class="group-header collapsed" data-group="${groupId}">
-            <td colspan="4">
-              <i class="fas fa-chevron-right"></i>
-              <strong>${group}</strong> (${count} ${count === 1 ? 'class' : 'classes'})
-            </td>
-          </tr>
-        `);
-        tbody.append(headerRow);
-
-        // Add group content wrapper (closed by default)
-        const contentWrapper = $(`<tbody class="group-content" id="${groupId}"></tbody>`);
-        groups[group].forEach(row => {
-          $(row).addClass('group-row');
-          contentWrapper.append(row);
-        });
-        tbody.append(contentWrapper);
-      });
-
-      // Add click event to group headers
-      $('.group-header').on('click', function() {
-        const groupId = $(this).data('group');
-        const content = $('#' + groupId);
-        const icon = $(this).find('i');
-        
-        if (content.hasClass('show')) {
-          content.removeClass('show');
-          $(this).addClass('collapsed');
-          icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
-        } else {
-          content.addClass('show');
-          $(this).removeClass('collapsed');
-          icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
-        }
-      });
-    }
-
-    // Initialize DataTable with pagination
-    $(document).ready(function() {
-      const table = $("#classes_table").DataTable({
-        "paging": true,
-        "pageLength": 10,
-        "lengthMenu": [10, 25, 50, 100],
-        "ordering": true,
-        "info": true,
-        "searching": true,
-        "drawCallback": function(settings) {
-          // Reapply grouping after DataTable draws
-          groupClasses();
-        }
-      });
-
-      // Initial grouping
-      groupClasses();
+    // Add group content rows directly (NO separate tbody)
+    groups[group].forEach(row => {
+      $(row).addClass('group-row group-content').attr('data-group-id', groupId);
+      tbody.append(row);
     });
+  });
 
-    function confirmDelete(url, className) {
-      Swal.fire({
-        title: "Are you sure?",
-        text: "You are about to delete the practice class: " + className,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!"
-      }).then((result) => {
-        if (result.isConfirmed) {
-          let form = document.createElement("form");
-          form.method = "POST";
-          form.action = url;
-
-          let csrfToken = document.createElement("input");
-          csrfToken.type = "hidden";
-          csrfToken.name = "_token";
-          csrfToken.value = "{{ csrf_token() }}";
-
-          let methodInput = document.createElement("input");
-          methodInput.type = "hidden";
-          methodInput.name = "_method";
-          methodInput.value = "DELETE";
-
-          form.appendChild(csrfToken);
-          form.appendChild(methodInput);
-          document.body.appendChild(form);
-          form.submit();
-        }
-      });
+  // Add click event to group headers
+  $('.group-header').off('click').on('click', function() {
+    const groupId = $(this).data('group');
+    const content = $(`.group-content[data-group-id="${groupId}"]`);
+    const icon = $(this).find('i');
+    
+    if (content.is(':visible')) {
+      content.hide();
+      $(this).addClass('collapsed');
+      icon.removeClass('fa-chevron-down').addClass('fa-chevron-right');
+    } else {
+      content.show();
+      $(this).removeClass('collapsed');
+      icon.removeClass('fa-chevron-right').addClass('fa-chevron-down');
     }
+  });
+  
+  // Hide all groups initially
+  $('.group-content').hide();
+}
+
+// Initialize DataTable WITHOUT pagination to show all classes
+$(document).ready(function() {
+  const table = $("#classes_table").DataTable({
+    "paging": false,        // DISABLED: This was hiding your classes!
+    "ordering": true,       // Keep sorting functionality
+    "info": false,          // Hide "Showing X to Y of Z entries"
+    "searching": true,      // Keep search functionality
+    "drawCallback": function(settings) {
+      // Reapply grouping after DataTable draws
+      groupClasses();
+    }
+  });
+
+  // Initial grouping
+  groupClasses();
+});
+
+function confirmDelete(url, className) {
+  Swal.fire({
+    title: "Are you sure?",
+    text: "You are about to delete the practice class: " + className,
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#3085d6",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Yes, delete it!"
+  }).then((result) => {
+    if (result.isConfirmed) {
+      let form = document.createElement("form");
+      form.method = "POST";
+      form.action = url;
+
+      let csrfToken = document.createElement("input");
+      csrfToken.type = "hidden";
+      csrfToken.name = "_token";
+      csrfToken.value = "{{ csrf_token() }}";
+
+      let methodInput = document.createElement("input");
+      methodInput.type = "hidden";
+      methodInput.name = "_method";
+      methodInput.value = "DELETE";
+
+      form.appendChild(csrfToken);
+      form.appendChild(methodInput);
+      document.body.appendChild(form);
+      form.submit();
+    }
+  });
+}
   </script>
 </body>
 </html>

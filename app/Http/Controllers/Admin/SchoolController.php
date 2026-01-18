@@ -14,6 +14,7 @@ use App\Models\SchClass;
 use App\Models\Department;
 use App\Models\Subject;
 use App\Models\CBT;
+use App\Models\Attendance;
 
 class SchoolController extends Controller
 {
@@ -108,9 +109,10 @@ class SchoolController extends Controller
         $subjects = Subject::where('school_id', $school->id)->get();
         $departments = Department::where('school_id', $school->id)->get();
         $cbt = CBT::where('school_id', $school->id)->first();
+        $attendance = Attendance::where('school_id', $school->id)->first();
         $studentCount = Student::where('school_id', $school->id)->count();
 
-       return view('admin.view-school', compact('school', 'staffs', 'students', 'classes', 'subjects', 'departments', 'cbt', 'studentCount'));
+       return view('admin.view-school', compact('school', 'staffs', 'students', 'classes', 'subjects', 'departments', 'cbt', 'studentCount', 'attendance'));
     }
 
     public function changeStatus($id)
@@ -154,6 +156,39 @@ class SchoolController extends Controller
             } elseif ($cbt->status == "DISACTIVATE") {
                 $cbt->update(['status' => 'ACTIVE']);
                 $message = 'CBT has been activated.';
+            } else {
+                $message = "Something seems wrong";
+                return redirect()->back()->with('error', $message);
+            }
+        }
+        
+        // Redirect back with a success message
+        return redirect()->back()->with('message', $message);
+    }
+
+
+    public function ActivateAttendance($id)
+    {   
+        $school = School::findOrFail($id);
+        
+        // Get or create CBT record
+        $attendance = Attendance::where('school_id', $school->id)->first();
+        
+        if (!$attendance) {
+            // Create new Attendance record with ACTIVE status
+            $attendance = Attendance::create([
+                'school_id' => $school->id,
+                'status' => 'ACTIVE'
+            ]);
+            $message = 'Attendance has been created and activated.';
+        } else {
+            // Toggle status based on current value
+            if ($attendance->status == "ACTIVE") {
+                $attendance->update(['status' => 'DISACTIVATE']);
+                $message = 'Attendance has been deactivated.';
+            } elseif ($attendance->status == "DISACTIVATE") {
+                $attendance->update(['status' => 'ACTIVE']);
+                $message = 'Attendance has been activated.';
             } else {
                 $message = "Something seems wrong";
                 return redirect()->back()->with('error', $message);

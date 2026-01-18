@@ -10,7 +10,7 @@ class PClassController extends Controller
 {
     public function index()
     {
-        $classes = PClass::paginate(10);
+        $classes = PClass::paginate(100);
         return view('admin.practice.classes.index', compact('classes'));
     }
 

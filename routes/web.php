@@ -15,6 +15,7 @@ use App\Http\Controllers\School\StudentController;
 use App\Http\Controllers\School\TeachersController;
 use App\Http\Controllers\School\DepartmentController;
 use App\Http\Controllers\School\SubjectController;
+use App\Http\Controllers\School\StaffAttendanceController;
 
 //STAFF
 use App\Http\Controllers\Staff\StaffAuthController;
@@ -73,6 +74,7 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('view/schools/{id}', [SchoolController::class, 'view'])->name('admin/view/schools');
     Route::get('/change/{id}', [SchoolController::class, 'changeStatus'])->name('admin/changeStatus');
     Route::get('/activate/{id}', [SchoolController::class, 'Activate'])->name('admin/Activate');
+    Route::get('/activate/attendance/{id}', [SchoolController::class, 'ActivateAttendance'])->name('admin/Activate/Attendance');
     Route::get('/users', [UserController::class, 'index'])->name('admin.users.index');
     Route::get('/view/users/{id}', [UserController::class, 'show'])->name('admin.users.view');
     Route::post('/update/users/{id}', [UserController::class, 'update'])->name('admin.users.update');
@@ -139,6 +141,13 @@ Route::middleware('auth:school')->prefix('school')->group(function () {
     Route::get('/change/{id}', [TeachersController::class, 'changeStatus'])->name('school/teacher/changeStatus');
     Route::get('/teacher/delete/{id}', [TeachersController::class, 'deleteTeacher'])->name('school/teacher/deleteTeacher');
 
+    Route::prefix('attendance')->name('attendance.')->group(function () {
+        Route::get('/staff', [App\Http\Controllers\School\StaffAttendanceController::class, 'index'])->name('staff.index');
+        Route::post('/staff/mark', [App\Http\Controllers\School\StaffAttendanceController::class, 'markAttendance'])->name('staff.mark');
+        Route::post('/staff/mark-all', [App\Http\Controllers\School\StaffAttendanceController::class, 'markAllPresent'])->name('staff.markAll');
+        Route::get('/staff/history', [App\Http\Controllers\School\StaffAttendanceController::class, 'history'])->name('staff.history');
+        Route::get('/staff/report', [App\Http\Controllers\School\StaffAttendanceController::class, 'report'])->name('staff.report');
+    });
 
     Route::post('promote-students', [StudentController::class, 'promoteAll'])->name('school.promote.students');
 
@@ -183,6 +192,15 @@ Route::middleware('auth:staff')->prefix('staff')->group(function () {
             Route::delete('/{questionId}', [QuestionController::class, 'destroy'])->name('staff.questions.destroy');
         });
     });
+
+    Route::prefix('attendance/student')->name('attendance.student.')->group(function () {
+        Route::get('/{classId}', [App\Http\Controllers\Staff\StudentAttendanceController::class, 'index'])->name('index');
+        Route::post('/mark', [App\Http\Controllers\Staff\StudentAttendanceController::class, 'markAttendance'])->name('mark');
+        Route::post('/mark-all', [App\Http\Controllers\Staff\StudentAttendanceController::class, 'markAllPresent'])->name('markAll');
+        Route::get('/{classId}/history', [App\Http\Controllers\Staff\StudentAttendanceController::class, 'history'])->name('history');
+        Route::get('/{classId}/report', [App\Http\Controllers\Staff\StudentAttendanceController::class, 'report'])->name('report');
+    });
+
     Route::get('/student/{studentId}/cbt-result/{resultId}', [QuestionController::class, 'viewCBTResult'])
         ->name('staff.cbt.result.view');
 
