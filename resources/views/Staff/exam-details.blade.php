@@ -130,6 +130,25 @@
                        Draft
                       @endif
                     </p>
+                    <p><strong>Exam Code:</strong> 
+                      @if($exam->exam_code)
+                        <span id="examCodeText">{{ $exam->exam_code }}</span>
+                        <button 
+                          onclick="copyExamCode()" 
+                          class="btn btn-sm btn-outline-secondary ml-1" 
+                          title="Copy code">
+                          <i class="fas fa-copy"></i>
+                        </button>
+                      @else
+                        <span class="text-muted">Not generated</span>
+                        <form action="{{ route('staff.exams.generateCode', [$class->id, $exam->id]) }}" method="POST" class="d-inline ml-1">
+                          @csrf
+                          <button type="submit" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-key"></i> Generate Code
+                          </button>
+                        </form>
+                      @endif
+                    </p>
                     <p><strong>Exam Date and Time:</strong> {{ $exam->exam_date_time ?? 'N/A' }}</p>
                     <p><strong>Created:</strong> {{ $exam->created_at->format("M d, Y") }}</p>
                     <p><strong>Last Updated:</strong> {{ $exam->updated_at->format("M d, Y") }}</p>
@@ -172,25 +191,25 @@
                       <li>
                         <i class="fas fa-random"></i>
                         @if($exam->randomize_questions)
-                          <span class="badge badge-success">Questions Randomized</span>
+                          <span class="badge bg-success">Questions Randomized</span>
                         @else
-                          <span class="badge badge-secondary">Sequential</span>
+                          <span class="badge bg-secondary">Sequential</span>
                         @endif
                       </li>
                       <li class="mt-2">
                         <i class="fas fa-list"></i>
                         @if($exam->show_one_question_at_time)
-                          <span class="badge badge-success">One at a Time</span>
+                          <span class="badge bg-success">One at a Time</span>
                         @else
-                          <span class="badge badge-secondary">All Visible</span>
+                          <span class="badge bg-secondary">All Visible</span>
                         @endif
                       </li>
                       <li class="mt-2">
                         <i class="fas fa-chart-bar"></i>
                         @if($exam->show_results)
-                          <span class="badge badge-success">Show Results</span>
+                          <span class="badge bg-success">Show Results</span>
                         @else
-                          <span class="badge badge-secondary">Hide Results</span>
+                          <span class="badge bg-secondary">Hide Results</span>
                         @endif
                       </li>
                     </ul>
@@ -250,7 +269,7 @@
                       <tr>
                         <td>Q{{ $question->order }}</td>
                         <td>
-                          {!! Str::limit($question->question_text, 50) !!}
+                          {{ Str::limit(strip_tags(html_entity_decode($question->question_text)), 80) }}
                           @if($question->question_image)
                             <br><small class="text-muted"><i class="fas fa-image"></i> Has Image</small>
                           @endif
@@ -367,6 +386,14 @@
       $("#questions_table").DataTable();
     </script>
 
+    <script>
+      function copyExamCode() {
+        const code = document.getElementById('examCodeText').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+          alert('Exam code copied: ' + code);
+        });
+      }
+    </script>
     <script type="text/javascript">
       function confirmDelete(url, questionText) {
           Swal.fire({

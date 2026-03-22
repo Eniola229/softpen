@@ -193,6 +193,9 @@ Route::middleware('auth:staff')->prefix('staff')->group(function () {
         });
     });
 
+    Route::post('/classes/{classId}/exams/{examId}/generate-code', [ExamController::class, 'generateCode'])
+    ->name('staff.exams.generateCode');
+
     Route::prefix('attendance/student')->name('attendance.student.')->group(function () {
         Route::get('/{classId}', [App\Http\Controllers\Staff\StudentAttendanceController::class, 'index'])->name('index');
         Route::post('/mark', [App\Http\Controllers\Staff\StudentAttendanceController::class, 'markAttendance'])->name('mark');
@@ -215,17 +218,22 @@ Route::post('student/post/login', [StudentAuthController::class, 'postLogin'])->
 //AUTH STUDENT
 Route::middleware('auth:student')->prefix('student')->group(function () {
     Route::get('dashboard', [StudentExamController::class, 'dashboard'])->name('student-dashboard');
-    
-    // Exam routes
+
+    // Exam code entry (POST, no param — define before dynamic routes)
+    Route::post('exam/enter-code', [StudentExamController::class, 'enterCode'])->name('student.exam.enter-code');
+
+    // Static segment before dynamic {examId} routes
+    Route::get('exam/result/{resultId}', [StudentExamController::class, 'showResult'])->name('student.exam.result');
+
+    // Dynamic exam routes
     Route::get('exam/{examId}/start', [StudentExamController::class, 'startExam'])->name('student.exam.start');
     Route::get('exam/{examId}/take', [StudentExamController::class, 'takeExam'])->name('student.exam.take');
     Route::post('exam/{examId}/submit', [StudentExamController::class, 'submitExam'])->name('student.exam.submit');
     Route::post('exam/{examId}/save-answer', [StudentExamController::class, 'saveAnswer'])->name('student.exam.save-answer');
-    Route::get('exam/result/{resultId}', [StudentExamController::class, 'showResult'])->name('student.exam.result');
-    
-    // Results
+
+    // Results & report
     Route::get('/result-report/{result}', [StaffResultController::class, 'showReportCard'])->name('student.result.report');
     Route::get('results', [StudentAuthController::class, 'Result'])->name('student.results');
-    
+
     Route::get('logout', [StudentAuthController::class, 'logout'])->name('student/logout');
 });

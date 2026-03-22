@@ -352,7 +352,7 @@
               <i class="fas fa-user-graduate me-2"></i>Completed by: {{ Auth::guard('student')->user()->name }}
             </p>
             <p class="text-light">
-              <i class="fas fa-book me-2"></i>Subject: {{ optional($examResult->exam->subject)->name ?? 'General' }}
+              <i class="fas fa-book me-2"></i>Subject: {{$subject->name ?? 'General' }}
             </p>
           </div>
         </div>

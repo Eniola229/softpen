@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description')->nullable();
             $table->string('subject');
+            $table->string('exam_code');
             $table->string('department')->nullable();
             $table->integer('duration'); // in minutes
             $table->integer('total_questions');

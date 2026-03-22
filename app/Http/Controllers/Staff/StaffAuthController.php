@@ -42,31 +42,36 @@ class StaffAuthController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-        public function postLogin(Request $request): RedirectResponse
-        {
-            $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
+    public function postLogin(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-            $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
-            // Use the 'school' guard for authentication
-            if (Auth::guard('staff')->attempt($credentials)) {
-                // Get the authenticated staff
-                $staff = Auth::guard('staff')->user();
+        if (Auth::guard('staff')->attempt($credentials)) {
+            $staff = Auth::guard('staff')->user();
 
-                // Check if the staff status is 'DISACTIVATE'
-                if ($staff->status == "DISACTIVATE") {
-                    Auth::guard('staff')->logout(); // Log the user out if the account is deactivated
-                    return redirect("staff/login")->with('error', 'Oops! This staff has been set to DISACTIVATED. Kindly message admin.');
-                }
-
-                return redirect('staff/dashboard')->withSuccess('You have successfully logged in');
+            // Check staff account status
+            if ($staff->status == "DISACTIVATE") {
+                Auth::guard('staff')->logout();
+                return redirect("staff/login")->with('error', 'Oops! This staff has been set to DISACTIVATED. Kindly message admin.');
             }
 
-            return redirect("staff/login")->with('error', 'Oops! You have entered invalid credentials');
+            // Check if the staff's school is active
+            $school = School::find($staff->school_id);
+            if (!$school || $school->status == "DISACTIVATE") {
+                Auth::guard('staff')->logout();
+                return redirect("staff/login")->with('error', 'Oops! Your school account has been deactivated. Kindly contact your school admin.');
+            }
+
+            return redirect('staff/dashboard')->withSuccess('You have successfully logged in');
         }
+
+        return redirect("staff/login")->with('error', 'Oops! You have entered invalid credentials');
+    }
 
     public function dashboard()
     {

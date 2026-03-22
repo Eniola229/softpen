@@ -2,7 +2,8 @@
 <link href="{{ asset('assets/libs/jquery-steps/jquery.steps.css') }}" rel="stylesheet" />
 <link href="{{ asset('assets/libs/jquery-steps/steps.css') }}" rel="stylesheet" />
 <link href="{{ asset('dist/css/style.min.css') }}" rel="stylesheet" />
-<script src="https://cdn.tiny.cloud/1/9lcsi17by61qxgfug4h9ns3wl0mkdwithf1yovboozc6qd27/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+<script src="https://cdn.tiny.cloud/1/x29fd50fqh82wf5vy8aon7pl5jwggttfpupu1peaoaxhf2dz/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+
   <body>
     <!-- ============================================================== -->
     <!-- Preloader - style you can find in spinners.css -->

@@ -7,6 +7,7 @@ use App\Models\Exam;
 use App\Models\SchClass;
 use App\Models\Subject;
 use App\Models\Department;
+use App\Models\School;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use CloudinaryLabs\CloudinaryLaravel\Facades\Cloudinary;
@@ -19,7 +20,7 @@ class ExamController extends Controller
     public function create($classId)
     {
         $staff = Auth::guard('staff')->user();
-        
+         
         $class = SchClass::where('id', $classId)
             ->where('school_id', $staff->school_id)
             ->firstOrFail();
@@ -73,10 +74,15 @@ class ExamController extends Controller
         ]);
 
         try {
+            // Get the school and generate exam code
+            $school = School::findOrFail($staff->school_id);
+            $examCode = $this->generateExamCode($school->name);
+
             // Create the exam
             $exam = Exam::create([
                 'school_id' => $staff->school_id,
                 'class_id' => $classId,
+                'exam_code' => $examCode,
                 'title' => $validated['title'],
                 'subject' => $validated['subject'],
                 'description' => $validated['description'] ?? null,
@@ -97,12 +103,45 @@ class ExamController extends Controller
             return redirect()
                 ->route('staff.exams.show', [$classId, $exam->id])
                 ->with('message', 'Exam created successfully! Now add questions to your exam.');
-
         } catch (\Exception $e) {
             return back()
                 ->withInput()
-                ->with('error', 'Failed to create exam: ' . $e->getMessage());
+                ->with('error', 'Failed to create exam');
         }
+    }
+
+    public function generateCode($classId, $examId)
+    {
+        $staff = Auth::guard('staff')->user();
+
+        $exam = Exam::where('id', $examId)
+            ->where('school_id', $staff->school_id)
+            ->where('class_id', $classId)
+            ->firstOrFail();
+
+        // Only generate if one doesn't already exist
+        if ($exam->exam_code) {
+            return back()->with('info', 'This exam already has a code.');
+        }
+
+        $school = School::findOrFail($staff->school_id);
+        $exam->update([
+            'exam_code' => $this->generateExamCode($school->name),
+        ]);
+
+        return back()->with('message', 'Exam code generated successfully.');
+    }
+
+    private function generateExamCode(string $schoolName): string
+    {
+        $words = preg_split('/\s+/', trim($schoolName));
+        $prefix = strtoupper(implode('', array_map(fn($w) => substr($w, 0, 1), $words)));
+
+        do {
+            $code = $prefix . str_pad(random_int(0, 999999), 6, '0', STR_PAD_LEFT);
+        } while (Exam::where('exam_code', $code)->exists());
+
+        return $code;
     }
 
     /**

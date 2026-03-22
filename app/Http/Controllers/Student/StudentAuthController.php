@@ -46,31 +46,36 @@ class StudentAuthController extends Controller
      * @param Request $request
      * @return RedirectResponse
      */
-        public function postLogin(Request $request): RedirectResponse
-        {
-            $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
+    public function postLogin(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
 
-            $credentials = $request->only('email', 'password');
+        $credentials = $request->only('email', 'password');
 
-            // Use the 'school' guard for authentication
-            if (Auth::guard('student')->attempt($credentials)) {
-                // Get the authenticated student
-                $student = Auth::guard('student')->user();
+        if (Auth::guard('student')->attempt($credentials)) {
+            $student = Auth::guard('student')->user();
 
-                // Check if the student status is 'DISACTIVATE'
-                if ($student->status == "DISACTIVATE") {
-                    Auth::guard('student')->logout(); // Log the user out if the account is deactivated
-                    return redirect("student/login")->with('error', 'Oops! This student has been set to DISACTIVATED. Kindly message your school admin.');
-                }
-
-                return redirect('student/dashboard')->withSuccess('You have successfully logged in');
+            // Check student account status
+            if ($student->status == "DISACTIVATE") {
+                Auth::guard('student')->logout();
+                return redirect("student/login")->with('error', 'Oops! This student has been set to DISACTIVATED. Kindly message your school admin.');
             }
 
-            return redirect("student/login")->with('error', 'Oops! You have entered invalid credentials');
+            // Check if the student's school is active
+            $school = School::find($student->school_id);
+            if (!$school || $school->status == "DISACTIVATE") {
+                Auth::guard('student')->logout();
+                return redirect("student/login")->with('error', 'Oops! Kindly contact your school admin.');
+            }
+
+            return redirect('student/dashboard')->withSuccess('You have successfully logged in');
         }
+
+        return redirect("student/login")->with('error', 'Oops! You have entered invalid credentials');
+    }
 
     // public function dashboard()
     // {
